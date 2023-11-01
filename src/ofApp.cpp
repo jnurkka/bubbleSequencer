@@ -1,7 +1,13 @@
 #include "ofApp.h"
+#include "graph.hpp"
+
+int const GRAPH_SIZE = 10;
+
+Graph graph(GRAPH_SIZE);
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    graph.init(GRAPH_SIZE);
 	myBang = false;
 	x = ofGetWindowWidth() / 2;
 	y = ofGetWindowHeight() / 2;
@@ -9,7 +15,7 @@ void ofApp::setup(){
 	bpm.setBeatPerBar(4);
 	bpm.setBpm(120);
 
-	
+
 	ofAddListener(bpm.beatEvent, this, &ofApp::triggerBeat);
 
 	bpm.start();
@@ -22,6 +28,10 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    for (int i = 0; i < GRAPH_SIZE; i += 1) {
+        ofSetColor(0, 255, 0);
+        ofDrawCircle(graph.bubbles[i].xCoord, graph.bubbles[i].yCoord, graph.bubbles[i].rad);
+    }
 	if (myBang)
 	{
 		ofDrawCircle(x, y, 20);
@@ -29,7 +39,7 @@ void ofApp::draw(){
 	{
 		ofDrawCircle(x, y, 10);
 	}
-	
+
 }
 
 //--------------------------------------------------------------
@@ -106,7 +116,7 @@ void ofApp::gotMessage(ofMessage msg){
 }
 
 //--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
+void ofApp::dragEvent(ofDragInfo dragInfo){
 
 }
 
