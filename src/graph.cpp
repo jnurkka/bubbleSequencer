@@ -9,7 +9,7 @@
 #include "bubble.hpp"
 #include <vector>
 
-int const BUBBLE_RADIUS = 20;
+int const BUBBLE_RADIUS = 10;
 
 Graph::Graph(int size) : bubbles(size) {
     
@@ -21,9 +21,6 @@ void Graph::init(int numNodes) {
     int x = BUBBLE_RADIUS + distNodes / 2;
     for (int i = 0; i < numNodes; i += 1) {
         bubbles[i].init(x, y, BUBBLE_RADIUS);
-        if (i == 0) {
-            bubbles[i].activate();
-        }
         x += distNodes;
     }
 }
@@ -37,7 +34,7 @@ void Graph::activateNext() {
         }
     }
     bubbles[activeIndex].deactivate();
-    if (activeIndex == bubbles.size() - 1) {
+    if (!activeIndex || activeIndex == bubbles.size() - 1) {
         bubbles[0].activate();
     } else {
         bubbles[activeIndex+1].activate();
