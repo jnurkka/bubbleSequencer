@@ -68,9 +68,6 @@ void ofApp::exit(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-	if (key == 'e') {
-			graph.activateNext();
-	}
 	if (key == ' ')
 	{
 		if (bpm.isPlaying())
@@ -150,6 +147,7 @@ void ofApp::triggerBeat()
 		{
 			myBang = true;
 		}
+    graph.activateNext();
 
 }
 
