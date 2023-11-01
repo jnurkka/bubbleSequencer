@@ -12,6 +12,7 @@ class Bubble {
     public:
         int xCoord;
         int yCoord;
+        int rad;
         Bubble();
-        void init(int x, int y);
+        void init(int x, int y, int radius);
 };

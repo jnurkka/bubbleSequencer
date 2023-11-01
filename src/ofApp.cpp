@@ -1,17 +1,13 @@
 #include "ofApp.h"
-#include "bubble.hpp"
+#include "graph.hpp"
 
-Bubble bubbles[4];
+int const GRAPH_SIZE = 10;
 
-int const DISTANCE = 100;
+Graph graph(GRAPH_SIZE);
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    int x = 100;
-    for (int i = 0; i < 4; i += 1) {
-        bubbles[i].init(x, 100);
-        x += DISTANCE;
-    }
+    graph.init(GRAPH_SIZE);
 }
 
 //--------------------------------------------------------------
@@ -21,9 +17,9 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    for (int i = 0; i < 4; i += 1) {
+    for (int i = 0; i < GRAPH_SIZE; i += 1) {
         ofSetColor(0, 255, 0);
-        ofDrawCircle(bubbles[i].xCoord, bubbles[i].yCoord, 20);
+        ofDrawCircle(graph.bubbles[i].xCoord, graph.bubbles[i].yCoord, graph.bubbles[i].rad);
     }
 }
 
