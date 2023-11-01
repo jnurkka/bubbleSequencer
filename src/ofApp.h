@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxBpm.h"
+#include "ofxGui.h"
 
 class ofApp : public ofBaseApp{
 
@@ -28,4 +30,13 @@ class ofApp : public ofBaseApp{
 		bool myBang;
 		int x;
 		int y;
+
+		ofxBpm bpm;
+
+		ofxPanel gui;
+
+		ofxIntSlider intSlider;
+		ofxButton button;
+
+		void buttonGUIpressed();
 };

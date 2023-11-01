@@ -8,14 +8,35 @@ Graph graph(GRAPH_SIZE);
 //--------------------------------------------------------------
 void ofApp::setup(){
     graph.init(GRAPH_SIZE);
+
+
+
+	// bang visualise
 	myBang = false;
 	x = ofGetWindowWidth() / 2;
 	y = ofGetWindowHeight() / 2;
+
+	// BPM
+	bpm.setBeatPerBar(4);
+	bpm.setBpm(120);
+
+	ofAddListener(bpm.beatEvent, this, &ofApp::triggerBeat);
+
+	bpm.stop();
+
+	// GUI
+	gui.setup();
+
+	button.addListener(this, &ofApp::buttonGUIpressed);
+
+	gui.add(intSlider.setup("BPM Slider", 120, ofxBpm::OFX_BPM_MIN, ofxBpm::OFX_BPM_MAX));
+	gui.add(button.setup("Start/stop"));
+
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    
+	bpm.setBpm(intSlider);
 }
 
 //--------------------------------------------------------------
@@ -24,6 +45,9 @@ void ofApp::draw(){
         ofSetHexColor(graph.bubbles[i].color);
         ofDrawCircle(graph.bubbles[i].xCoord, graph.bubbles[i].yCoord, graph.bubbles[i].rad);
     }
+
+
+	// draw bang
 	if (myBang)
 	{
 		ofDrawCircle(x, y, 20);
@@ -31,6 +55,10 @@ void ofApp::draw(){
 	{
 		ofDrawCircle(x, y, 10);
 	}
+
+	// draw GUI
+	gui.draw();
+
 }
 
 //--------------------------------------------------------------
@@ -40,9 +68,21 @@ void ofApp::exit(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    if (key == ' ') {
-        graph.activateNext();
-    }
+	if (key == 'e') {
+			graph.activateNext();
+	}
+	if (key == ' ')
+	{
+		if (bpm.isPlaying())
+		{
+			bpm.stop();
+		}
+		else
+		{
+			bpm.start();
+		}
+	}
+
 }
 
 //--------------------------------------------------------------
@@ -111,4 +151,16 @@ void ofApp::triggerBeat()
 			myBang = true;
 		}
 
+}
+
+void ofApp::buttonGUIpressed()
+{
+	if (bpm.isPlaying())
+	{
+		bpm.stop();
+	}
+	else
+	{
+		bpm.start();
+	}
 }
