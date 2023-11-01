@@ -40,7 +40,8 @@
 .vs
 icon.rc
 obj/
-bin/
+bin/bubbleSequencer_debug.exe
+bin/bubbleSequencer_debug.pdb
 bubbleSequencer.vcxproj
 bubbleSequencer.vcxproj.filters
 bubbleSequencer.vcxproj.user
