@@ -33,10 +33,14 @@ void Graph::activateNext() {
             break;
         }
     }
-    bubbles[activeIndex].deactivate();
-    if (!activeIndex || activeIndex == bubbles.size() - 1) {
+    if (!activeIndex) {
         bubbles[0].activate();
     } else {
-        bubbles[activeIndex+1].activate();
+        bubbles[activeIndex].deactivate();
+        if (activeIndex == bubbles.size() - 1) {
+            bubbles[0].activate();
+        } else {
+            bubbles[activeIndex+1].activate();
+        }
     }
 }
