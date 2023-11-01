@@ -2,60 +2,54 @@
 #include "graph.hpp"
 
 int const GRAPH_SIZE = 10;
-
 Graph graph(GRAPH_SIZE);
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+	// Graph
     graph.init(GRAPH_SIZE);
-
-
-
-	// bang visualise
-	myBang = false;
-	x = ofGetWindowWidth() / 2;
-	y = ofGetWindowHeight() / 2;
 
 	// BPM
 	bpm.setBeatPerBar(4);
 	bpm.setBpm(120);
-
 	ofAddListener(bpm.beatEvent, this, &ofApp::triggerBeat);
-
 	bpm.stop();
 
 	// GUI
 	gui.setup();
-
-	button.addListener(this, &ofApp::buttonGUIpressed);
-
+	button.addListener(this, &ofApp::button_gui_pressed);
 	gui.add(intSlider.setup("BPM Slider", 120, ofxBpm::OFX_BPM_MIN, ofxBpm::OFX_BPM_MAX));
 	gui.add(button.setup("Start/stop"));
-
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+	// Update BPM based on GUI SLider
 	bpm.setBpm(intSlider);
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+	// Draw graph
     for (int i = 0; i < GRAPH_SIZE; i += 1) {
         ofSetHexColor(graph.bubbles[i].color);
         ofDrawCircle(graph.bubbles[i].xCoord, graph.bubbles[i].yCoord, graph.bubbles[i].rad);
     }
 
+	// Draw GUI
 	gui.draw();
 }
 
 //--------------------------------------------------------------
 void ofApp::exit(){
+	// Kill BPM thread
 	bpm.stop();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+
+	// Start / stop with Space
 	if (key == ' ')
 	{
 		if (bpm.isPlaying())
@@ -67,70 +61,16 @@ void ofApp::keyPressed(int key){
 			bpm.start();
 		}
 	}
-
 }
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y ){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseScrolled(int x, int y, float scrollX, float scrollY){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseEntered(int x, int y){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseExited(int x, int y){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::windowResized(int w, int h){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){
-
-}
-
 void ofApp::triggerBeat()
 {
     graph.activateNext();
 }
 
-void ofApp::buttonGUIpressed()
+//--------------------------------------------------------------
+void ofApp::button_gui_pressed()
 {
 	if (bpm.isPlaying())
 	{
@@ -141,3 +81,4 @@ void ofApp::buttonGUIpressed()
 		bpm.start();
 	}
 }
+
