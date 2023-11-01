@@ -35,3 +35,9 @@
 .DS_Store
 **/xcuserdata/**
 *.xcuserstate
+
+# Windows
+.vs
+icon.rc
+obj/
+bin/
