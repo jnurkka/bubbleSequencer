@@ -45,6 +45,8 @@ void ofApp::draw(){
         ofSetHexColor(graph.bubbles[i].color);
         ofDrawCircle(graph.bubbles[i].xCoord, graph.bubbles[i].yCoord, graph.bubbles[i].rad);
     }
+
+	gui.draw();
 }
 
 //--------------------------------------------------------------
