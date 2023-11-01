@@ -1,18 +1,30 @@
 #include "ofApp.h"
+#include "bubble.hpp"
+
+Bubble bubbles[4];
+
+int const DISTANCE = 100;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-
+    int x = 100;
+    for (int i = 0; i < 4; i += 1) {
+        bubbles[i].init(x, 100);
+        x += DISTANCE;
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-
+    for (int i = 0; i < 4; i += 1) {
+        ofSetColor(0, 255, 0);
+        ofDrawCircle(bubbles[i].xCoord, bubbles[i].yCoord, 20);
+    }
 }
 
 //--------------------------------------------------------------
