@@ -10,7 +10,7 @@
 Bubble::Bubble() {
     xCoord = 100;
     yCoord = 100;
-    rad = 20;
+    rad = 10;
     active = false;
     color = 0xFFFFFF;
 }
@@ -24,9 +24,11 @@ void Bubble::init(int x, int y, int radius) {
 void Bubble::activate() {
     active = true;
     color = 0x008000;
+    rad = 20;
 }
 
 void Bubble::deactivate() {
     active = false;
     color = 0xFFFFFF;
+    rad = 10;
 }

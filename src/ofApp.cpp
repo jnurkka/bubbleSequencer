@@ -45,20 +45,6 @@ void ofApp::draw(){
         ofSetHexColor(graph.bubbles[i].color);
         ofDrawCircle(graph.bubbles[i].xCoord, graph.bubbles[i].yCoord, graph.bubbles[i].rad);
     }
-
-
-	// draw bang
-	if (myBang)
-	{
-		ofDrawCircle(x, y, 20);
-	} else
-	{
-		ofDrawCircle(x, y, 10);
-	}
-
-	// draw GUI
-	gui.draw();
-
 }
 
 //--------------------------------------------------------------
@@ -139,16 +125,7 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 
 void ofApp::triggerBeat()
 {
-		if(myBang)
-		{
-			myBang = false;
-		}
-		else
-		{
-			myBang = true;
-		}
     graph.activateNext();
-
 }
 
 void ofApp::buttonGUIpressed()
