@@ -15,13 +15,13 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     for (int i = 0; i < GRAPH_SIZE; i += 1) {
-        ofSetColor(0, 255, 0);
+        ofSetHexColor(graph.bubbles[i].color);
         ofDrawCircle(graph.bubbles[i].xCoord, graph.bubbles[i].yCoord, graph.bubbles[i].rad);
     }
 	if (myBang)
@@ -31,7 +31,6 @@ void ofApp::draw(){
 	{
 		ofDrawCircle(x, y, 10);
 	}
-
 }
 
 //--------------------------------------------------------------
@@ -41,7 +40,9 @@ void ofApp::exit(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-
+    if (key == ' ') {
+        graph.activateNext();
+    }
 }
 
 //--------------------------------------------------------------

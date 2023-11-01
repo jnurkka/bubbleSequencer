@@ -13,6 +13,10 @@ class Bubble {
         int xCoord;
         int yCoord;
         int rad;
+        bool active;
+        int color;
         Bubble();
         void init(int x, int y, int radius);
+        void activate();
+        void deactivate();
 };
