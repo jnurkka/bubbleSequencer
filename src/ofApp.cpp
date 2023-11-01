@@ -11,14 +11,6 @@ void ofApp::setup(){
 	myBang = false;
 	x = ofGetWindowWidth() / 2;
 	y = ofGetWindowHeight() / 2;
-
-	bpm.setBeatPerBar(4);
-	bpm.setBpm(120);
-
-
-	ofAddListener(bpm.beatEvent, this, &ofApp::triggerBeat);
-
-	bpm.start();
 }
 
 //--------------------------------------------------------------
@@ -49,19 +41,6 @@ void ofApp::exit(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-	if (key == ' ')
-	{
-		if (bpm.isPlaying())
-		{
-			bpm.stop();
-			ofDrawBitmapString("stop", ofGetWindowWidth() / 2, ofGetWindowHeight() / 2, 0);
-		}
-		else
-		{
-			bpm.start();
-			ofDrawBitmapString("start", ofGetWindowWidth() / 2, ofGetWindowHeight() / 2, 0);
-		}
-	}
 
 }
 
