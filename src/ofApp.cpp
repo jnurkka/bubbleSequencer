@@ -30,7 +30,7 @@ void ofApp::setup(){
 	button.addListener(this, &ofApp::buttonGUIpressed);
 
 	gui.add(intSlider.setup("BPM Slider", 120, ofxBpm::OFX_BPM_MIN, ofxBpm::OFX_BPM_MAX));
-	gui.add(button.setup("Start/stop")); 
+	gui.add(button.setup("Start/stop"));
 
 }
 
@@ -41,10 +41,8 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-
-	//draw nodes
-	for (int i = 0; i < GRAPH_SIZE; i += 1) {
-        ofSetColor(0, 255, 0);
+    for (int i = 0; i < GRAPH_SIZE; i += 1) {
+        ofSetHexColor(graph.bubbles[i].color);
         ofDrawCircle(graph.bubbles[i].xCoord, graph.bubbles[i].yCoord, graph.bubbles[i].rad);
     }
 
@@ -149,6 +147,7 @@ void ofApp::triggerBeat()
 		{
 			myBang = true;
 		}
+    graph.activateNext();
 
 }
 

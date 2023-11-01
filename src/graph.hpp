@@ -16,4 +16,5 @@ class Graph {
         std::vector<Bubble> bubbles;
         Graph(int size);
         void init(int numNodes);
+        void activateNext();
 };
