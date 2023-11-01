@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxBpm.h"
 
 class ofApp : public ofBaseApp{
 
@@ -22,5 +23,12 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h) override;
 		void dragEvent(ofDragInfo dragInfo) override;
 		void gotMessage(ofMessage msg) override;
-		
+
+		void triggerBeat();
+
+		bool myBang;
+		int x;
+		int y;
+
+		ofxBpm bpm;
 };

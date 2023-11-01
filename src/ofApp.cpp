@@ -8,11 +8,22 @@ Graph graph(GRAPH_SIZE);
 //--------------------------------------------------------------
 void ofApp::setup(){
     graph.init(GRAPH_SIZE);
+	myBang = false;
+	x = ofGetWindowWidth() / 2;
+	y = ofGetWindowHeight() / 2;
+
+	bpm.setBeatPerBar(4);
+	bpm.setBpm(120);
+
+
+	ofAddListener(bpm.beatEvent, this, &ofApp::triggerBeat);
+
+	bpm.start();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    
+
 }
 
 //--------------------------------------------------------------
@@ -21,6 +32,14 @@ void ofApp::draw(){
         ofSetColor(0, 255, 0);
         ofDrawCircle(graph.bubbles[i].xCoord, graph.bubbles[i].yCoord, graph.bubbles[i].rad);
     }
+	if (myBang)
+	{
+		ofDrawCircle(x, y, 20);
+	} else
+	{
+		ofDrawCircle(x, y, 10);
+	}
+
 }
 
 //--------------------------------------------------------------
@@ -30,6 +49,19 @@ void ofApp::exit(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+	if (key == ' ')
+	{
+		if (bpm.isPlaying())
+		{
+			bpm.stop();
+			ofDrawBitmapString("stop", ofGetWindowWidth() / 2, ofGetWindowHeight() / 2, 0);
+		}
+		else
+		{
+			bpm.start();
+			ofDrawBitmapString("start", ofGetWindowWidth() / 2, ofGetWindowHeight() / 2, 0);
+		}
+	}
 
 }
 
@@ -84,6 +116,19 @@ void ofApp::gotMessage(ofMessage msg){
 }
 
 //--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
+void ofApp::dragEvent(ofDragInfo dragInfo){
+
+}
+
+void ofApp::triggerBeat()
+{
+		if(myBang)
+		{
+			myBang = false;
+		}
+		else
+		{
+			myBang = true;
+		}
 
 }
