@@ -32,3 +32,9 @@ void Bubble::deactivate() {
     color = 0xFFFFFF;
     rad = 10;
 }
+
+void Bubble::draw()
+{
+	ofSetHexColor(color);
+	ofDrawCircle(xCoord, yCoord, rad);
+}

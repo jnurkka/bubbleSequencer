@@ -19,4 +19,5 @@ class Bubble {
         void init(int x, int y, int radius);
         void activate();
         void deactivate();
+        void draw();
 };

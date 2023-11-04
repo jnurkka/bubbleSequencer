@@ -32,8 +32,7 @@ void ofApp::update(){
 void ofApp::draw(){
 	// Draw graph
     for (int i = 0; i < GRAPH_SIZE; i += 1) {
-        ofSetHexColor(graph.bubbles[i].color);
-        ofDrawCircle(graph.bubbles[i].xCoord, graph.bubbles[i].yCoord, graph.bubbles[i].rad);
+		graph.bubbles[i].draw();
     }
 
 	// Draw GUI
