@@ -14,10 +14,13 @@ class Bubble {
         int yCoord;
         int rad;
         bool active;
+        string file; 
         int color;
         Bubble();
-        void init(int x, int y, int radius);
+        void init(int x, int y, int radius´, string filename);
         void activate();
         void deactivate();
         void draw();
+
+        ofSoundPlayer sample;
 };

@@ -10,6 +10,8 @@
 #include <vector>
 
 int const BUBBLE_RADIUS = 10;
+string const FILENAME[5] = {"f.wav", "g.wav", "a.wav", "c.wav", "d.wav" };
+
 
 Graph::Graph(int size) : bubbles(size) {
     
@@ -20,7 +22,8 @@ void Graph::init(int numNodes) {
     int y = ofGetWindowHeight() / 2;
     int x = BUBBLE_RADIUS + distNodes / 2;
     for (int i = 0; i < numNodes; i += 1) {
-        bubbles[i].init(x, y, BUBBLE_RADIUS);
+        bubbles[i].init(x, y, BUBBLE_RADIUS, FILENAME[int(ofRandom(FILENAME->size()))]);
+        // cout << bubbles[i].file << endl;
         x += distNodes;
     }
 }
