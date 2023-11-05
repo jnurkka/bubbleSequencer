@@ -17,7 +17,7 @@ class Bubble {
         string file; 
         int color;
         Bubble();
-        void init(int x, int y, int radius´, string filename);
+        void init(int x, int y, int radius, string filename);
         void activate();
         void deactivate();
         void draw();
