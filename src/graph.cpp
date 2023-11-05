@@ -22,7 +22,8 @@ void Graph::init(int numNodes) {
     int y = ofGetWindowHeight() / 2;
     int x = BUBBLE_RADIUS + distNodes / 2;
     for (int i = 0; i < numNodes; i += 1) {
-        bubbles[i].init(x, y, BUBBLE_RADIUS, FILENAME[int(ofRandom(FILENAME->size()))]);
+        string filename = FILENAME[int(ofRandom(FILENAME->size()))];
+        bubbles[i].init(x, y, BUBBLE_RADIUS, filename, 1);
         // cout << bubbles[i].file << endl;
         x += distNodes;
     }
