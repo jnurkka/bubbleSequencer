@@ -31,9 +31,7 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 	// Draw graph
-    for (int i = 0; i < GRAPH_SIZE; i += 1) {
-		graph.bubbles[i].draw();
-    }
+    graph.draw();
 
 	// Draw GUI
 	gui.draw();

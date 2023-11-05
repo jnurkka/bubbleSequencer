@@ -12,9 +12,11 @@
 
 
 class Graph {
-    public:
+    private:
         std::vector<Bubble> bubbles;
+    public:
         Graph(int size);
         void init(int numNodes);
         void activateNext();
+        void draw();
 };

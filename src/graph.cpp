@@ -48,3 +48,9 @@ void Graph::activateNext() {
     }
 
 }
+
+void Graph::draw() {
+    for (int i = 0; i < bubbles.size(); i += 1) {
+        bubbles[i].draw();
+    }
+}
