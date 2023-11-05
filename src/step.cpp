@@ -7,6 +7,7 @@
 
 #include "step.hpp"
 #include "bubble.hpp"
+#include <random>
 #include <tuple>
 
 
@@ -38,7 +39,27 @@ void Step::deactivate() {
 }
 
 void Step::activate() {
-    
+    // Calculate the total probability sum
+    float totalProbability = 0.0f;
+    for (const Bubble& bubble : bubbles) {
+        totalProbability += bubble.probability;
+    }
+
+    // Generate a random number in the range [0, totalProbability)
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dis(0.0f, totalProbability);
+    float randomValue = dis(gen);
+
+    // Find the bubble to activate based on the random value
+    float cumulativeProbability = 0.0f;
+    for (Bubble& bubble : bubbles) {
+        cumulativeProbability += bubble.probability;
+        if (randomValue < cumulativeProbability) {
+            bubble.activate();
+            break;
+        }
+    }
 }
 
 void Step::draw() {
