@@ -30,13 +30,7 @@ void Graph::init(int numNodes) {
 }
 
 void Graph::activateNext() {
-    int activeIndex = -1;
-    for (int i = 0; i < bubbles.size(); i += 1) {
-        if (bubbles[i].active == true) {
-            activeIndex = i;
-            break;
-        }
-    }
+    int activeIndex = activeStep;
     if (activeIndex >= 0)
     {
         bubbles[activeIndex].deactivate();
@@ -47,7 +41,11 @@ void Graph::activateNext() {
     } else {
         bubbles[activeIndex+1].activate();
     }
-
+    if (activeIndex + 1 > bubbles.size() - 1) {
+        activeStep = 0;
+    } else {
+        activeStep = activeIndex + 1;
+    }
 }
 
 void Graph::draw() {

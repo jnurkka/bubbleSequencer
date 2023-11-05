@@ -14,6 +14,7 @@
 class Graph {
     private:
         std::vector<Bubble> bubbles;
+        int activeStep = -1;
     public:
         Graph(int size);
         void init(int numNodes);
