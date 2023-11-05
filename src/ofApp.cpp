@@ -1,13 +1,14 @@
 #include "ofApp.h"
 #include "graph.hpp"
 
-int const GRAPH_SIZE = 10;
-Graph graph(GRAPH_SIZE);
+int const GRAPH_LENGTH = 10;
+int const STEP_HEIGHT = 5;
+Graph graph(GRAPH_LENGTH, STEP_HEIGHT);
 
 //--------------------------------------------------------------
 void ofApp::setup(){
 	// Graph
-    graph.init(GRAPH_SIZE);
+    graph.init(GRAPH_LENGTH, STEP_HEIGHT);
 
 	// BPM
 	bpm.setBeatPerBar(4);

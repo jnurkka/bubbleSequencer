@@ -7,17 +7,17 @@
 #pragma once
 
 #include "ofMain.h"
-#include "bubble.hpp"
+#include "step.hpp"
 #include <vector>
 
 
 class Graph {
     private:
-        std::vector<Bubble> bubbles;
+        std::vector<Step> steps;
         int activeStep = -1;
     public:
-        Graph(int size);
-        void init(int numNodes);
+        Graph(int length, int height);
+        void init(int length, int height);
         void activateNext();
         void draw();
 };
