@@ -45,3 +45,8 @@ bin/bubbleSequencer_debug.pdb
 bubbleSequencer.vcxproj
 bubbleSequencer.vcxproj.filters
 bubbleSequencer.vcxproj.user
+
+
+
+# Animations
+enc_temp_folder/

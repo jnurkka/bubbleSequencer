@@ -20,4 +20,5 @@ class Graph {
         void init(int length, int height);
         void activateNext();
         void draw();
+        void update();
 };

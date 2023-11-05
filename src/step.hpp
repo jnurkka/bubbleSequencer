@@ -21,4 +21,5 @@ class Step {
         void draw();
         void activate();
         void deactivate();
+        void update();
 };

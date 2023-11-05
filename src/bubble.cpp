@@ -24,6 +24,7 @@ void Bubble::init(int x, int y, int radius, string filename, float p) {
     probability = p;
     sample.load(file);
     sample.setVolume(0.5);
+
 }
 
 void Bubble::activate() {
@@ -31,6 +32,13 @@ void Bubble::activate() {
     color = 0x008000;
     rad = 20;
 	sample.play();
+
+	// Animations
+	radius_animated.reset(10);
+	radius_animated.setCurve(EASE_OUT_BACK);
+	radius_animated.setRepeatType(PLAY_ONCE);
+	radius_animated.setDuration(1);
+	radius_animated.animateTo(20);
 }
 
 void Bubble::deactivate() {
@@ -38,12 +46,28 @@ void Bubble::deactivate() {
     color = 0xFFFFFF;
     rad = 10;
 	sample.stop();
+
+	// Animations
+	radius_animated.reset(20);
+	radius_animated.setCurve(EASE_OUT_BACK);
+	radius_animated.setRepeatType(PLAY_ONCE);
+	radius_animated.setDuration(1);
+	radius_animated.animateTo(10);
+}
+
+
+void Bubble::update()
+{
+	//app timebase, to send to all animatable objects
+	float dt = 1.0f / 60.0f;
+
+    radius_animated.update(dt);
 }
 
 void Bubble::draw()
 {
 	ofSetHexColor(color);
-	ofDrawCircle(xCoord, yCoord, rad);
+	ofDrawCircle(xCoord, yCoord, radius_animated.val());
 
     //// Plot file name
 	// ofSetHexColor(0x00ff00);

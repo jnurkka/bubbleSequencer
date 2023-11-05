@@ -27,6 +27,7 @@ void ofApp::setup(){
 void ofApp::update(){
 	// Update BPM based on GUI SLider
 	bpm.setBpm(intSlider);
+	graph.update();
 }
 
 //--------------------------------------------------------------

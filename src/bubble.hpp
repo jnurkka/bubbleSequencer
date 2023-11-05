@@ -7,6 +7,13 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxAnimatableFloat.h"
+
+
+//#define TIME_SAMPLE
+#ifdef TIME_SAMPLE
+#include "ofxTimeMeasurements.h"
+#endif
 
 class Bubble {
     public:
@@ -22,6 +29,8 @@ class Bubble {
         void activate();
         void deactivate();
         void draw();
+        void update();
 
         ofSoundPlayer sample;
+        ofxAnimatableFloat radius_animated;
 };

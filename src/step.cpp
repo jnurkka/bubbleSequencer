@@ -33,7 +33,11 @@ void Step::init(int size, int xPos, int bubbleRadius) {
 
 void Step::deactivate() {
     for (int i = 0; i < bubbles.size(); i+= 1) {
-        bubbles[i].deactivate();
+        if (bubbles[i].active)
+        {
+            bubbles[i].deactivate();
+        }
+       
     }
 }
 
@@ -56,6 +60,13 @@ void Step::activate() {
             break;
         }
     }
+}
+
+void Step::update()
+{
+	for (int i = 0; i < bubbles.size(); i += 1) {
+		bubbles[i].update();
+	}
 }
 
 void Step::draw() {
