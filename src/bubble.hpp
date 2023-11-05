@@ -14,10 +14,11 @@ class Bubble {
         int yCoord;
         int rad;
         bool active;
-        string file; 
+        float probability;
+        string file;
         int color;
         Bubble();
-        void init(int x, int y, int radius´, string filename);
+        void init(int x, int y, int radius, string filename, float p);
         void activate();
         void deactivate();
         void draw();

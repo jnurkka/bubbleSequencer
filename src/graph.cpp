@@ -6,45 +6,45 @@
 //
 
 #include "graph.hpp"
-#include "bubble.hpp"
+#include "step.hpp"
 #include <vector>
 
 int const BUBBLE_RADIUS = 10;
-string const FILENAME[5] = {"f.wav", "g.wav", "a.wav", "c.wav", "d.wav" };
 
-
-Graph::Graph(int size) : bubbles(size) {
+Graph::Graph(int length, int height) : steps(length, height) {
     
 }
 
-void Graph::init(int numNodes) {
-    int distNodes = (ofGetWindowWidth() - 2*BUBBLE_RADIUS) / numNodes;
-    int y = ofGetWindowHeight() / 2;
+void Graph::init(int length, int height) {
+    int distNodes = (ofGetWindowWidth() - 2*BUBBLE_RADIUS) / length;
     int x = BUBBLE_RADIUS + distNodes / 2;
-    for (int i = 0; i < numNodes; i += 1) {
-        bubbles[i].init(x, y, BUBBLE_RADIUS, FILENAME[int(ofRandom(FILENAME->size()))]);
-        // cout << bubbles[i].file << endl;
+    for (int i = 0; i < length; i += 1) {
+        steps[i].init(height, x, BUBBLE_RADIUS);
         x += distNodes;
     }
 }
 
 void Graph::activateNext() {
-    int activeIndex = -1;
-    for (int i = 0; i < bubbles.size(); i += 1) {
-        if (bubbles[i].active == true) {
-            activeIndex = i;
-            break;
-        }
-    }
+    int activeIndex = activeStep;
     if (activeIndex >= 0)
     {
-        bubbles[activeIndex].deactivate();
+        steps[activeIndex].deactivate();
     }
  
-    if (activeIndex == bubbles.size() - 1) {
-        bubbles[0].activate();
+    if (activeIndex == steps.size() - 1) {
+        steps[0].activate();
     } else {
-        bubbles[activeIndex+1].activate();
+        steps[activeIndex+1].activate();
     }
+    if (activeIndex + 1 > steps.size() - 1) {
+        activeStep = 0;
+    } else {
+        activeStep = activeIndex + 1;
+    }
+}
 
+void Graph::draw() {
+    for (int i = 0; i < steps.size(); i += 1) {
+        steps[i].draw();
+    }
 }

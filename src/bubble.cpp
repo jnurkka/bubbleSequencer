@@ -13,13 +13,15 @@ Bubble::Bubble() {
     rad = 10;
     active = false;
     color = 0xFFFFFF;
+    probability = 0;
 }
 
-void Bubble::init(int x, int y, int radius, string filename) {
+void Bubble::init(int x, int y, int radius, string filename, float p) {
     xCoord = x;
     yCoord = y;
     rad = radius;
-    file = filename; 
+    file = filename;
+    probability = p;
     sample.load(file);
     sample.setVolume(0.5);
 }
