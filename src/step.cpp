@@ -7,7 +7,6 @@
 
 #include "step.hpp"
 #include "bubble.hpp"
-#include <random>
 #include <tuple>
 
 
@@ -46,10 +45,7 @@ void Step::activate() {
     }
 
     // Generate a random number in the range [0, totalProbability)
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> dis(0.0f, totalProbability);
-    float randomValue = dis(gen);
+    float randomValue = ofRandom(totalProbability);
 
     // Find the bubble to activate based on the random value
     float cumulativeProbability = 0.0f;
