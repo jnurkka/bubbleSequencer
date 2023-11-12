@@ -33,4 +33,5 @@ class Bubble {
 
         ofSoundPlayer sample;
         ofxAnimatableFloat radius_animated;
+
 };

@@ -25,6 +25,9 @@ void Bubble::init(int x, int y, int radius, string filename, float p) {
     sample.load(file);
     sample.setVolume(0.5);
 
+	// Animations
+	radius_animated.reset(10);
+
 }
 
 void Bubble::activate() {

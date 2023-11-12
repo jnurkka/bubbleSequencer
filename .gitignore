@@ -31,10 +31,55 @@
 *.out
 *.app
 
-# MacOS Specific
+# ignore generated binaries but not the data folder
+/bin/*
+!/bin/data/ 
+
+# General OF
+[Bb]uild/ 
+[Oo]bj/
+*.o
+[Dd]ebug*/
+[Rr]elease*/ 
+*.mode*    
+*.app/  
+*.pyc   
+.svn/        
+*.log
+
+# XCode            
 .DS_Store
 **/xcuserdata/**
 *.xcuserstate
+*.pbxuser
+*.perspective
+*.perspectivev3
+*.mode1v3
+*.mode2v3   
+# XCode 4
+xcuserdata   
+*.xcworkspace 
+
+
+# Visual Studio
+*.sdf
+*.opensdf
+*.suo 
+*.pdb 
+*.ilk  
+*.aps
+ipch/ 
+
+
+# OSX
+.DS_Store
+*.swp
+*~.nib
+
+
+# Thumbnails
+._*
+
 
 # Windows
 .vs
@@ -45,7 +90,8 @@ bin/bubbleSequencer_debug.pdb
 bubbleSequencer.vcxproj
 bubbleSequencer.vcxproj.filters
 bubbleSequencer.vcxproj.user
-
+Thumbs.db
+Desktop.ini
 
 
 # Animations
