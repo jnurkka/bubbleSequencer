@@ -18,23 +18,28 @@ void Step::init(int size, int xPos, int bubbleRadius) {
     using FilenameProbabilityPair = std::tuple<std::string, float>;
     std::vector<FilenameProbabilityPair> filenameProbabilities;
 
-    /*
-    filenameProbabilities.push_back(std::make_tuple("f.wav", 0.2f));
-    filenameProbabilities.push_back(std::make_tuple("g.wav", 0.2f));
-    filenameProbabilities.push_back(std::make_tuple("a.wav", 0.2f));
-    filenameProbabilities.push_back(std::make_tuple("c.wav", 0.2f));
-    filenameProbabilities.push_back(std::make_tuple("d.wav", 0.2f));*/
+    bool use_airport_samples = true;
 
-
-    // Copyright from music for airports
-    filenameProbabilities.push_back(std::make_tuple("Eno-Piano-01.wav", 0.125f));
-    filenameProbabilities.push_back(std::make_tuple("Eno-Piano-02.wav", 0.125f));
-    filenameProbabilities.push_back(std::make_tuple("Eno-Piano-03.wav", 0.125f));
-    filenameProbabilities.push_back(std::make_tuple("Eno-Piano-04.wav", 0.125f));
-    filenameProbabilities.push_back(std::make_tuple("Eno-Piano-05.wav", 0.125f));
-    filenameProbabilities.push_back(std::make_tuple("Eno-Piano-06.wav", 0.125f));
-    filenameProbabilities.push_back(std::make_tuple("Eno-Piano-07.wav", 0.125f));
-    filenameProbabilities.push_back(std::make_tuple("Eno-Piano-08.wav", 0.125f));
+    if (use_airport_samples)
+    {
+		// Copyright from music for airports
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-01.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-02.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-03.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-04.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-05.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-06.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-07.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-08.wav", 0.125f));
+    }
+    else {
+        // Random shit samples
+		filenameProbabilities.push_back(std::make_tuple("f.wav", 0.2f));
+		filenameProbabilities.push_back(std::make_tuple("g.wav", 0.2f));
+		filenameProbabilities.push_back(std::make_tuple("a.wav", 0.2f));
+		filenameProbabilities.push_back(std::make_tuple("c.wav", 0.2f));
+		filenameProbabilities.push_back(std::make_tuple("d.wav", 0.2f));
+    }
     
     int distNodes = (ofGetWindowHeight() - 2*bubbleRadius) / size;
     int y = bubbleRadius + distNodes / 2;
