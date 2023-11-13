@@ -24,6 +24,7 @@ void Bubble::init(int x, int y, int radius, string filename, float p) {
     probability = p;
     sample.load(file);
     sample.setVolume(0.5);
+    sample.setMultiPlay(true);
 
 	// Animations
 	radius_animated.reset(10);
@@ -48,7 +49,7 @@ void Bubble::deactivate() {
     active = false;
     color = 0xFFFFFF;
     rad = 10;
-	sample.stop();
+	//sample.stop();
 
 	// Animations
 	radius_animated.reset(20);
@@ -57,6 +58,7 @@ void Bubble::deactivate() {
 	radius_animated.setDuration(1);
 	radius_animated.animateTo(10);
 }
+
 
 
 void Bubble::update()
