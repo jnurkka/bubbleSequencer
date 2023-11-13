@@ -8,10 +8,11 @@ Graph graph(GRAPH_LENGTH, STEP_HEIGHT);
 //--------------------------------------------------------------
 void ofApp::setup(){
 	// Graph
+	ofBackgroundHex(0x3E503C);
     graph.init(GRAPH_LENGTH, STEP_HEIGHT);
 
 	// BPM
-	int tempo = 20;
+	int constexpr tempo = 20;
 	bpm.setBeatPerBar(4);
 	bpm.setBpm(tempo);
 	ofAddListener(bpm.beatEvent, this, &ofApp::triggerBeat);
@@ -28,6 +29,8 @@ void ofApp::setup(){
 void ofApp::update(){
 	// Update BPM based on GUI SLider
 	bpm.setBpm(intSlider);
+
+	// Update graph
 	graph.update();
 }
 

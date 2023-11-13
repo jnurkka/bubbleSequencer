@@ -8,6 +8,7 @@
 
 #include "ofMain.h"
 #include "ofxAnimatableFloat.h"
+#include "ofxAnimatableOfColor.h"
 
 
 //#define TIME_SAMPLE
@@ -23,7 +24,6 @@ class Bubble {
         bool active;
         float probability;
         string file;
-        int color;
         Bubble();
         void init(int x, int y, int radius, string filename, float p);
         void activate();
@@ -33,5 +33,9 @@ class Bubble {
 
         ofSoundPlayer sample;
         ofxAnimatableFloat radius_animated;
+        ofxAnimatableOfColor color_animated;
+
+        ofColor color_active_bubble;
+        ofColor color_inactive_bubble;
 
 };
