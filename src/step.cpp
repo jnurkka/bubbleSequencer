@@ -7,7 +7,6 @@
 
 #include "step.hpp"
 #include "bubble.hpp"
-#include <random>
 #include <tuple>
 
 
@@ -18,11 +17,29 @@ Step::Step(int size) : bubbles(size) {
 void Step::init(int size, int xPos, int bubbleRadius) {
     using FilenameProbabilityPair = std::tuple<std::string, float>;
     std::vector<FilenameProbabilityPair> filenameProbabilities;
-    filenameProbabilities.push_back(std::make_tuple("f.wav", 0.2f));
-    filenameProbabilities.push_back(std::make_tuple("g.wav", 0.2f));
-    filenameProbabilities.push_back(std::make_tuple("a.wav", 0.2f));
-    filenameProbabilities.push_back(std::make_tuple("c.wav", 0.2f));
-    filenameProbabilities.push_back(std::make_tuple("d.wav", 0.2f));
+
+    bool use_airport_samples = true;
+
+    if (use_airport_samples)
+    {
+		// Copyright from music for airports
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-01.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-02.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-03.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-04.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-05.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-06.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-07.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-08.wav", 0.125f));
+    }
+    else {
+        // Random shit samples
+		filenameProbabilities.push_back(std::make_tuple("f.wav", 0.2f));
+		filenameProbabilities.push_back(std::make_tuple("g.wav", 0.2f));
+		filenameProbabilities.push_back(std::make_tuple("a.wav", 0.2f));
+		filenameProbabilities.push_back(std::make_tuple("c.wav", 0.2f));
+		filenameProbabilities.push_back(std::make_tuple("d.wav", 0.2f));
+    }
     
     int distNodes = (ofGetWindowHeight() - 2*bubbleRadius) / size;
     int y = bubbleRadius + distNodes / 2;
@@ -34,7 +51,11 @@ void Step::init(int size, int xPos, int bubbleRadius) {
 
 void Step::deactivate() {
     for (int i = 0; i < bubbles.size(); i+= 1) {
-        bubbles[i].deactivate();
+        if (bubbles[i].active)
+        {
+            bubbles[i].deactivate();
+        }
+       
     }
 }
 
@@ -46,10 +67,7 @@ void Step::activate() {
     }
 
     // Generate a random number in the range [0, totalProbability)
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> dis(0.0f, totalProbability);
-    float randomValue = dis(gen);
+    float randomValue = ofRandom(totalProbability);
 
     // Find the bubble to activate based on the random value
     float cumulativeProbability = 0.0f;
@@ -60,6 +78,13 @@ void Step::activate() {
             break;
         }
     }
+}
+
+void Step::update()
+{
+	for (int i = 0; i < bubbles.size(); i += 1) {
+		bubbles[i].update();
+	}
 }
 
 void Step::draw() {

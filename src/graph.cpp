@@ -43,6 +43,13 @@ void Graph::activateNext() {
     }
 }
 
+void Graph::update()
+{
+	for (int i = 0; i < steps.size(); i += 1) {
+		steps[i].update();
+	}
+}
+
 void Graph::draw() {
     for (int i = 0; i < steps.size(); i += 1) {
         steps[i].draw();
