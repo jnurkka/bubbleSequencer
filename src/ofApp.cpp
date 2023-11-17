@@ -38,6 +38,7 @@ void ofApp::update(){
 void ofApp::draw(){
 	// Draw graph
     graph.draw();
+	graph.drawAdjMatrix();
 
 	// Draw GUI
 	gui.draw();
