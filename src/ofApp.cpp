@@ -1,15 +1,15 @@
 #include "ofApp.h"
 #include "graph.hpp"
 
-int const GRAPH_LENGTH = 10;
-int const STEP_HEIGHT = 5;
-Graph graph(GRAPH_LENGTH, STEP_HEIGHT);
+
+int const NR_BUBBLES = 9;
+Graph graph(NR_BUBBLES);
 
 //--------------------------------------------------------------
 void ofApp::setup(){
 	// Graph
 	ofBackgroundHex(0x3E503C);
-    graph.init(GRAPH_LENGTH, STEP_HEIGHT);
+    graph.calcLayout();
 
 	// BPM
 	int constexpr tempo = 20;
