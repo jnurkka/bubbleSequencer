@@ -13,6 +13,8 @@ Bubble::Bubble() {
     rad = 10;
     active = false;
     probability = 0;
+	graph_depth = 0;
+	bubbleID = 0;
 
 
 	color_active_bubble = ofColor::azure;
@@ -25,10 +27,14 @@ Bubble::~Bubble() {
 }
 
 
-void Bubble::init(int x, int y, int radius) {
+void Bubble::init(int x, int y, int id) {
     xCoord = x;
     yCoord = y;
-    rad = radius;
+	bubbleID = id;
+
+	// TODO do i need this?
+	graph_depth = 0;
+	graph_width = 0;
 
 	using FilenameProbabilityPair = std::tuple<std::string, float>;
 	std::vector<FilenameProbabilityPair> filenameProbabilities;
@@ -112,6 +118,12 @@ void Bubble::deactivate() {
 
 
 
+void Bubble::setPos(int x, int y) {
+	xCoord = x;
+	yCoord = y;
+}
+
+
 void Bubble::update()
 {
 	//app timebase, to send to all animatable objects
@@ -121,13 +133,14 @@ void Bubble::update()
 	color_animated.update(dt);
 }
 
+
 void Bubble::draw()
 {
 	// Set color and draw bubble
 	color_animated.applyCurrentColor();
 	ofDrawCircle(xCoord, yCoord, radius_animated.val());
 
-    //// Plot file name
-	// ofSetHexColor(0x00ff00);
-    // ofDrawBitmapString(file, xCoord, yCoord);
+    // Plot file name
+	 ofSetHexColor(0x00ff00);
+	 ofDrawBitmapString(bubbleID, xCoord, yCoord);  // ofDrawBitmapString(file, xCoord, yCoord);
 }

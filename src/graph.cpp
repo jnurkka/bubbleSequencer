@@ -25,25 +25,20 @@ int Graph::size() {
 }
 
 
-void Graph::addEdge(Bubble source, Bubble sink) {
-
+void Graph::addEdge(int source, int sink, float weight) {
+	adjMatrix[source][sink] = weight;
 }
 
 
-void Graph::removeEdge(Bubble source, Bubble sink) {
-
+void Graph::removeEdge(int source, int sink) {
+	adjMatrix[source][sink] = 0.0f;
 }
 
 void Graph::calcLayout() {
 
-	int const BUBBLE_RADIUS = 10;
-
-	int distNodes = (ofGetWindowWidth() - 2 * BUBBLE_RADIUS) / nr_nodes;
-	int x = BUBBLE_RADIUS + distNodes / 2;
-
+	// init all bubbles randomly
 	for (int i = 0; i < nr_nodes; i += 1) {
-		bubbles[i].init(x, ofGetWindowHeight() / 2, BUBBLE_RADIUS);
-		x += distNodes;
+		bubbles[i].init(ofRandom(ofGetWindowWidth()), ofRandom(ofGetWindowHeight()), i);
 	}
 }
 
@@ -77,39 +72,59 @@ void Graph::update()
 	}
 }
 
+
 void Graph::draw() {
     for (int i = 0; i < bubbles.size(); i += 1) {
 		bubbles[i].draw();
     }
+
+
+	for (int i = 0; i < adjMatrix.size(); i++) {
+		ofPushMatrix();
+		for (int j = 0; j < adjMatrix[i].size(); j++) {
+			if (adjMatrix[i][j]) {
+				ofSetHexColor(0xF3ECDB);
+				if (i == j) {
+					ofNoFill();
+					ofDrawCircle(bubbles[i].xCoord, bubbles[i].yCoord - bubbles[i].rad, bubbles[i].rad);
+				}
+				else {
+					ofDrawLine(bubbles[i].xCoord, bubbles[i].yCoord, bubbles[j].xCoord, bubbles[j].yCoord);
+				}
+			}
+		}
+		ofPopMatrix();
+		ofFill();
+		bubbles[i].draw();
+	}
+	
 }
 
 void Graph::drawAdjMatrix() {
+	// rect size
 	int rectSize = 240;
 
+	// translate to the top left corner of the rectangle
 	ofPushMatrix();
 	ofTranslate(ofGetWindowWidth() - rectSize, 0);
-
 	ofSetHexColor(0xF3ECDB);
 	ofDrawRectangle(0, 0, rectSize, rectSize);
 
-	// Set the color for the text
-	ofSetColor(0); // White text
+	// set the color for the text
+	ofSetColor(0);
+	ofDrawBitmapString("Adjacency matrix:", 10, 20);
 
-	// Set the font size
-	ofDrawBitmapString("Matrix:", 10, 20);
-
-	// Set the initial position for drawing the matrix
+	// set the initial position for drawing the matrix
 	float startX = 40;
 	float startY = 40;
-	float spacing = 20; // Spacing between rows and columns
+	float spacing = 20;
 
-	// Loop through the matrix and draw each element
-	for (int i = 0; i < adjMatrix.size(); ++i) {
-		for (int j = 0; j < adjMatrix[i].size(); ++j) {
+	for (int i = 0; i < adjMatrix.size(); i++) {
+		for (int j = 0; j < adjMatrix[i].size(); j++) {
 			// Convert float to string with a specified precision
 			std::string valueStr = ofToString(int(adjMatrix[i][j]), 2);
 
-			// Draw the value at the specified position
+			// Highlight the currently active source 
 			if (bubbles[i].active) {
 				ofDrawBitmapStringHighlight(valueStr, startX + j * spacing, startY + i * spacing);
 			}
@@ -118,6 +133,5 @@ void Graph::drawAdjMatrix() {
 			}			
 		}
 	}
-
 	ofPopMatrix();
 }

@@ -24,8 +24,8 @@ class Graph {
         ~Graph();
 
         int size();
-        void addEdge(Bubble source, Bubble sink);
-        void removeEdge(Bubble source, Bubble sink);
+        void addEdge(int source, int sink, float weight);
+        void removeEdge(int source, int sink);
 
         void calcLayout();
 

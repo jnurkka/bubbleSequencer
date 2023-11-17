@@ -21,13 +21,17 @@ class Bubble {
         Bubble();
         ~Bubble();
 
-        void init(int x, int y, int radius);
+        void init(int x, int y, int id);
+        void setPos(int x, int y);
         
         int xCoord;
         int yCoord;
+        int bubbleID;
         int rad;
         bool active;
         float probability;
+        int graph_depth;
+        int graph_width;
 
         ofColor color_active_bubble;
         ofColor color_inactive_bubble;
