@@ -8,13 +8,20 @@
 #include "bubble.hpp"
 
 Bubble::Bubble() {
-    xCoord = 100;
-    yCoord = 100;
+	pos_x = 100;
+	pos_y = 100;
+
+	vel_x = 0;
+	vel_y = 0;
+
+	bubbleID = 0;
     rad = 10;
     active = false;
     probability = 0;
+	// TODO do i need this?
 	graph_depth = 0;
-	bubbleID = 0;
+	graph_width = 0;
+	
 
 
 	color_active_bubble = ofColor::azure;
@@ -27,9 +34,9 @@ Bubble::~Bubble() {
 }
 
 
-void Bubble::init(int x, int y, int id) {
-    xCoord = x;
-    yCoord = y;
+void Bubble::init(float x, float y, int id) {
+	pos_x = x;
+	pos_y = y;
 	bubbleID = id;
 
 	// TODO do i need this?
@@ -78,6 +85,7 @@ void Bubble::init(int x, int y, int id) {
 
 }
 
+
 void Bubble::activate() {
     active = true;
     rad = 20;
@@ -96,6 +104,7 @@ void Bubble::activate() {
 	color_animated.setCurve(LINEAR);
 	color_animated.animateTo(color_active_bubble);
 }
+
 
 void Bubble::deactivate() {
     active = false;
@@ -117,10 +126,9 @@ void Bubble::deactivate() {
 }
 
 
-
-void Bubble::setPos(int x, int y) {
-	xCoord = x;
-	yCoord = y;
+void Bubble::setPos(float x, float y) {
+	pos_x = x;
+	pos_y = y;
 }
 
 
@@ -138,9 +146,9 @@ void Bubble::draw()
 {
 	// Set color and draw bubble
 	color_animated.applyCurrentColor();
-	ofDrawCircle(xCoord, yCoord, radius_animated.val());
+	ofDrawCircle(pos_x, pos_y, radius_animated.val());
 
     // Plot file name
 	 ofSetHexColor(0x00ff00);
-	 ofDrawBitmapString(bubbleID, xCoord, yCoord);  // ofDrawBitmapString(file, xCoord, yCoord);
+	 ofDrawBitmapString(bubbleID, pos_x, pos_y);  // ofDrawBitmapString(file, pos_x, pos_y);
 }

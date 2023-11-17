@@ -21,11 +21,16 @@ class Bubble {
         Bubble();
         ~Bubble();
 
-        void init(int x, int y, int id);
-        void setPos(int x, int y);
+        void init(float x, float y, int id);
+        void setPos(float x, float y);
         
-        int xCoord;
-        int yCoord;
+        float pos_x;
+        float pos_y;
+
+        float vel_x;
+        float vel_y;
+
+
         int bubbleID;
         int rad;
         bool active;

@@ -18,13 +18,13 @@ void ofApp::setup(){
 	graph.addEdge(3, 5, 1.0f);
 	graph.addEdge(3, 6, 1.0f);
 	graph.addEdge(4, 6, 1.0f);
-	graph.addEdge(5, 5, 1.0f);
+	// graph.addEdge(5, 5, 1.0f); TODO: edge-case for cyclic graphs
 	graph.addEdge(5, 7, 1.0f);
 	graph.addEdge(6, 7, 1.0f);
 	graph.addEdge(6, 8, 1.0f);
 	
 	// Calc positions
-    graph.calcLayout();
+    graph.initLayout();
 
 	// BPM
 	int constexpr tempo = 20;
@@ -45,7 +45,10 @@ void ofApp::update(){
 	// Update BPM based on GUI SLider
 	bpm.setBpm(intSlider);
 
-	// Update graph
+	// Update graph layout
+	//graph.updateLayout_SpringForces();
+
+	// Update bubbles
 	graph.update();
 }
 
