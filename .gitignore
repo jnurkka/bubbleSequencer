@@ -33,21 +33,21 @@
 
 # ignore generated binaries but not the data folder
 /bin/*
-!/bin/data/ 
+!/bin/data/
 
 # General OF
-[Bb]uild/ 
+[Bb]uild/
 [Oo]bj/
 *.o
 [Dd]ebug*/
-[Rr]elease*/ 
-*.mode*    
-*.app/  
-*.pyc   
-.svn/        
+[Rr]elease*/
+*.mode*
+*.app/
+*.pyc
+.svn/
 *.log
 
-# XCode            
+# XCode
 .DS_Store
 **/xcuserdata/**
 *.xcuserstate
@@ -55,20 +55,20 @@
 *.perspective
 *.perspectivev3
 *.mode1v3
-*.mode2v3   
+*.mode2v3
 # XCode 4
-xcuserdata   
-*.xcworkspace 
+xcuserdata
+*.xcworkspace
 
 
 # Visual Studio
 *.sdf
 *.opensdf
-*.suo 
-*.pdb 
-*.ilk  
+*.suo
+*.pdb
+*.ilk
 *.aps
-ipch/ 
+ipch/
 
 
 # OSX
@@ -96,3 +96,7 @@ Desktop.ini
 
 # Animations
 enc_temp_folder/
+
+# MacOS Xcode
+*.pbxproj
+*.xcscheme
