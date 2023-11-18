@@ -15,7 +15,6 @@ Bubble::Bubble() {
 	vel_y = 0;
 
 	bubbleID = 0;
-    rad = 10;
     active = false;
     probability = 0;
 	// TODO do i need this?
@@ -88,7 +87,6 @@ void Bubble::init(float x, float y, int id) {
 
 void Bubble::activate() {
     active = true;
-    rad = 20;
 	sample.play();
 
 	// Animations
@@ -108,8 +106,6 @@ void Bubble::activate() {
 
 void Bubble::deactivate() {
     active = false;
-    rad = 10;
-	//sample.stop();
 
 	// Animations
 	radius_animated.reset(30);

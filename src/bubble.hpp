@@ -30,9 +30,8 @@ class Bubble {
         float vel_x;
         float vel_y;
 
-
         int bubbleID;
-        int rad;
+
         bool active;
         float probability;
         int graph_depth;

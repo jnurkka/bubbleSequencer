@@ -15,7 +15,6 @@
 class Graph {
     private:
         std::vector<Bubble> bubbles;
-        int nr_nodes;
         std::vector<std::vector<float>> adjMatrix;
         std::vector<int> levels;
 
@@ -25,6 +24,7 @@ class Graph {
         ~Graph();
 
         int size();
+
         void addEdge(int source, int sink, float weight);
         void removeEdge(int source, int sink);
 
@@ -32,7 +32,9 @@ class Graph {
 
         void update();
         void updateLayout_SpringForces();
+
         void draw();
         void drawAdjMatrix();
+
         void activateNext();
 };

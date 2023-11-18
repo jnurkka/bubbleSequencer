@@ -11,7 +11,7 @@
 
 
 Graph::Graph(int size) : bubbles(size), adjMatrix(size, std::vector<float>(size, 0.0f)) {
-	nr_nodes = size;
+
 }
 
 
@@ -21,7 +21,7 @@ Graph::~Graph() {
 
 
 int Graph::size() {
-	return nr_nodes;
+	return bubbles.size();
 }
 
 
@@ -36,35 +36,62 @@ void Graph::removeEdge(int source, int sink) {
 
 void Graph::initLayout() {
 	// init all bubbles randomly
-	for (int i = 0; i < nr_nodes; i += 1) {
+	for (int i = 0; i < bubbles.size(); i += 1) {
 		bubbles[i].init(ofRandom(ofGetWindowWidth()), ofRandom(ofGetWindowHeight()), i);
 	}
 
-	// Assuming the graph is acyclic and directed
+	// Only for directed graphs. Ignoring self-loops
 	// Assign levels based on the depth of each node in the graph
 	// This is a simple way to ensure that higher-level nodes are drawn above lower-level nodes
 	levels.resize(adjMatrix.size(), 0);
 	for (int i = 0; i < adjMatrix.size(); ++i) {
 		for (int j = 0; j < adjMatrix[i].size(); ++j) {
 			if (adjMatrix[i][j] == 1) {
-				levels[j] = std::max(levels[j], levels[i] + 1);
+				if (i==j) {
+					continue; // ignore the self-loops
+				}
+				else {
+					levels[j] = std::max(levels[j], levels[i] + 1);
+				}
+				
 			}
 		}
+	}
+
+	// Count how many bubbles there are per level
+	std::map<int, int> levelCount;
+	for (int i = 0; i < levels.size(); i++) {
+		// If the element is not present in the map, insert it with count 1
+		// Otherwise, increment the count
+		levelCount[levels[i]]++;
 	}
 
 	// Calculate the positions of nodes based on their levels
 	float marginX = 100;
 	float marginY = 100;
-	float layerSpacing = (ofGetWidth() - 2 * marginX) / (levels.size() + 1);
 	float nodeSpacing = (ofGetHeight() - 2 * marginY) / (*max_element(levels.begin(), levels.end()) + 1);
 
+	for (const auto& pair : levelCount) {
+		int level_nr = pair.first;
+		int nr_bubbles = pair.second;
+		int width_counter = 0;
 
-	for (int i = 0; i < levels.size(); i++) {
-		bubbles[i].pos_x = marginX + i * layerSpacing;
-		bubbles[i].pos_y = marginY + levels[i] * nodeSpacing;
+		for (int i = 0; i < bubbles.size(); i++) {
+			if (level_nr == levels[i])
+				{
+					bubbles[i].pos_x = marginX + levels[i] * nodeSpacing;
+
+					int temp_y = (ofGetWindowHeight() - (nr_bubbles - 1) * nodeSpacing) / 2;
+					bubbles[i].pos_y = temp_y + width_counter * nodeSpacing;
+					width_counter++;
+				}
+		}
+
+		
 	}
-
 }
+
+
 
 
 void Graph::activateNext() {
@@ -104,8 +131,8 @@ void Graph::updateLayout_SpringForces()
 	float repulsion = 100; // Node repulsion strength
 
 	// Update velocities based on spring forces
-	for (int i = 0; i < nr_nodes; i++) {
-		for (int j = 0; j < nr_nodes; j++) {
+	for (int i = 0; i < bubbles.size(); i++) {
+		for (int j = 0; j < bubbles.size(); j++) {
 			if (adjMatrix[i][j]) {
 				float direction_x = bubbles[j].pos_x - bubbles[i].pos_x;
 				float direction_y = bubbles[j].pos_y - bubbles[i].pos_y;
@@ -126,8 +153,8 @@ void Graph::updateLayout_SpringForces()
 
 	// Update velocities based on node repulsion
 	// Update velocities based on spring forces
-	for (int i = 0; i < nr_nodes; i++) {
-		for (int j = 0; j < nr_nodes; j++) {
+	for (int i = 0; i < bubbles.size(); i++) {
+		for (int j = 0; j < bubbles.size(); j++) {
 			if (i != j) {
 
 				float direction_x = bubbles[j].pos_x - bubbles[i].pos_x;
@@ -145,7 +172,7 @@ void Graph::updateLayout_SpringForces()
 	}
 
 	// Update positions based on velocities
-	for (int i = 0; i < nr_nodes; i++) {
+	for (int i = 0; i < bubbles.size(); i++) {
 		bubbles[i].vel_x *= damping;
 		bubbles[i].vel_y *= damping;
 
@@ -173,7 +200,7 @@ void Graph::draw() {
 				ofSetHexColor(0xF3ECDB);
 				if (i == j) {
 					ofNoFill();
-					ofDrawCircle(bubbles[i].pos_x, bubbles[i].pos_y - bubbles[i].rad, bubbles[i].rad);
+					ofDrawCircle(bubbles[i].pos_x, bubbles[i].pos_y - bubbles[i].radius_animated.val(), bubbles[i].radius_animated.val());
 				}
 				else {
 					ofDrawLine(bubbles[i].pos_x, bubbles[i].pos_y, bubbles[j].pos_x, bubbles[j].pos_y);
