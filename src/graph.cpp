@@ -91,6 +91,17 @@ void Graph::initLayout() {
 	}
 }
 
+vector<int> Graph::findNextStepOptions() {
+    vector<int> options;
+    vector<float> nodes = adjMatrix[activeStep];
+    for (int i = 0; i < nodes.size(); i += 1) {
+        if (nodes[i] > 0) {
+            options.push_back(i);
+        }
+    }
+    return options;
+}
+
 int Graph::calculateNextStep() {
     int activeIndex = activeStep;
 
@@ -100,12 +111,15 @@ int Graph::calculateNextStep() {
         bubbles[activeIndex].deactivate();
     }
 
-    if (activeIndex == bubbles.size() - 1) {
-        // if last step active, activate first step
+    if (activeIndex == bubbles.size() - 1 || activeIndex == -1) {
+        // if no or last step active, activate first step
         return 0;
     }
-    //othewise activate next step
-    return activeIndex + 1;
+    // othewise fetch next step options
+    vector<int> options = findNextStepOptions();
+    
+    // for now return arbitratily select first of possible options
+    return options[0];
 }
 
 
