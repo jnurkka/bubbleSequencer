@@ -105,19 +105,12 @@ void Graph::activateNext() {
 
 	if (activeIndex == bubbles.size() - 1) {
         // if last step active, activate first step
-		bubbles[0].activate();
+        activeStep = 0;
 	} else {
         //othewise activate next step
-		bubbles[activeIndex + 1].activate();
+        activeStep = activeIndex + 1;
 	}
-	if (activeIndex + 1 > bubbles.size() - 1) {
-        // if last step, set activeStep to 0
-		activeStep = 0;
-	}
-	else {
-        // otherwise, set activeStep to 0
-		activeStep = activeIndex + 1;
-	}
+    bubbles[activeStep].activate();
 }
 
 void Graph::update()
