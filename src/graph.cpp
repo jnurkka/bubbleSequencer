@@ -102,6 +102,32 @@ vector<tuple<int, float>> Graph::findNextStepOptions() {
     return options;
 }
 
+int selectNodeFromOptions(vector<tuple<int, float>> options) {
+    // Seed the random number generator with the current time
+    ofSeedRandom();
+
+    // Calculate the sum of all probabilities
+    float sum = 0.0f;
+    for (const auto& option : options) {
+        sum += std::get<1>(option);
+    }
+
+    // Generate a random value between 0 and the sum of probabilities
+    float randomValue = ofRandom(sum);
+
+    // Find the option corresponding to the random value
+    float cumulativeProbability = 0.0f;
+    for (size_t i = 0; i < options.size(); ++i) {
+        cumulativeProbability += std::get<1>(options[i]);
+        if (randomValue < cumulativeProbability) {
+            return get<0>(options[i]); // Return the ID of the selected option
+        }
+    }
+
+    // if no next node option exists, return -1
+    return -1;
+}
+
 int Graph::calculateNextStep() {
     int activeIndex = activeStep;
 
@@ -111,15 +137,16 @@ int Graph::calculateNextStep() {
         bubbles[activeIndex].deactivate();
     }
 
-    if (activeIndex == bubbles.size() - 1 || activeIndex == -1) {
-        // if no or last step active, activate first step
+    if (activeIndex == -1) {
+        // if no step active, activate first step
         return 0;
     }
     // othewise fetch next step options
     vector<tuple<int, float>> options = findNextStepOptions();
     
-    // for now return arbitratily select first of possible options
-    return get<0>(options[0]);
+    int nextIndex = selectNodeFromOptions(options);
+    if (nextIndex == -1) return 0;
+    return nextIndex;
 }
 
 
