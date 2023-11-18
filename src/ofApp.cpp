@@ -20,13 +20,17 @@ void ofApp::setup(){
 	graph.addEdge(3, 6, 1.0f);
 	graph.addEdge(3, 8, 1.0f);
 	graph.addEdge(4, 6, 1.0f);
-	graph.addEdge(5, 5, 1.0f); //TODO: edge-case for cyclic graphs
+	graph.addEdge(5, 5, 1.0f);
 	graph.addEdge(5, 7, 1.0f);
 	graph.addEdge(6, 7, 1.0f);
 	graph.addEdge(6, 8, 1.0f);
 	
 	// Calc positions
     graph.initLayout();
+
+	// Mouse control
+	isDragging = false;
+	dragID = 0;
 
 	// BPM
 	int constexpr tempo = 20;
@@ -42,6 +46,7 @@ void ofApp::setup(){
 	gui.add(button.setup("Start/stop"));
 }
 
+
 //--------------------------------------------------------------
 void ofApp::update(){
 	// Update BPM based on GUI SLider
@@ -54,6 +59,7 @@ void ofApp::update(){
 	graph.update();
 }
 
+
 //--------------------------------------------------------------
 void ofApp::draw(){
 	// Draw graph
@@ -64,11 +70,13 @@ void ofApp::draw(){
 	gui.draw();
 }
 
+
 //--------------------------------------------------------------
 void ofApp::exit(){
 	// Kill BPM thread
 	bpm.stop();
 }
+
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
@@ -86,6 +94,33 @@ void ofApp::keyPressed(int key){
 		}
 	}
 }
+
+
+//--------------------------------------------------------------
+void ofApp::mousePressed(int x, int y, int button) {
+	for (int i = 0; i < graph.bubbles.size(); i++) {
+		if (ofDist(x, y, graph.bubbles[i].pos_x, graph.bubbles[i].pos_y) < graph.bubbles[i].radius_animated.val()) {
+			isDragging = true;
+			dragID = i;
+		}
+	}
+}
+
+
+//--------------------------------------------------------------
+void ofApp::mouseDragged(int x, int y, int button) {
+	if (isDragging) {
+		graph.bubbles[dragID].pos_x = x;
+		graph.bubbles[dragID].pos_y = y;
+	}
+}
+
+
+//--------------------------------------------------------------
+void ofApp::mouseReleased(int x, int y, int button) {
+	isDragging = false;
+}
+
 
 //--------------------------------------------------------------
 void ofApp::triggerBeat()

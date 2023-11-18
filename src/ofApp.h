@@ -13,7 +13,16 @@ class ofApp : public ofBaseApp{
 		void update() override;
 		void draw() override;
 		void exit() override;
+
+		// Keyboard control
 		void keyPressed(int key) override;
+
+		// Mouse control
+		void mousePressed(int x, int y, int button);
+		void mouseDragged(int x, int y, int button);
+		void mouseReleased(int x, int y, int button);
+		bool isDragging;
+		int dragID;
 
 		// BPM 
 		ofxBpm bpm;
