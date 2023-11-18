@@ -8,23 +8,68 @@
 #include "bubble.hpp"
 
 Bubble::Bubble() {
-    xCoord = 100;
-    yCoord = 100;
-    rad = 10;
+	pos_x = 100;
+	pos_y = 100;
+
+	vel_x = 0;
+	vel_y = 0;
+
+	bubbleID = 0;
     active = false;
     probability = 0;
+	// TODO do i need this?
+	graph_depth = 0;
+	graph_width = 0;
+	
 
 
 	color_active_bubble = ofColor::azure;
 	color_inactive_bubble = ofColor::white;
 }
 
-void Bubble::init(int x, int y, int radius, string filename, float p) {
-    xCoord = x;
-    yCoord = y;
-    rad = radius;
-    file = filename;
-    probability = p;
+
+Bubble::~Bubble() {
+
+}
+
+
+void Bubble::init(float x, float y, int id) {
+	pos_x = x;
+	pos_y = y;
+	bubbleID = id;
+
+	// TODO do i need this?
+	graph_depth = 0;
+	graph_width = 0;
+
+	using FilenameProbabilityPair = std::tuple<std::string, float>;
+	std::vector<FilenameProbabilityPair> filenameProbabilities;
+
+	bool use_airport_samples = true;
+
+	if (use_airport_samples)
+	{
+		// Copyright from music for airports
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-01.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-02.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-03.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-04.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-05.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-06.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-07.wav", 0.125f));
+		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-08.wav", 0.125f));
+	}
+	else {
+		// Random shit samples
+		filenameProbabilities.push_back(std::make_tuple("f.wav", 0.2f));
+		filenameProbabilities.push_back(std::make_tuple("g.wav", 0.2f));
+		filenameProbabilities.push_back(std::make_tuple("a.wav", 0.2f));
+		filenameProbabilities.push_back(std::make_tuple("c.wav", 0.2f));
+		filenameProbabilities.push_back(std::make_tuple("d.wav", 0.2f));
+	}
+
+	file = get<0>(filenameProbabilities[ofRandom(7)]); 
+    probability = get<1>(filenameProbabilities[ofRandom(7)]);
     sample.load(file);
     sample.setVolume(0.5);
     sample.setMultiPlay(true);
@@ -39,9 +84,9 @@ void Bubble::init(int x, int y, int radius, string filename, float p) {
 
 }
 
+
 void Bubble::activate() {
     active = true;
-    rad = 20;
 	sample.play();
 
 	// Animations
@@ -58,10 +103,9 @@ void Bubble::activate() {
 	color_animated.animateTo(color_active_bubble);
 }
 
+
 void Bubble::deactivate() {
     active = false;
-    rad = 10;
-	//sample.stop();
 
 	// Animations
 	radius_animated.reset(30);
@@ -78,6 +122,11 @@ void Bubble::deactivate() {
 }
 
 
+void Bubble::setPos(float x, float y) {
+	pos_x = x;
+	pos_y = y;
+}
+
 
 void Bubble::update()
 {
@@ -88,14 +137,14 @@ void Bubble::update()
 	color_animated.update(dt);
 }
 
+
 void Bubble::draw()
 {
 	// Set color and draw bubble
 	color_animated.applyCurrentColor();
-	ofDrawCircle(xCoord, yCoord, radius_animated.val());
+	ofDrawCircle(pos_x, pos_y, radius_animated.val());
 
-    //// Plot file name
-	// ofSetHexColor(0x00ff00);
-    // ofDrawBitmapString(file, xCoord, yCoord);
-
+    // Plot file name
+	 ofSetHexColor(0x00ff00);
+	 ofDrawBitmapString(bubbleID, pos_x, pos_y);  // ofDrawBitmapString(file, pos_x, pos_y);
 }

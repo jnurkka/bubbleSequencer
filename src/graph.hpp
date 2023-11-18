@@ -7,18 +7,34 @@
 #pragma once
 
 #include "ofMain.h"
-#include "step.hpp"
+#include "bubble.hpp"
 #include <vector>
+
 
 
 class Graph {
     private:
-        std::vector<Step> steps;
+        std::vector<Bubble> bubbles;
+        std::vector<std::vector<float>> adjMatrix;
+        std::vector<int> levels;
+
         int activeStep = -1;
     public:
-        Graph(int length, int height);
-        void init(int length, int height);
-        void activateNext();
-        void draw();
+        Graph(int size);
+        ~Graph();
+
+        int size();
+
+        void addEdge(int source, int sink, float weight);
+        void removeEdge(int source, int sink);
+
+        void initLayout();
+
         void update();
+        void updateLayout_SpringForces();
+
+        void draw();
+        void drawAdjMatrix();
+
+        void activateNext();
 };

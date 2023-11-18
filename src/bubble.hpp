@@ -18,24 +18,36 @@
 
 class Bubble {
     public:
-        int xCoord;
-        int yCoord;
-        int rad;
+        Bubble();
+        ~Bubble();
+
+        void init(float x, float y, int id);
+        void setPos(float x, float y);
+        
+        float pos_x;
+        float pos_y;
+
+        float vel_x;
+        float vel_y;
+
+        int bubbleID;
+
         bool active;
         float probability;
-        string file;
-        Bubble();
-        void init(int x, int y, int radius, string filename, float p);
+        int graph_depth;
+        int graph_width;
+
+        ofColor color_active_bubble;
+        ofColor color_inactive_bubble;
+     
+        
         void activate();
         void deactivate();
         void draw();
         void update();
 
+        string file;
         ofSoundPlayer sample;
         ofxAnimatableFloat radius_animated;
         ofxAnimatableOfColor color_animated;
-
-        ofColor color_active_bubble;
-        ofColor color_inactive_bubble;
-
 };
