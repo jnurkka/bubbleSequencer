@@ -14,11 +14,13 @@
 
 class Graph {
     private:
-        
-        std::vector<std::vector<float>> adjMatrix;
+        std::vector<Bubble> bubbles;
+        std::vector<std::vector<float>> adjMatrix; // [row][column]
         std::vector<int> levels;
 
         int activeStep = -1;
+        int calculateNextStep();
+        vector<tuple<int, float>> findNextStepOptions();
     public:
         Graph(int size);
         ~Graph();

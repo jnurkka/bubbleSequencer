@@ -91,29 +91,69 @@ void Graph::initLayout() {
 	}
 }
 
+vector<tuple<int, float>> Graph::findNextStepOptions() {
+    vector<tuple<int,float>> options;
+    vector<float> nodes = adjMatrix[activeStep];
+    for (int i = 0; i < nodes.size(); i += 1) {
+        if (nodes[i] > 0) {
+            options.push_back(std::make_tuple(i, nodes[i]));
+        }
+    }
+    return options;
+}
 
+int selectNodeFromOptions(vector<tuple<int, float>> options) {
+    // Seed the random number generator with the current time
+    ofSeedRandom();
+
+    // Calculate the sum of all probabilities
+    float sum = 0.0f;
+    for (const auto& option : options) {
+        sum += std::get<1>(option);
+    }
+
+    // Generate a random value between 0 and the sum of probabilities
+    float randomValue = ofRandom(sum);
+
+    // Find the option corresponding to the random value
+    float cumulativeProbability = 0.0f;
+    for (size_t i = 0; i < options.size(); ++i) {
+        cumulativeProbability += std::get<1>(options[i]);
+        if (randomValue < cumulativeProbability) {
+            return get<0>(options[i]); // Return the ID of the selected option
+        }
+    }
+
+    // if no next node option exists, return -1
+    return -1;
+}
+
+int Graph::calculateNextStep() {
+    int activeIndex = activeStep;
+
+    // if any of steps active, deactivate it
+    if (activeIndex >= 0)
+    {
+        bubbles[activeIndex].deactivate();
+    }
+
+    if (activeIndex == -1) {
+        // if no step active, activate first step
+        return 0;
+    }
+    // othewise fetch next step options
+    vector<tuple<int, float>> options = findNextStepOptions();
+    
+    int nextIndex = selectNodeFromOptions(options);
+    if (nextIndex == -1) return 0;
+    return nextIndex;
+}
 
 
 void Graph::activateNext() {
-	int activeIndex = activeStep;
-
-	if (activeIndex >= 0)
-	{
-		bubbles[activeIndex].deactivate();
-	}
-
-	if (activeIndex == bubbles.size() - 1) {
-		bubbles[0].activate();
-	}
-	else {
-		bubbles[activeIndex + 1].activate();
-	}
-	if (activeIndex + 1 > bubbles.size() - 1) {
-		activeStep = 0;
-	}
-	else {
-		activeStep = activeIndex + 1;
-	}
+    int nextStep = calculateNextStep();
+    activeStep = nextStep;
+    bubbles[nextStep].activate();
 }
 
 void Graph::update()
