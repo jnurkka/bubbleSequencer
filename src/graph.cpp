@@ -91,26 +91,28 @@ void Graph::initLayout() {
 	}
 }
 
+int Graph::calculateNextStep() {
+    int activeIndex = activeStep;
 
+    // if any of steps active, deactivate it
+    if (activeIndex >= 0)
+    {
+        bubbles[activeIndex].deactivate();
+    }
+
+    if (activeIndex == bubbles.size() - 1) {
+        // if last step active, activate first step
+        return 0;
+    }
+    //othewise activate next step
+    return activeIndex + 1;
+}
 
 
 void Graph::activateNext() {
-	int activeIndex = activeStep;
-
-    // if any of steps active, deactivate it
-	if (activeIndex >= 0)
-	{
-		bubbles[activeIndex].deactivate();
-	}
-
-	if (activeIndex == bubbles.size() - 1) {
-        // if last step active, activate first step
-        activeStep = 0;
-	} else {
-        //othewise activate next step
-        activeStep = activeIndex + 1;
-	}
-    bubbles[activeStep].activate();
+    int nextStep = calculateNextStep();
+    activeStep = nextStep;
+    bubbles[nextStep].activate();
 }
 
 void Graph::update()

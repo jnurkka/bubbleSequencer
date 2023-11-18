@@ -19,6 +19,7 @@ class Graph {
         std::vector<int> levels;
 
         int activeStep = -1;
+        int calculateNextStep();
     public:
         Graph(int size);
         ~Graph();
