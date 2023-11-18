@@ -20,7 +20,7 @@ class Graph {
 
         int activeStep = -1;
         int calculateNextStep();
-        vector<int> findNextStepOptions();
+        vector<tuple<int, float>> findNextStepOptions();
     public:
         Graph(int size);
         ~Graph();

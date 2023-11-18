@@ -91,12 +91,12 @@ void Graph::initLayout() {
 	}
 }
 
-vector<int> Graph::findNextStepOptions() {
-    vector<int> options;
+vector<tuple<int, float>> Graph::findNextStepOptions() {
+    vector<tuple<int,float>> options;
     vector<float> nodes = adjMatrix[activeStep];
     for (int i = 0; i < nodes.size(); i += 1) {
         if (nodes[i] > 0) {
-            options.push_back(i);
+            options.push_back(std::make_tuple(i, nodes[i]));
         }
     }
     return options;
@@ -116,10 +116,10 @@ int Graph::calculateNextStep() {
         return 0;
     }
     // othewise fetch next step options
-    vector<int> options = findNextStepOptions();
+    vector<tuple<int, float>> options = findNextStepOptions();
     
     // for now return arbitratily select first of possible options
-    return options[0];
+    return get<0>(options[0]);
 }
 
 
