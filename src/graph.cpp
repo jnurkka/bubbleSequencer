@@ -97,21 +97,25 @@ void Graph::initLayout() {
 void Graph::activateNext() {
 	int activeIndex = activeStep;
 
+    // if any of steps active, deactivate it
 	if (activeIndex >= 0)
 	{
 		bubbles[activeIndex].deactivate();
 	}
 
 	if (activeIndex == bubbles.size() - 1) {
+        // if last step active, activate first step
 		bubbles[0].activate();
-	}
-	else {
+	} else {
+        //othewise activate next step
 		bubbles[activeIndex + 1].activate();
 	}
 	if (activeIndex + 1 > bubbles.size() - 1) {
+        // if last step, set activeStep to 0
 		activeStep = 0;
 	}
 	else {
+        // otherwise, set activeStep to 0
 		activeStep = activeIndex + 1;
 	}
 }
