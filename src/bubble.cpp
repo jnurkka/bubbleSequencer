@@ -20,8 +20,6 @@ Bubble::Bubble() {
 	// TODO do i need this?
 	graph_depth = 0;
 	graph_width = 0;
-	
-
 
 	color_active_bubble = ofColor::azure;
 	color_inactive_bubble = ofColor::white;

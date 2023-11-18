@@ -14,7 +14,7 @@
 
 class Graph {
     private:
-        std::vector<Bubble> bubbles;
+        
         std::vector<std::vector<float>> adjMatrix;
         std::vector<int> levels;
 
@@ -37,4 +37,7 @@ class Graph {
         void drawAdjMatrix();
 
         void activateNext();
+
+        std::vector<Bubble> bubbles;
+
 };

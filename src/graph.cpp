@@ -188,31 +188,35 @@ void Graph::updateLayout_SpringForces()
 
 
 void Graph::draw() {
-    for (int i = 0; i < bubbles.size(); i += 1) {
-		bubbles[i].draw();
-    }
-
 
 	for (int i = 0; i < adjMatrix.size(); i++) {
+
+		// Draw edges
 		ofPushMatrix();
 		for (int j = 0; j < adjMatrix[i].size(); j++) {
 			if (adjMatrix[i][j]) {
 				ofSetHexColor(0xF3ECDB);
+				// Draw self-loops
 				if (i == j) {
 					ofNoFill();
 					ofDrawCircle(bubbles[i].pos_x, bubbles[i].pos_y - bubbles[i].radius_animated.val(), bubbles[i].radius_animated.val());
 				}
 				else {
+					// Draw edges
 					ofDrawLine(bubbles[i].pos_x, bubbles[i].pos_y, bubbles[j].pos_x, bubbles[j].pos_y);
 				}
 			}
 		}
 		ofPopMatrix();
+
+		// Draw nodes
 		ofFill();
 		bubbles[i].draw();
 	}
-	
 }
+
+
+
 
 void Graph::drawAdjMatrix() {
 	// rect size
