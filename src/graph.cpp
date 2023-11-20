@@ -94,7 +94,7 @@ void Graph::initLayout() {
 vector<tuple<int, float>> Graph::findNextStepOptions() {
     vector<tuple<int,float>> options;
     vector<float> nodes = adjMatrix[activeStep];
-    for (int i = 0; i < nodes.size(); i += 1) {
+    for (int i = 0; i < nodes.size(); i++) {
         if (nodes[i] > 0) {
             options.push_back(std::make_tuple(i, nodes[i]));
         }
