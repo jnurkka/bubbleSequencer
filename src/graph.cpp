@@ -10,7 +10,7 @@
 
 
 
-Graph::Graph(int size) : bubbles(size), adjMatrix(size, std::vector<float>(size, 0.0f)) {
+Graph::Graph(int size) : adjMatrix(size, std::vector<float>(size, 0.0f)), bubbles(size) {
 
 }
 
@@ -129,7 +129,7 @@ int selectNodeFromOptions(vector<tuple<int, float>> options) {
 }
 
 int Graph::calculateNextStep() {
-    int activeIndex = activeStep;
+    int const activeIndex = activeStep;
 
     // if any of steps active, deactivate it
     if (activeIndex >= 0)
@@ -144,14 +144,14 @@ int Graph::calculateNextStep() {
     // othewise fetch next step options
     vector<tuple<int, float>> options = findNextStepOptions();
     
-    int nextIndex = selectNodeFromOptions(options);
+    int const nextIndex = selectNodeFromOptions(options);
     if (nextIndex == -1) return 0;
     return nextIndex;
 }
 
 
 void Graph::activateNext() {
-    int nextStep = calculateNextStep();
+    int const nextStep = calculateNextStep();
     activeStep = nextStep;
     bubbles[nextStep].activate();
 }
@@ -166,9 +166,9 @@ void Graph::update()
 
 void Graph::updateLayout_SpringForces()
 {
-	float damping = 0.7; // Damping factor to prevent oscillations
-	float k = 0.3; // Spring constant
-	float repulsion = 100; // Node repulsion strength
+	float damping = 0.07f; // Damping factor to prevent oscillations
+	float k = 0.03f; // Spring constant
+	float repulsion = 10; // Node repulsion strength
 
 	// Update velocities based on spring forces
 	for (int i = 0; i < bubbles.size(); i++) {
@@ -197,13 +197,13 @@ void Graph::updateLayout_SpringForces()
 		for (int j = 0; j < bubbles.size(); j++) {
 			if (i != j) {
 
-				float direction_x = bubbles[j].pos_x - bubbles[i].pos_x;
-				float direction_y = bubbles[j].pos_y - bubbles[i].pos_y;
+				float const direction_x = bubbles[j].pos_x - bubbles[i].pos_x;
+				float const direction_y = bubbles[j].pos_y - bubbles[i].pos_y;
 
-				float distance = std::max(1.0f, std::sqrt(direction_x * direction_x + direction_y * direction_y));
+				float const distance = std::max(1.0f, std::sqrt(direction_x * direction_x + direction_y * direction_y));
 
-				float force_x = (direction_x / distance) * repulsion / (distance * distance);
-				float force_y = (direction_x / distance) * repulsion / (distance * distance);
+				float const force_x = (direction_x / distance) * repulsion / (distance * distance);
+				float const force_y = (direction_x / distance) * repulsion / (distance * distance);
 
 				bubbles[i].vel_x -= force_x;
 				bubbles[i].vel_y -= force_y;
@@ -260,7 +260,7 @@ void Graph::draw() {
 
 void Graph::drawAdjMatrix() {
 	// rect size
-	int rectSize = 240;
+	int const rectSize = 240;
 
 	// translate to the top left corner of the rectangle
 	ofPushMatrix();
@@ -272,13 +272,14 @@ void Graph::drawAdjMatrix() {
 	ofSetColor(0);
 	ofDrawBitmapString("Adjacency matrix:", 10, 20);
 
-	// set the initial position for drawing the matrix
-	float startX = 40;
-	float startY = 40;
-	float spacing = 20;
-
 	for (int i = 0; i < adjMatrix.size(); i++) {
 		for (int j = 0; j < adjMatrix[i].size(); j++) {
+
+			// set the initial position for drawing the matrix
+			float constexpr startX = 40;
+			float constexpr startY = 40;
+			float constexpr spacing = 20;
+
 			// Convert float to string with a specified precision
 			std::string valueStr = ofToString(int(adjMatrix[i][j]), 2);
 

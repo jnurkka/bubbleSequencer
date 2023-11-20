@@ -34,12 +34,9 @@ class Bubble {
 
         bool active;
         float probability;
-        int graph_depth;
-        int graph_width;
 
         ofColor color_active_bubble;
         ofColor color_inactive_bubble;
-     
         
         void activate();
         void deactivate();

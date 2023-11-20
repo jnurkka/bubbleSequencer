@@ -32,5 +32,6 @@ class ofApp : public ofBaseApp{
 		ofxPanel gui;
 		ofxIntSlider intSlider;
 		ofxButton button;
+		ofxToggle toggle_spring;
 		void button_gui_pressed();
 };

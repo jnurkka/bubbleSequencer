@@ -17,9 +17,6 @@ Bubble::Bubble() {
 	bubbleID = 0;
     active = false;
     probability = 0;
-	// TODO do i need this?
-	graph_depth = 0;
-	graph_width = 0;
 
 	color_active_bubble = ofColor::azure;
 	color_inactive_bubble = ofColor::white;
@@ -36,10 +33,6 @@ void Bubble::init(float x, float y, int id) {
 	pos_y = y;
 	bubbleID = id;
 
-	// TODO do i need this?
-	graph_depth = 0;
-	graph_width = 0;
-
 	using FilenameProbabilityPair = std::tuple<std::string, float>;
 	std::vector<FilenameProbabilityPair> filenameProbabilities;
 
@@ -48,22 +41,22 @@ void Bubble::init(float x, float y, int id) {
 	if (use_airport_samples)
 	{
 		// Copyright from music for airports
-		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-01.wav", 0.125f));
-		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-02.wav", 0.125f));
-		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-03.wav", 0.125f));
-		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-04.wav", 0.125f));
-		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-05.wav", 0.125f));
-		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-06.wav", 0.125f));
-		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-07.wav", 0.125f));
-		filenameProbabilities.push_back(std::make_tuple("Eno-Piano-08.wav", 0.125f));
+		filenameProbabilities.emplace_back(std::make_tuple("Eno-Piano-01.wav", 0.125f));
+		filenameProbabilities.emplace_back(std::make_tuple("Eno-Piano-02.wav", 0.125f));
+		filenameProbabilities.emplace_back(std::make_tuple("Eno-Piano-03.wav", 0.125f));
+		filenameProbabilities.emplace_back(std::make_tuple("Eno-Piano-04.wav", 0.125f));
+		filenameProbabilities.emplace_back(std::make_tuple("Eno-Piano-05.wav", 0.125f));
+		filenameProbabilities.emplace_back(std::make_tuple("Eno-Piano-06.wav", 0.125f));
+		filenameProbabilities.emplace_back(std::make_tuple("Eno-Piano-07.wav", 0.125f));
+		filenameProbabilities.emplace_back(std::make_tuple("Eno-Piano-08.wav", 0.125f));
 	}
 	else {
 		// Random shit samples
-		filenameProbabilities.push_back(std::make_tuple("f.wav", 0.2f));
-		filenameProbabilities.push_back(std::make_tuple("g.wav", 0.2f));
-		filenameProbabilities.push_back(std::make_tuple("a.wav", 0.2f));
-		filenameProbabilities.push_back(std::make_tuple("c.wav", 0.2f));
-		filenameProbabilities.push_back(std::make_tuple("d.wav", 0.2f));
+		filenameProbabilities.emplace_back(std::make_tuple("f.wav", 0.2f));
+		filenameProbabilities.emplace_back(std::make_tuple("g.wav", 0.2f));
+		filenameProbabilities.emplace_back(std::make_tuple("a.wav", 0.2f));
+		filenameProbabilities.emplace_back(std::make_tuple("c.wav", 0.2f));
+		filenameProbabilities.emplace_back(std::make_tuple("d.wav", 0.2f));
 	}
 
 	file = get<0>(filenameProbabilities[ofRandom(7)]); 
@@ -76,7 +69,7 @@ void Bubble::init(float x, float y, int id) {
 	// radius
 	radius_animated.reset(10);
 	// color
-	color_active_bubble.setHex(0xFF6F3D);  //TODO: use this color for edges between nodes 0xF3ECDB
+	color_active_bubble.setHex(0xFF6F3D);  // TODO: use this color for edges between nodes 0xF3ECDB
 	color_inactive_bubble.setHex(0x7F886A );
 	color_animated.setColor(color_inactive_bubble);
 
@@ -128,8 +121,8 @@ void Bubble::setPos(float x, float y) {
 
 void Bubble::update()
 {
-	//app timebase, to send to all animatable objects
-	float dt = 1.0f / 60.0f;
+	//app timebase, to send to all Animatable objects
+	float constexpr dt = 1.0f / 60.0f;
 
     radius_animated.update(dt);
 	color_animated.update(dt);

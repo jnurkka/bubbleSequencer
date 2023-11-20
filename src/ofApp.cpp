@@ -2,7 +2,7 @@
 #include "graph.hpp"
 
 
-int const NR_BUBBLES = 9;
+int constexpr NR_BUBBLES = 9;
 Graph graph(NR_BUBBLES);
 
 //--------------------------------------------------------------
@@ -44,16 +44,21 @@ void ofApp::setup(){
 	button.addListener(this, &ofApp::button_gui_pressed);
 	gui.add(intSlider.setup("BPM Slider", tempo, ofxBpm::OFX_BPM_MIN, ofxBpm::OFX_BPM_MAX));
 	gui.add(button.setup("Start/stop"));
+	gui.add(toggle_spring.setup("Spring Layout", false));
 }
 
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	// Update BPM based on GUI SLider
+	// Update BPM based on GUI Slider
 	bpm.setBpm(intSlider);
 
 	// Update graph layout
-	//graph.updateLayout_SpringForces();
+	if (toggle_spring)
+	{
+		graph.updateLayout_SpringForces();
+	}
+	
 
 	// Update bubbles
 	graph.update();
@@ -128,6 +133,7 @@ void ofApp::triggerBeat()
     graph.activateNext();
 }
 
+
 //--------------------------------------------------------------
 void ofApp::button_gui_pressed()
 {
@@ -140,4 +146,5 @@ void ofApp::button_gui_pressed()
 		bpm.start();
 	}
 }
+
 
