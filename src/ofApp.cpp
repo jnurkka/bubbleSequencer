@@ -86,17 +86,25 @@ void ofApp::exit(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 
-	// Start / stop with Space
-	if (key == ' ')
-	{
-		if (bpm.isPlaying())
-		{
-			bpm.stop();
-		}
-		else
-		{
-			bpm.start();
-		}
+	switch (key) {
+		case ' ':
+			if (bpm.isPlaying()){
+				bpm.stop();
+			} else {
+				bpm.start();
+			}
+			break;
+
+		case OF_KEY_LEFT:
+			intSlider = intSlider - 5;
+			break;
+
+		case OF_KEY_RIGHT:
+			intSlider = intSlider + 5;
+			break;
+
+		default:
+			break;
 	}
 }
 
