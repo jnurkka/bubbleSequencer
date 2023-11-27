@@ -224,12 +224,62 @@ void Graph::draw() {
 				ofSetHexColor(0xF3ECDB);
 				// Draw self-loops
 				if (i == j) {
-					ofNoFill();
-					ofDrawCircle(bubbles[i].pos.x, bubbles[i].pos.y - bubbles[i].radius_animated.val(), bubbles[i].radius_animated.val());
+					//ofNoFill();
+					//ofDrawCircle(bubbles[i].pos.x, bubbles[i].pos.y - bubbles[i].radius_animated.val(), bubbles[i].radius_animated.val());
+
+					// Calculate direction vector
+					ofVec2f direction(bubbles[i].radius_animated.val(), 0);
+					// Calculate arrowhead points
+					float arrowSize = 10;
+					direction.normalize();
+					ofVec2f arrowhead1 = bubbles[i].pos - direction * bubbles[i].radius_animated.val();
+
+					// Draw the curved arrow
+					ofPath curvedArrow;
+					curvedArrow.moveTo(bubbles[i].pos + direction * bubbles[i].radius_animated.val());
+					
+					ofVec2f cp1 = bubbles[i].pos + 3*direction * bubbles[i].radius_animated.val() + ofVec2f(0, -3 * bubbles[i].radius_animated.val());
+					ofVec2f cp2 = bubbles[i].pos - 4*direction * bubbles[i].radius_animated.val() + ofVec2f(0, -3 * bubbles[i].radius_animated.val());
+
+					curvedArrow.bezierTo(cp1, cp2, arrowhead1 + ofVec2f(-arrowSize, 0));
+					curvedArrow.setFilled(false);
+					curvedArrow.setStrokeWidth(1.0);
+					curvedArrow.draw();
+
+					// Calculate rotation angle
+					float angle = atan2(direction.y, direction.x);
+
+					// Draw arrow
+					ofPushMatrix();
+					ofTranslate(arrowhead1.x, arrowhead1.y);
+					ofRotate(ofRadToDeg(angle));
+					//ofDrawLine(0, 0, -arrowSize, 0);
+					ofDrawTriangle(0, 0, -arrowSize, -arrowSize * 0.5, -arrowSize, arrowSize * 0.5);
+					ofPopMatrix();
+
+
 				}
 				else {
 					// Draw edges
-					ofDrawLine(bubbles[i].pos.x, bubbles[i].pos.y, bubbles[j].pos.x, bubbles[j].pos.y);
+					ofFill();
+					ofDrawLine(bubbles[i].pos, bubbles[j].pos);
+
+					// Calculate direction vector
+					ofVec2f direction = (bubbles[j].pos - bubbles[i].pos).getNormalized();
+					// Calculate arrowhead points
+					float arrowSize = 10;
+					ofVec2f arrowhead1 = bubbles[j].pos - direction * bubbles[j].radius_animated.val();
+
+					// Calculate rotation angle
+					float angle = atan2(direction.y, direction.x);
+
+					// Draw arrow
+					ofPushMatrix();
+					ofTranslate(arrowhead1.x, arrowhead1.y);
+					ofRotate(ofRadToDeg(angle));
+					//ofDrawLine(0, 0, -arrowSize, 0);
+					ofDrawTriangle(0, 0, -arrowSize, -arrowSize * 0.5, -arrowSize, arrowSize * 0.5);
+					ofPopMatrix();
 				}
 			}
 		}
