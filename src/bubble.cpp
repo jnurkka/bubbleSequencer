@@ -132,7 +132,11 @@ void Bubble::draw()
 	color_animated.applyCurrentColor();
 	ofDrawCircle(pos.x, pos.y, radius_animated.val());
 
-	// Plot file name
+	// Plot bubble ID
 	ofSetHexColor(0x00ff00);
-	ofDrawBitmapString(bubbleID, pos.x, pos.y);
+	std::string idString = std::to_string(bubbleID);
+	ofRectangle boundingBox = ofRectangle(0, 0, idString.length() * 8, 12); // Estimate bounding box based on character count
+	ofPoint textPosition(pos.x - boundingBox.width / 2, pos.y + boundingBox.height / 2); // Calculate text position
+	ofDrawBitmapString(idString, textPosition.x, textPosition.y); // Draw the text
+
 }
