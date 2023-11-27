@@ -7,12 +7,9 @@
 
 #include "bubble.hpp"
 
-Bubble::Bubble() {
-	pos_x = 100;
-	pos_y = 100;
-
-	vel_x = 0;
-	vel_y = 0;
+Bubble::Bubble() {;
+	pos = ofVec2f(100, 100);
+	vel = ofVec2f(0, 0);
 
 	bubbleID = 0;
     active = false;
@@ -29,8 +26,8 @@ Bubble::~Bubble() {
 
 
 void Bubble::init(float x, float y, int id) {
-	pos_x = x;
-	pos_y = y;
+	pos = ofVec2f(x, y);
+
 	bubbleID = id;
 
 	using FilenameProbabilityPair = std::tuple<std::string, float>;
@@ -113,9 +110,9 @@ void Bubble::deactivate() {
 }
 
 
-void Bubble::setPos(float x, float y) {
-	pos_x = x;
-	pos_y = y;
+void Bubble::setPos(const float x, const float y) {
+	pos.x = x;
+	pos.y = y;
 }
 
 
@@ -133,9 +130,9 @@ void Bubble::draw()
 {
 	// Set color and draw bubble
 	color_animated.applyCurrentColor();
-	ofDrawCircle(pos_x, pos_y, radius_animated.val());
+	ofDrawCircle(pos.x, pos.y, radius_animated.val());
 
-    // Plot file name
-	 ofSetHexColor(0x00ff00);
-	 ofDrawBitmapString(bubbleID, pos_x, pos_y);  // ofDrawBitmapString(file, pos_x, pos_y);
+	// Plot file name
+	ofSetHexColor(0x00ff00);
+	ofDrawBitmapString(bubbleID, pos.x, pos.y);
 }

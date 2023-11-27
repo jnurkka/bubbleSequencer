@@ -42,7 +42,7 @@ void ofApp::setup(){
 	// GUI
 	gui.setup();
 	button.addListener(this, &ofApp::button_gui_pressed);
-	gui.add(intSlider.setup("BPM Slider", tempo, ofxBpm::OFX_BPM_MIN, ofxBpm::OFX_BPM_MAX));
+	gui.add(int_slider.setup("BPM Slider", tempo, ofxBpm::OFX_BPM_MIN, ofxBpm::OFX_BPM_MAX));
 	gui.add(button.setup("Start/stop"));
 	gui.add(toggle_spring.setup("Spring Layout", false));
 }
@@ -51,7 +51,7 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
 	// Update BPM based on GUI Slider
-	bpm.setBpm(intSlider);
+	bpm.setBpm(int_slider);
 
 	// Update graph layout
 	if (toggle_spring)
@@ -96,11 +96,11 @@ void ofApp::keyPressed(int key){
 			break;
 
 		case OF_KEY_LEFT:
-			intSlider = intSlider - 5;
+			int_slider = int_slider - 5;
 			break;
 
 		case OF_KEY_RIGHT:
-			intSlider = intSlider + 5;
+			int_slider = int_slider + 5;
 			break;
 
 		default:
@@ -112,7 +112,7 @@ void ofApp::keyPressed(int key){
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
 	for (int i = 0; i < graph.bubbles.size(); i++) {
-		if (ofDist(x, y, graph.bubbles[i].pos_x, graph.bubbles[i].pos_y) < graph.bubbles[i].radius_animated.val()) {
+		if (ofDist(x, y, graph.bubbles[i].pos.x, graph.bubbles[i].pos.y) < graph.bubbles[i].radius_animated.val()) {
 			isDragging = true;
 			dragID = i;
 		}
@@ -123,8 +123,7 @@ void ofApp::mousePressed(int x, int y, int button) {
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
 	if (isDragging) {
-		graph.bubbles[dragID].pos_x = x;
-		graph.bubbles[dragID].pos_y = y;
+		graph.bubbles[dragID].pos.set(x, y);
 	}
 }
 

@@ -23,12 +23,9 @@ class Bubble {
 
         void init(float x, float y, int id);
         void setPos(float x, float y);
-        
-        float pos_x;
-        float pos_y;
 
-        float vel_x;
-        float vel_y;
+        ofVec2f pos;
+        ofVec2f vel;
 
         int bubbleID;
 

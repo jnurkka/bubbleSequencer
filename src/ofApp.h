@@ -30,7 +30,7 @@ class ofApp : public ofBaseApp{
 
 		// GUI
 		ofxPanel gui;
-		ofxIntSlider intSlider;
+		ofxIntSlider int_slider;
 		ofxButton button;
 		ofxToggle toggle_spring;
 		void button_gui_pressed();

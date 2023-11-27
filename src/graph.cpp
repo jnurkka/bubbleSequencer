@@ -25,12 +25,12 @@ int Graph::size() {
 }
 
 
-void Graph::addEdge(int source, int sink, float weight) {
+void Graph::addEdge(const int source, const int sink, const float weight) {
 	adjMatrix[source][sink] = weight;
 }
 
 
-void Graph::removeEdge(int source, int sink) {
+void Graph::removeEdge(const int source, const int sink) {
 	adjMatrix[source][sink] = 0.0f;
 }
 
@@ -79,10 +79,10 @@ void Graph::initLayout() {
 		for (int i = 0; i < bubbles.size(); i++) {
 			if (level_nr == levels[i])
 				{
-					bubbles[i].pos_x = marginX + levels[i] * nodeSpacing;
+					bubbles[i].pos.x = marginX + levels[i] * nodeSpacing;
 
 					int temp_y = (ofGetWindowHeight() - (nr_bubbles - 1) * nodeSpacing) / 2;
-					bubbles[i].pos_y = temp_y + width_counter * nodeSpacing;
+					bubbles[i].pos.y = temp_y + width_counter * nodeSpacing;
 					width_counter++;
 				}
 		}
@@ -174,55 +174,41 @@ void Graph::updateLayout_SpringForces()
 	for (int i = 0; i < bubbles.size(); i++) {
 		for (int j = 0; j < bubbles.size(); j++) {
 			if (adjMatrix[i][j]) {
-				float direction_x = bubbles[j].pos_x - bubbles[i].pos_x;
-				float direction_y = bubbles[j].pos_y - bubbles[i].pos_y;
+				ofVec2f direction = bubbles[j].pos - bubbles[i].pos;
 
-				float distance = std::max(1.0f, std::sqrt(direction_x * direction_x + direction_y * direction_y));
+				const float distance = std::max(1.0f, direction.length());
+				const ofVec2f force = (direction / distance) * k * (distance - 100);
 
-				float force_x = (direction_x / distance) * k * (distance - 100);
-				float force_y = (direction_x / distance) * k * (distance - 100);
+				bubbles[i].vel += force;
+				bubbles[j].vel -= force;
 
-				bubbles[i].vel_x += force_x;
-				bubbles[i].vel_y += force_y;
-
-				bubbles[j].vel_x -= force_x;
-				bubbles[j].vel_y -= force_y;
 			}
 		}
 	}
 
 	// Update velocities based on node repulsion
-	// Update velocities based on spring forces
 	for (int i = 0; i < bubbles.size(); i++) {
 		for (int j = 0; j < bubbles.size(); j++) {
 			if (i != j) {
 
-				float const direction_x = bubbles[j].pos_x - bubbles[i].pos_x;
-				float const direction_y = bubbles[j].pos_y - bubbles[i].pos_y;
+				ofVec2f direction = bubbles[j].pos - bubbles[i].pos;
 
-				float const distance = std::max(1.0f, std::sqrt(direction_x * direction_x + direction_y * direction_y));
+				float const distance = std::max(1.0f, direction.length());
+				const ofVec2f force = (direction / distance) * repulsion / (distance * distance);
 
-				float const force_x = (direction_x / distance) * repulsion / (distance * distance);
-				float const force_y = (direction_x / distance) * repulsion / (distance * distance);
-
-				bubbles[i].vel_x -= force_x;
-				bubbles[i].vel_y -= force_y;
+				bubbles[i].vel -= force;
 			}
 		}
 	}
 
 	// Update positions based on velocities
 	for (int i = 0; i < bubbles.size(); i++) {
-		bubbles[i].vel_x *= damping;
-		bubbles[i].vel_y *= damping;
-
-		bubbles[i].pos_x += bubbles[i].vel_x;
-		bubbles[i].pos_y += bubbles[i].vel_y;
+		bubbles[i].vel *= damping;
+		bubbles[i].pos += bubbles[i].vel;
 
 		// Keep nodes within the window bounds
-		bubbles[i].pos_x = std::max(0.0f, std::min(bubbles[i].pos_x, float(ofGetWindowWidth())));
-		bubbles[i].pos_y = std::max(0.0f, std::min(bubbles[i].pos_y, float(ofGetWindowHeight())));
-
+		bubbles[i].pos.x = std::max(0.0f, std::min(bubbles[i].pos.x, float(ofGetWindowHeight())));
+		bubbles[i].pos.y = std::max(0.0f, std::min(bubbles[i].pos.y, float(ofGetWindowHeight())));
 	}
 }
 
@@ -239,11 +225,11 @@ void Graph::draw() {
 				// Draw self-loops
 				if (i == j) {
 					ofNoFill();
-					ofDrawCircle(bubbles[i].pos_x, bubbles[i].pos_y - bubbles[i].radius_animated.val(), bubbles[i].radius_animated.val());
+					ofDrawCircle(bubbles[i].pos.x, bubbles[i].pos.y - bubbles[i].radius_animated.val(), bubbles[i].radius_animated.val());
 				}
 				else {
 					// Draw edges
-					ofDrawLine(bubbles[i].pos_x, bubbles[i].pos_y, bubbles[j].pos_x, bubbles[j].pos_y);
+					ofDrawLine(bubbles[i].pos.x, bubbles[i].pos.y, bubbles[j].pos.x, bubbles[j].pos.y);
 				}
 			}
 		}
@@ -254,7 +240,6 @@ void Graph::draw() {
 		bubbles[i].draw();
 	}
 }
-
 
 
 
