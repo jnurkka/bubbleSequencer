@@ -34,4 +34,9 @@ class ofApp : public ofBaseApp{
 		ofxButton button;
 		ofxToggle toggle_spring;
 		void button_gui_pressed();
+
+		// Gui for Bubble control
+		ofxLabel bubbleId;
+		ofxLabel bubbleFile;
+		ofxInputField<string> bubbleNote;
 };

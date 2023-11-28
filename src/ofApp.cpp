@@ -45,6 +45,11 @@ void ofApp::setup(){
 	gui.add(int_slider.setup("BPM Slider", tempo, ofxBpm::OFX_BPM_MIN, ofxBpm::OFX_BPM_MAX));
 	gui.add(button.setup("Start/stop"));
 	gui.add(toggle_spring.setup("Spring Layout", false));
+
+	// GUI bubbles
+	gui.add(bubbleId.setup("Bubble ID", ofToString(graph.bubbles[0].bubbleID)));
+	gui.add(bubbleFile.setup("Sample", graph.bubbles[0].file));
+	gui.add(bubbleNote.setup("Note", graph.bubbles[0].midi_note));
 }
 
 
@@ -115,6 +120,11 @@ void ofApp::mousePressed(int x, int y, int button) {
 		if (ofDist(x, y, graph.bubbles[i].pos.x, graph.bubbles[i].pos.y) < graph.bubbles[i].radius_animated.val()) {
 			isDragging = true;
 			dragID = i;
+
+			// update GUI
+			bubbleId = ofToString(graph.bubbles[i].bubbleID);
+			bubbleFile =  graph.bubbles[i].file;
+			bubbleNote = graph.bubbles[i].midi_note;
 		}
 	}
 }
@@ -135,15 +145,13 @@ void ofApp::mouseReleased(int x, int y, int button) {
 
 
 //--------------------------------------------------------------
-void ofApp::triggerBeat()
-{
+void ofApp::triggerBeat(){
     graph.activateNext();
 }
 
 
 //--------------------------------------------------------------
-void ofApp::button_gui_pressed()
-{
+void ofApp::button_gui_pressed(){
 	if (bpm.isPlaying())
 	{
 		bpm.stop();
@@ -153,5 +161,3 @@ void ofApp::button_gui_pressed()
 		bpm.start();
 	}
 }
-
-

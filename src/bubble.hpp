@@ -44,4 +44,8 @@ class Bubble {
         ofSoundPlayer sample;
         ofxAnimatableFloat radius_animated;
         ofxAnimatableOfColor color_animated;
+
+		// MIDI
+        string midi_note;
+
 };
