@@ -33,12 +33,13 @@ class ofApp : public ofBaseApp{
 		ofxIntSlider int_slider;
 		ofxButton button;
 		ofxToggle toggle_spring;
-		void button_gui_pressed();
+		ofxToggle hide_adj_matrix;
+		void buttonGuiPressed();
 
 		// Gui for Bubble control
 		ofxLabel bubbleId;
 		ofxLabel bubbleFile;
 		ofxIntSlider bubbleNote;
-		void bubble_note_changed(int& midiNote);
+		void bubbleNoteChanged(int& midiNote);
 
 };

@@ -41,16 +41,17 @@ void ofApp::setup(){
 
 	// GUI
 	gui.setup();
-	button.addListener(this, &ofApp::button_gui_pressed);
+	button.addListener(this, &ofApp::buttonGuiPressed);
 	gui.add(int_slider.setup("BPM Slider", tempo, ofxBpm::OFX_BPM_MIN, ofxBpm::OFX_BPM_MAX));
 	gui.add(button.setup("Start/stop"));
 	gui.add(toggle_spring.setup("Spring Layout", false));
+	gui.add(hide_adj_matrix.setup("Hide Adj Matrix", false));
 
 	// GUI bubbles
 	gui.add(bubbleId.setup("Bubble ID", ofToString(graph.bubbles[0].bubbleID)));
 	gui.add(bubbleFile.setup("Sample", graph.bubbles[0].file));
 
-	bubbleNote.addListener(this, &ofApp::bubble_note_changed);
+	bubbleNote.addListener(this, &ofApp::bubbleNoteChanged);
 	gui.add(bubbleNote.setup("Midi note", graph.bubbles[0].midi_note, 0, 127));
 }
 
@@ -74,10 +75,16 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+
+	// Draw adj matrix
+	if (!hide_adj_matrix) {
+		graph.drawAdjMatrix();
+	}
+	
+
 	// Draw graph
     graph.draw();
-	graph.drawAdjMatrix();
-
+	
 	// Draw GUI
 	gui.draw();
 }
@@ -153,7 +160,7 @@ void ofApp::triggerBeat(){
 
 
 //--------------------------------------------------------------
-void ofApp::button_gui_pressed(){
+void ofApp::buttonGuiPressed(){
 	if (bpm.isPlaying())
 	{
 		bpm.stop();
@@ -166,6 +173,6 @@ void ofApp::button_gui_pressed(){
 
 
 //--------------------------------------------------------------
-void ofApp::bubble_note_changed(int& midiNote) {
+void ofApp::bubbleNoteChanged(int& midiNote) {
 	graph.bubbles[stoi(bubbleId)].midi_note = midiNote;
 }
