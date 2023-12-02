@@ -21,8 +21,10 @@ class ofApp : public ofBaseApp{
 		void mousePressed(int x, int y, int button);
 		void mouseDragged(int x, int y, int button);
 		void mouseReleased(int x, int y, int button);
-		bool isDragging;
+		bool isLeftMouseDown;
 		int dragID;
+
+
 
 		// BPM 
 		ofxBpm bpm;
@@ -33,12 +35,13 @@ class ofApp : public ofBaseApp{
 		ofxIntSlider int_slider;
 		ofxButton button;
 		ofxToggle toggle_spring;
-		void button_gui_pressed();
+		ofxToggle hide_adj_matrix;
+		void buttonGuiPressed();
 
 		// Gui for Bubble control
 		ofxLabel bubbleId;
 		ofxLabel bubbleFile;
 		ofxIntSlider bubbleNote;
-		void bubble_note_changed(int& midiNote);
+		void bubbleNoteChanged(int& midiNote);
 
 };

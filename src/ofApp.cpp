@@ -29,7 +29,7 @@ void ofApp::setup(){
     graph.initLayout();
 
 	// Mouse control
-	isDragging = false;
+	isLeftMouseDown = false;
 	dragID = 0;
 
 	// BPM
@@ -41,16 +41,17 @@ void ofApp::setup(){
 
 	// GUI
 	gui.setup();
-	button.addListener(this, &ofApp::button_gui_pressed);
+	button.addListener(this, &ofApp::buttonGuiPressed);
 	gui.add(int_slider.setup("BPM Slider", tempo, ofxBpm::OFX_BPM_MIN, ofxBpm::OFX_BPM_MAX));
 	gui.add(button.setup("Start/stop"));
 	gui.add(toggle_spring.setup("Spring Layout", false));
+	gui.add(hide_adj_matrix.setup("Hide Adj Matrix", false));
 
 	// GUI bubbles
 	gui.add(bubbleId.setup("Bubble ID", ofToString(graph.bubbles[0].bubbleID)));
 	gui.add(bubbleFile.setup("Sample", graph.bubbles[0].file));
 
-	bubbleNote.addListener(this, &ofApp::bubble_note_changed);
+	bubbleNote.addListener(this, &ofApp::bubbleNoteChanged);
 	gui.add(bubbleNote.setup("Midi note", graph.bubbles[0].midi_note, 0, 127));
 }
 
@@ -74,10 +75,16 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	// Draw graph
-    graph.draw();
-	graph.drawAdjMatrix();
 
+	// Draw adj matrix
+	if (!hide_adj_matrix) {
+		graph.drawAdjMatrix();
+	}
+	
+	// Draw graph
+    graph.draw(!hide_adj_matrix);
+
+	
 	// Draw GUI
 	gui.draw();
 }
@@ -118,32 +125,39 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
-	for (int i = 0; i < graph.bubbles.size(); i++) {
-		if (ofDist(x, y, graph.bubbles[i].pos.x, graph.bubbles[i].pos.y) < graph.bubbles[i].radius_animated.val()) {
-			isDragging = true;
-			dragID = i;
+	if (button == OF_MOUSE_BUTTON_LEFT) {
+		for (int i = 0; i < graph.bubbles.size(); i++) {
+			if (ofDist(x, y, graph.bubbles[i].pos.x, graph.bubbles[i].pos.y) < graph.bubbles[i].radius_animated.val()) {
+				isLeftMouseDown = true;
+				dragID = i;
 
-			// update GUI
-			bubbleId = ofToString(graph.bubbles[i].bubbleID);
-			bubbleFile =  graph.bubbles[i].file;
-			bubbleNote = graph.bubbles[i].midi_note;
+				// update GUI
+				bubbleId = ofToString(graph.bubbles[i].bubbleID);
+				bubbleFile = graph.bubbles[i].file;
+				bubbleNote = graph.bubbles[i].midi_note;
+			}
 		}
 	}
+
 }
 
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
-	if (isDragging) {
+	if (isLeftMouseDown) {
 		graph.bubbles[dragID].pos.set(x, y);
 	}
 }
 
 
+
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {
-	isDragging = false;
+	if (button == OF_MOUSE_BUTTON_LEFT) {
+		isLeftMouseDown = false;
+	}
 }
+
 
 
 //--------------------------------------------------------------
@@ -153,7 +167,7 @@ void ofApp::triggerBeat(){
 
 
 //--------------------------------------------------------------
-void ofApp::button_gui_pressed(){
+void ofApp::buttonGuiPressed(){
 	if (bpm.isPlaying())
 	{
 		bpm.stop();
@@ -166,6 +180,6 @@ void ofApp::button_gui_pressed(){
 
 
 //--------------------------------------------------------------
-void ofApp::bubble_note_changed(int& midiNote) {
+void ofApp::bubbleNoteChanged(int& midiNote) {
 	graph.bubbles[stoi(bubbleId)].midi_note = midiNote;
 }
