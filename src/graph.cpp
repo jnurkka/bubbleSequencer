@@ -37,7 +37,7 @@ void Graph::removeEdge(const int source, const int sink) {
 void Graph::initLayout() {
 	// init all bubbles randomly
 	for (int i = 0; i < bubbles.size(); i += 1) {
-		bubbles[i].init(ofRandom(ofGetWindowWidth()), ofRandom(ofGetWindowHeight()), i);
+		bubbles[i].init(ofRandom(ofGetWidth()), ofRandom(ofGetHeight()), i);
 	}
 
 	// Only for directed graphs. Ignoring self-loops
@@ -80,7 +80,7 @@ void Graph::initLayout() {
 				{
 					bubbles[i].pos.x = marginX + levels[i] * nodeSpacing;
 
-					int temp_y = (ofGetWindowHeight() - (nr_bubbles - 1) * nodeSpacing) / 2;
+					int temp_y = (ofGetHeight() - (nr_bubbles - 1) * nodeSpacing) / 2;
 					bubbles[i].pos.y = temp_y + width_counter * nodeSpacing;
 					width_counter++;
 				}
@@ -209,14 +209,14 @@ void Graph::updateLayout_SpringForces()
 			bubbles[i].vel *= damping;
 			bubbles[i].pos += bubbles[i].vel;
 			// Keep nodes within the window bounds
-			bubbles[i].pos.x = std::max(0.0f, std::min(bubbles[i].pos.x, float(ofGetWindowHeight())));
-			bubbles[i].pos.y = std::max(0.0f, std::min(bubbles[i].pos.y, float(ofGetWindowHeight())));
+			bubbles[i].pos.x = std::max(0.0f, std::min(bubbles[i].pos.x, float(ofGetWidth())));
+			bubbles[i].pos.y = std::max(0.0f, std::min(bubbles[i].pos.y, float(ofGetHeight())));
 
 			bubbles[j].vel *= damping;
 			bubbles[j].pos += bubbles[j].vel;
 			// Keep nodes within the window bounds
-			bubbles[j].pos.x = std::max(0.0f, std::min(bubbles[j].pos.x, float(ofGetWindowHeight())));
-			bubbles[j].pos.y = std::max(0.0f, std::min(bubbles[j].pos.y, float(ofGetWindowHeight())));
+			bubbles[j].pos.x = std::max(0.0f, std::min(bubbles[j].pos.x, float(ofGetWidth())));
+			bubbles[j].pos.y = std::max(0.0f, std::min(bubbles[j].pos.y, float(ofGetHeight())));
 		}
 	}
 }
@@ -300,7 +300,7 @@ void Graph::drawAdjMatrix() {
 
 	// translate to the top left corner of the rectangle
 	ofPushMatrix();
-	ofTranslate(ofGetWindowWidth() - rectSize, 0);
+	ofTranslate(ofGetWidth() - rectSize, 0);
 	ofSetHexColor(0xF3ECDB);
 	ofDrawRectangle(0, 0, rectSize, rectSize);
 

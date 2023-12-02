@@ -188,3 +188,13 @@ void ofApp::buttonGuiPressed(){
 void ofApp::bubbleNoteChanged(int& midiNote) {
 	graph.bubbles[stoi(bubbleId)].midi_note = midiNote;
 }
+
+
+//--------------------------------------------------------------
+void ofApp::windowResized(int w, int h) {
+	for (int i = 0; i < graph.bubbles.size(); i++) {
+		// Update circle positions relative to their original positions
+		graph.bubbles[i].pos.x = graph.bubbles[i].pos.x * (float)w / ofGetWidth();
+		graph.bubbles[i].pos.y = graph.bubbles[i].pos.y * (float)h / ofGetHeight();
+	}
+}
