@@ -166,8 +166,9 @@ void Graph::update()
 void Graph::updateLayout_SpringForces()
 {
 	float damping = 0.07f; // Damping factor to prevent oscillations
-	float k = 0.03f; // Spring constant
-	float repulsion = 10; // Node repulsion strength
+	float k = 0.3f; // Spring constant
+	float repulsion = 200; // Node repulsion strength
+	float spring_length = 200;
 
 	// Update velocities based on spring forces
 	for (int i = 0; i < bubbles.size(); i++) {
@@ -176,7 +177,7 @@ void Graph::updateLayout_SpringForces()
 				ofVec2f direction = bubbles[j].pos - bubbles[i].pos;
 
 				const float distance = std::max(1.0f, direction.length());
-				const ofVec2f force = (direction / distance) * k * (distance - 100);
+				const ofVec2f force = (direction / distance) * k * (distance - spring_length);
 
 				bubbles[i].vel += force;
 				bubbles[j].vel -= force;
