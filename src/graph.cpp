@@ -213,81 +213,60 @@ void Graph::updateLayout_SpringForces()
 
 
 void Graph::draw() {
-
 	for (int i = 0; i < adjMatrix.size(); i++) {
-
 		// Draw edges
 		ofPushMatrix();
 		for (int j = 0; j < adjMatrix[i].size(); j++) {
 			if (adjMatrix[i][j]) {
+                bool isSelfLoop = i == j;
                 float weight = adjMatrix[i][j];
                 float lineThickness = weight * 2;
                 float arrowSize = weight * 10;
 				ofSetHexColor(0xF3ECDB);
+                
+                // Calculate direction vector
+                ofVec2f direction;
+                if (isSelfLoop) {
+                    direction = ofVec2f(bubbles[i].radius_animated.val(), 0).normalize();
+                } else {
+                    direction = (bubbles[j].pos - bubbles[i].pos).getNormalized();
+                }
+                ofVec2f arrowheadPos = bubbles[j].pos - direction * bubbles[j].radius_animated.val();
+                
 				// Draw self-loops
-				if (i == j) {
-					//ofNoFill();
-					//ofDrawCircle(bubbles[i].pos.x, bubbles[i].pos.y - bubbles[i].radius_animated.val(), bubbles[i].radius_animated.val());
-
-					// Calculate direction vector
-					ofVec2f direction(bubbles[i].radius_animated.val(), 0);
-					// Calculate arrowhead points
-					direction.normalize();
-					ofVec2f arrowhead1 = bubbles[i].pos - direction * bubbles[i].radius_animated.val();
-
-					// Draw the curved arrow
+				if (isSelfLoop) {
 					ofPath curvedArrow;
 					curvedArrow.moveTo(bubbles[i].pos + direction * bubbles[i].radius_animated.val());
 					
 					ofVec2f cp1 = bubbles[i].pos + 3*direction * bubbles[i].radius_animated.val() + ofVec2f(0, -3 * bubbles[i].radius_animated.val());
 					ofVec2f cp2 = bubbles[i].pos - 4*direction * bubbles[i].radius_animated.val() + ofVec2f(0, -3 * bubbles[i].radius_animated.val());
 
-					curvedArrow.bezierTo(cp1, cp2, arrowhead1 + ofVec2f(-arrowSize, 0));
+					curvedArrow.bezierTo(cp1, cp2, arrowheadPos + ofVec2f(-arrowSize, 0));
 					curvedArrow.setFilled(false);
 					curvedArrow.setStrokeWidth(lineThickness);
 					curvedArrow.draw();
-
-                    // draw weight
-                    float textPosY = (bubbles[i].pos - 4 * bubbles[i].radius_animated.val()).y;
-                    ofDrawBitmapStringHighlight(ofToString(weight), bubbles[i].pos.x, textPosY, ofColor::darkGreen);
-                    
-					// Calculate rotation angle
-					float angle = atan2(direction.y, direction.x);
-
-					// Draw arrow
-					ofPushMatrix();
-					ofTranslate(arrowhead1.x, arrowhead1.y);
-					ofRotate(ofRadToDeg(angle));
-					//ofDrawLine(0, 0, -arrowSize, 0);
-					ofDrawTriangle(0, 0, -arrowSize, -arrowSize * 0.5, -arrowSize, arrowSize * 0.5);
-					ofPopMatrix();
-
-
 				}
 				else {
 					// Draw edges
 					ofFill();
                     ofSetLineWidth(lineThickness);
 					ofDrawLine(bubbles[i].pos, bubbles[j].pos);
-                    ofVec2f textPos = (bubbles[i].pos + bubbles[j].pos) / 2;
-                    ofDrawBitmapStringHighlight(ofToString(weight), textPos.x, textPos.y, ofColor::darkGreen);
-                    
-					// Calculate direction vector
-					ofVec2f direction = (bubbles[j].pos - bubbles[i].pos).getNormalized();
-					// Calculate arrowhead points
-					ofVec2f arrowhead1 = bubbles[j].pos - direction * bubbles[j].radius_animated.val();
-
-					// Calculate rotation angle
-					float angle = atan2(direction.y, direction.x);
-
-					// Draw arrow
-					ofPushMatrix();
-					ofTranslate(arrowhead1.x, arrowhead1.y);
-					ofRotate(ofRadToDeg(angle));
-					//ofDrawLine(0, 0, -arrowSize, 0);
-					ofDrawTriangle(0, 0, -arrowSize, -arrowSize * 0.5, -arrowSize, arrowSize * 0.5);
-					ofPopMatrix();
 				}
+                
+                // draw weight
+                ofVec2f textPos = (bubbles[i].pos + bubbles[j].pos) / 2;
+                if (isSelfLoop) {
+                    textPos = ofVec2f(bubbles[i].pos.x, (bubbles[i].pos - 4 * bubbles[i].radius_animated.val()).y);
+                }
+                ofDrawBitmapStringHighlight(ofToString(weight), textPos.x, textPos.y, ofColor::darkGreen);
+                
+                // Draw arrow
+                float angle = atan2(direction.y, direction.x);
+                ofPushMatrix();
+                ofTranslate(arrowheadPos.x, arrowheadPos.y);
+                ofRotate(ofRadToDeg(angle));
+                ofDrawTriangle(0, 0, -arrowSize, -arrowSize * 0.5, -arrowSize, arrowSize * 0.5);
+                ofPopMatrix();
 			}
 		}
 		ofPopMatrix();
