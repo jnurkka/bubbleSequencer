@@ -46,7 +46,7 @@ void ofApp::setup(){
 	gui.add(int_slider.setup("BPM Slider", tempo, ofxBpm::OFX_BPM_MIN, ofxBpm::OFX_BPM_MAX));
 	gui.add(button.setup("Start/stop"));
 	gui.add(toggle_spring.setup("Spring Layout", false));
-	gui.add(hide_adj_matrix.setup("Hide Adj Matrix", false));
+	gui.add(hide_adj_matrix.setup("Hide Adj Matrix", true));
 
 	// GUI bubbles
 	gui.add(bubbleId.setup("Bubble ID", ofToString(graph.bubbles[0].bubbleID)));
