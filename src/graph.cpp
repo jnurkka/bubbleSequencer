@@ -232,12 +232,14 @@ void Graph::draw() {
                     direction = (bubbles[j].pos - bubbles[i].pos).getNormalized();
                 }
                 
+                // Calculate rotation angle
+                float angle = atan2(direction.y, direction.x);
+                
                 // Calculate arrowhead position
                 ofVec2f arrowheadPos = bubbles[j].pos - direction * bubbles[j].radius_animated.val();
                 
 				// Draw self-loops
 				if (isSelfLoop) {
-					// Draw the curved arrow
 					ofPath curvedArrow;
 					curvedArrow.moveTo(bubbles[i].pos + direction * bubbles[i].radius_animated.val());
 					
@@ -252,9 +254,6 @@ void Graph::draw() {
                     // draw weight
                     float textPosY = (bubbles[i].pos - 4 * bubbles[i].radius_animated.val()).y;
                     ofDrawBitmapStringHighlight(ofToString(weight), bubbles[i].pos.x, textPosY, ofColor::darkGreen);
-                    
-					// Calculate rotation angle
-					float angle = atan2(direction.y, direction.x);
 
 					// Draw arrow
 					ofPushMatrix();
@@ -271,9 +270,6 @@ void Graph::draw() {
 					ofDrawLine(bubbles[i].pos, bubbles[j].pos);
                     ofVec2f textPos = (bubbles[i].pos + bubbles[j].pos) / 2;
                     ofDrawBitmapStringHighlight(ofToString(weight), textPos.x, textPos.y, ofColor::darkGreen);
-
-					// Calculate rotation angle
-					float angle = atan2(direction.y, direction.x);
 
 					// Draw arrow
 					ofPushMatrix();
