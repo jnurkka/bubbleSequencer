@@ -220,6 +220,9 @@ void Graph::draw() {
 		ofPushMatrix();
 		for (int j = 0; j < adjMatrix[i].size(); j++) {
 			if (adjMatrix[i][j]) {
+                float weight = adjMatrix[i][j];
+                float lineThickness = weight * 2;
+                float arrowSize = weight * 10;
 				ofSetHexColor(0xF3ECDB);
 				// Draw self-loops
 				if (i == j) {
@@ -229,7 +232,6 @@ void Graph::draw() {
 					// Calculate direction vector
 					ofVec2f direction(bubbles[i].radius_animated.val(), 0);
 					// Calculate arrowhead points
-					float arrowSize = 10;
 					direction.normalize();
 					ofVec2f arrowhead1 = bubbles[i].pos - direction * bubbles[i].radius_animated.val();
 
@@ -242,9 +244,13 @@ void Graph::draw() {
 
 					curvedArrow.bezierTo(cp1, cp2, arrowhead1 + ofVec2f(-arrowSize, 0));
 					curvedArrow.setFilled(false);
-					curvedArrow.setStrokeWidth(1.0);
+					curvedArrow.setStrokeWidth(lineThickness);
 					curvedArrow.draw();
 
+                    // draw weight
+                    float textPosY = (bubbles[i].pos - 4 * bubbles[i].radius_animated.val()).y;
+                    ofDrawBitmapStringHighlight(ofToString(weight), bubbles[i].pos.x, textPosY, ofColor::darkGreen);
+                    
 					// Calculate rotation angle
 					float angle = atan2(direction.y, direction.x);
 
@@ -261,12 +267,14 @@ void Graph::draw() {
 				else {
 					// Draw edges
 					ofFill();
+                    ofSetLineWidth(lineThickness);
 					ofDrawLine(bubbles[i].pos, bubbles[j].pos);
-
+                    ofVec2f textPos = (bubbles[i].pos + bubbles[j].pos) / 2;
+                    ofDrawBitmapStringHighlight(ofToString(weight), textPos.x, textPos.y, ofColor::darkGreen);
+                    
 					// Calculate direction vector
 					ofVec2f direction = (bubbles[j].pos - bubbles[i].pos).getNormalized();
 					// Calculate arrowhead points
-					float arrowSize = 10;
 					ofVec2f arrowhead1 = bubbles[j].pos - direction * bubbles[j].radius_animated.val();
 
 					// Calculate rotation angle

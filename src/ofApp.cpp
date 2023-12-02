@@ -11,10 +11,10 @@ void ofApp::setup(){
 	ofBackgroundHex(0x3E503C);
 	// Graph   TODO: 1) manually define nodes. 2) make it based on CSV file and real data :)
 	// Set edges
-	graph.addEdge(0, 1, 1.0f);
-	graph.addEdge(0, 2, 1.0f);
+	graph.addEdge(0, 1, 0.5f);
+	graph.addEdge(0, 2, 0.5f);
 	graph.addEdge(1, 2, 1.0f);
-	graph.addEdge(2, 3, 1.0f);
+	graph.addEdge(2, 3, 0.5f);
 	graph.addEdge(2, 4, 1.0f);
 	graph.addEdge(3, 5, 1.0f);
 	graph.addEdge(3, 6, 1.0f);
