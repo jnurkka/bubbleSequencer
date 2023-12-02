@@ -2,12 +2,15 @@
 #include "graph.hpp"
 #include "ambience.hpp"
 
-int constexpr NR_BUBBLES = 9;
+int constexpr NR_BUBBLES = 30;
 Graph graph(NR_BUBBLES);
 Ambience ambience("ambience-river.mp3");
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+
+	// Open in fullscreen
+	ofSetFullscreen(true);
 
 	// Load font
 	fontSize = 12;
@@ -16,6 +19,7 @@ void ofApp::setup(){
 	ofBackgroundHex(0x3E503C);
 	// Graph   TODO: 1) manually define nodes. 2) make it based on CSV file and real data :)
 	// Set edges
+	/*
 	graph.addEdge(0, 1, 0.5f);
 	graph.addEdge(0, 2, 0.5f);
 	graph.addEdge(1, 2, 1.0f);
@@ -28,8 +32,15 @@ void ofApp::setup(){
 	graph.addEdge(5, 5, 1.0f);
 	graph.addEdge(5, 7, 1.0f);
 	graph.addEdge(6, 7, 1.0f);
-	graph.addEdge(6, 8, 1.0f);
+	graph.addEdge(6, 8, 1.0f);*/
+
+	for (int i = 0; i < NR_BUBBLES; i++)
+	{
+		for (int j = 0; j < std::rand() % 20; j++)
+		graph.addEdge(i, std::rand() %NR_BUBBLES, (float)(std::rand()%2));
+	}
 	
+ 
 	// Calc positions
     graph.initLayout(myFont);
 	old_w = ofGetWidth();
@@ -53,7 +64,7 @@ void ofApp::setup(){
 	button.addListener(this, &ofApp::buttonGuiPressed);
 	gui.add(int_slider.setup("BPM Slider", tempo, ofxBpm::OFX_BPM_MIN, ofxBpm::OFX_BPM_MAX));
 	gui.add(button.setup("Start/stop"));
-	gui.add(toggle_spring.setup("Spring Layout", false));
+	gui.add(toggle_spring.setup("Spring Layout", true));
 	gui.add(hide_adj_matrix.setup("Hide Adj Matrix", true));
 
 	// GUI bubbles
