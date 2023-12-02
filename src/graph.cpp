@@ -34,60 +34,14 @@ void Graph::removeEdge(const int source, const int sink) {
 	adjMatrix[source][sink] = 0.0f;
 }
 
+
 void Graph::initLayout(ofTrueTypeFont font) {
 	// load font
 	myFont = font;
 	 
 	// init all bubbles randomly
 	for (int i = 0; i < bubbles.size(); i += 1) {
-		bubbles[i].init(ofRandom(ofGetWidth()), ofRandom(ofGetHeight()), i, myFont);
-	}
-
-	// Only for directed graphs. Ignoring self-loops
-	// Assign levels based on the depth of each node in the graph
-	// This is a simple way to ensure that higher-level nodes are drawn above lower-level nodes
-	levels.resize(adjMatrix.size(), 0);
-	for (int i = 0; i < adjMatrix.size(); ++i) {
-		for (int j = 0; j < adjMatrix[i].size(); ++j) {
-			if (adjMatrix[i][j] == 1) {
-				if (i==j) {
-					continue; // ignore the self-loops
-				}
-				else {
-					levels[j] = std::max(levels[j], levels[i] + 1);
-				}
-			}
-		}
-	}
-
-	// Count how many bubbles there are per level
-	std::map<int, int> levelCount;
-	for (int i = 0; i < levels.size(); i++) {
-		// If the element is not present in the map, insert it with count 1
-		// Otherwise, increment the count
-		levelCount[levels[i]]++;
-	}
-
-	// Calculate the positions of nodes based on their levels
-	float marginX = 100;
-	float marginY = 100;
-	float nodeSpacing = (ofGetHeight() - 2 * marginY) / (*max_element(levels.begin(), levels.end()) + 1);
-
-	for (const auto& pair : levelCount) {
-		int level_nr = pair.first;
-		int nr_bubbles = pair.second;
-		int width_counter = 0;
-
-		for (int i = 0; i < bubbles.size(); i++) {
-			if (level_nr == levels[i])
-				{
-					bubbles[i].pos.x = marginX + levels[i] * nodeSpacing;
-
-					int temp_y = (ofGetHeight() - (nr_bubbles - 1) * nodeSpacing) / 2;
-					bubbles[i].pos.y = temp_y + width_counter * nodeSpacing;
-					width_counter++;
-				}
-		}	
+		bubbles[i].init(ofRandom(20.0f, ofGetWidth() - 20.0f), ofRandom(20.0f, ofGetHeight() - 20.0f), i, myFont);
 	}
 }
 
@@ -213,14 +167,14 @@ void Graph::updateLayout_SpringForces()
 			bubbles[i].vel *= damping;
 			bubbles[i].pos += bubbles[i].vel;
 			// Keep nodes within the window bounds
-			bubbles[i].pos.x = std::max(0.0f, std::min(bubbles[i].pos.x, float(ofGetWidth())));
-			bubbles[i].pos.y = std::max(0.0f, std::min(bubbles[i].pos.y, float(ofGetHeight())));
+			bubbles[i].pos.x = std::max(20.0f, std::min(bubbles[i].pos.x, float(ofGetWidth()) - 20.0f));
+			bubbles[i].pos.y = std::max(20.0f, std::min(bubbles[i].pos.y, float(ofGetHeight()) - 20.0f));
 
 			bubbles[j].vel *= damping;
 			bubbles[j].pos += bubbles[j].vel;
 			// Keep nodes within the window bounds
-			bubbles[j].pos.x = std::max(0.0f, std::min(bubbles[j].pos.x, float(ofGetWidth())));
-			bubbles[j].pos.y = std::max(0.0f, std::min(bubbles[j].pos.y, float(ofGetHeight())));
+			bubbles[j].pos.x = std::max(20.0f, std::min(bubbles[j].pos.x, float(ofGetWidth())));
+			bubbles[j].pos.y = std::max(20.0f, std::min(bubbles[j].pos.y, float(ofGetHeight())));
 		}
 	}
 }
