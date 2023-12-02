@@ -221,6 +221,7 @@ void Graph::draw() {
 		ofPushMatrix();
 		for (int j = 0; j < adjMatrix[i].size(); j++) {
 			if (adjMatrix[i][j]) {
+                float weight = adjMatrix[i][j];
 				ofSetHexColor(0xF3ECDB);
 				// Draw self-loops
 				if (i == j) {
@@ -243,7 +244,7 @@ void Graph::draw() {
 
 					curvedArrow.bezierTo(cp1, cp2, arrowhead1 + ofVec2f(-arrowSize, 0));
 					curvedArrow.setFilled(false);
-					curvedArrow.setStrokeWidth(1.0);
+					curvedArrow.setStrokeWidth(weight);
 					curvedArrow.draw();
 
 					// Calculate rotation angle
@@ -262,6 +263,7 @@ void Graph::draw() {
 				else {
 					// Draw edges
 					ofFill();
+                    ofSetLineWidth(weight);
 					ofDrawLine(bubbles[i].pos, bubbles[j].pos);
 
 					// Calculate direction vector
