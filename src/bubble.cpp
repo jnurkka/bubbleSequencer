@@ -12,6 +12,8 @@ Bubble::Bubble() {
 	pos = ofVec2f(100, 100);
 	vel = ofVec2f(0, 0);
 
+	
+
 	bubbleID = 0;
 	active = false;
 	probability = 0;
@@ -67,7 +69,7 @@ void Bubble::init(float x, float y, int id) {
 
 	//// Animations
 	// radius
-	radius_animated.reset(10);
+	radius_animated.reset(default_radius);
 	// color
 	color_active_bubble.setHex(0xFF6F3D);  // TODO: use this color for edges between nodes 0xF3ECDB
 	color_inactive_bubble.setHex(0x7F886A );
@@ -81,11 +83,11 @@ void Bubble::activate() {
 	sample.play();
 
 	// Animations
-	radius_animated.reset(10);
+	radius_animated.reset(default_radius);
 	radius_animated.setCurve(EASE_OUT_BACK);
 	radius_animated.setRepeatType(PLAY_ONCE);
 	radius_animated.setDuration(1);
-	radius_animated.animateTo(30);
+	radius_animated.animateTo(active_radius);
 
 	color_animated.setColor(color_inactive_bubble);
 	color_animated.setDuration(1);
@@ -99,11 +101,11 @@ void Bubble::deactivate() {
     active = false;
 
 	// Animations
-	radius_animated.reset(30);
+	radius_animated.reset(active_radius);
 	radius_animated.setCurve(EASE_OUT_BACK);
 	radius_animated.setRepeatType(PLAY_ONCE);
 	radius_animated.setDuration(1);
-	radius_animated.animateTo(10);
+	radius_animated.animateTo(default_radius);
 
 	color_animated.setColor(color_active_bubble);
 	color_animated.setDuration(1);

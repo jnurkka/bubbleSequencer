@@ -27,6 +27,7 @@ class Bubble {
         ofVec2f pos;
         ofVec2f vel;
 
+        
         int bubbleID;
 
         bool active;
@@ -47,5 +48,9 @@ class Bubble {
 
 		// MIDI
         int midi_note;
+
+private: 
+    float const default_radius = 30.0f;
+    float const active_radius = 40.0f;
 
 };

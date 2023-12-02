@@ -167,7 +167,7 @@ void Graph::updateLayout_SpringForces()
 {
 	float damping = 0.07f; // Damping factor to prevent oscillations
 	float k = 0.3f; // Spring constant
-	float repulsion = 200; // Node repulsion strength
+	float repulsion = 200000; // Node repulsion strength
 	float spring_length = 200;
 
 	// Update velocities based on spring forces
@@ -196,19 +196,28 @@ void Graph::updateLayout_SpringForces()
 				float const distance = std::max(1.0f, direction.length());
 				const ofVec2f force = (direction / distance) * repulsion / (distance * distance);
 
+				//bubbles[i].vel -= force;
 				bubbles[i].vel -= force;
+				bubbles[j].vel += force;
 			}
 		}
 	}
 
 	// Update positions based on velocities
 	for (int i = 0; i < bubbles.size(); i++) {
-		bubbles[i].vel *= damping;
-		bubbles[i].pos += bubbles[i].vel;
+		for (int j = 0; j < bubbles.size(); j++) {
+			bubbles[i].vel *= damping;
+			bubbles[i].pos += bubbles[i].vel;
+			// Keep nodes within the window bounds
+			bubbles[i].pos.x = std::max(0.0f, std::min(bubbles[i].pos.x, float(ofGetWindowHeight())));
+			bubbles[i].pos.y = std::max(0.0f, std::min(bubbles[i].pos.y, float(ofGetWindowHeight())));
 
-		// Keep nodes within the window bounds
-		bubbles[i].pos.x = std::max(0.0f, std::min(bubbles[i].pos.x, float(ofGetWindowHeight())));
-		bubbles[i].pos.y = std::max(0.0f, std::min(bubbles[i].pos.y, float(ofGetWindowHeight())));
+			bubbles[j].vel *= damping;
+			bubbles[j].pos += bubbles[j].vel;
+			// Keep nodes within the window bounds
+			bubbles[j].pos.x = std::max(0.0f, std::min(bubbles[j].pos.x, float(ofGetWindowHeight())));
+			bubbles[j].pos.y = std::max(0.0f, std::min(bubbles[j].pos.y, float(ofGetWindowHeight())));
+		}
 	}
 }
 
