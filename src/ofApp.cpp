@@ -2,7 +2,9 @@
 #include "graph.hpp"
 #include "ambience.hpp"
 
-int constexpr NR_BUBBLES = 30;
+int constexpr NR_BUBBLES = 20;
+int constexpr MAX_CONNECTIONS = 4;
+
 Graph graph(NR_BUBBLES);
 Ambience ambience("ambience-river.mp3");
 
@@ -10,7 +12,7 @@ Ambience ambience("ambience-river.mp3");
 void ofApp::setup(){
 
 	// Open in fullscreen
-	ofSetFullscreen(true);
+	ofSetFullscreen(false);
 
 	// Load font
 	fontSize = 12;
@@ -36,8 +38,14 @@ void ofApp::setup(){
 
 	for (int i = 0; i < NR_BUBBLES; i++)
 	{
-		for (int j = 0; j < std::rand() % 20; j++)
-		graph.addEdge(i, std::rand() %NR_BUBBLES, (float)(std::rand()%2));
+        // ensure each node has one edge to another node
+        int randomTarget = std::rand() % NR_BUBBLES;
+        while (randomTarget == i) {
+            randomTarget = std::rand() % NR_BUBBLES;
+        }
+        graph.addEdge(i, randomTarget, ofRandom(0.1f, 1.0f));
+        
+		for (int j = 0; j < std::rand() % (MAX_CONNECTIONS - 1); j++) graph.addEdge(i, std::rand() % NR_BUBBLES, ofRandom(0.0f, 1.0f));
 	}
 	
  
