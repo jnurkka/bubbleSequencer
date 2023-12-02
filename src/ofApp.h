@@ -13,6 +13,9 @@ class ofApp : public ofBaseApp{
 		void update() override;
 		void draw() override;
 		void exit() override;
+		void windowResized(int w, int h);
+		float old_w;
+		float old_h;
 
 		// Keyboard control
 		void keyPressed(int key) override;

@@ -28,6 +28,8 @@ void ofApp::setup(){
 	
 	// Calc positions
     graph.initLayout();
+	old_w = ofGetWidth();
+	old_h = ofGetHeight();
 
 	// Mouse control
 	isLeftMouseDown = false;
@@ -192,9 +194,16 @@ void ofApp::bubbleNoteChanged(int& midiNote) {
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h) {
+	// Calculate scaling factors based on the new window size
+	float scaleX = (float)w / old_w;
+	float scaleY = (float)h / old_h;
+
+	// Update circle positions relative to the window size
 	for (int i = 0; i < graph.bubbles.size(); i++) {
-		// Update circle positions relative to their original positions
-		graph.bubbles[i].pos.x = graph.bubbles[i].pos.x * (float)w / ofGetWidth();
-		graph.bubbles[i].pos.y = graph.bubbles[i].pos.y * (float)h / ofGetHeight();
+		graph.bubbles[i].pos.x = graph.bubbles[i].pos.x * scaleX;
+		graph.bubbles[i].pos.y = graph.bubbles[i].pos.y * scaleY;
 	}
+
+	old_w = ofGetWidth();
+	old_h = ofGetHeight();
 }
