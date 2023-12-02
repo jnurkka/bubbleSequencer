@@ -11,6 +11,7 @@ Ambience::Ambience(string file) {
     sample.load(file);
     sample.setVolume(0.5);
     sample.play();
+    sample.setLoop(true);
     pause();
 }
 
