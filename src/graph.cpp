@@ -254,14 +254,6 @@ void Graph::draw() {
                     // draw weight
                     float textPosY = (bubbles[i].pos - 4 * bubbles[i].radius_animated.val()).y;
                     ofDrawBitmapStringHighlight(ofToString(weight), bubbles[i].pos.x, textPosY, ofColor::darkGreen);
-
-					// Draw arrow
-					ofPushMatrix();
-					ofTranslate(arrowheadPos.x, arrowheadPos.y);
-					ofRotate(ofRadToDeg(angle));
-					//ofDrawLine(0, 0, -arrowSize, 0);
-					ofDrawTriangle(0, 0, -arrowSize, -arrowSize * 0.5, -arrowSize, arrowSize * 0.5);
-					ofPopMatrix();
 				}
 				else {
 					// Draw edges
@@ -270,15 +262,14 @@ void Graph::draw() {
 					ofDrawLine(bubbles[i].pos, bubbles[j].pos);
                     ofVec2f textPos = (bubbles[i].pos + bubbles[j].pos) / 2;
                     ofDrawBitmapStringHighlight(ofToString(weight), textPos.x, textPos.y, ofColor::darkGreen);
-
-					// Draw arrow
-					ofPushMatrix();
-					ofTranslate(arrowheadPos.x, arrowheadPos.y);
-					ofRotate(ofRadToDeg(angle));
-					//ofDrawLine(0, 0, -arrowSize, 0);
-					ofDrawTriangle(0, 0, -arrowSize, -arrowSize * 0.5, -arrowSize, arrowSize * 0.5);
-					ofPopMatrix();
 				}
+                // Draw arrow
+                ofPushMatrix();
+                ofTranslate(arrowheadPos.x, arrowheadPos.y);
+                ofRotate(ofRadToDeg(angle));
+                ofDrawTriangle(0, 0, -arrowSize, -arrowSize * 0.5, -arrowSize, arrowSize * 0.5);
+                ofPopMatrix();
+
 			}
 		}
 		ofPopMatrix();
