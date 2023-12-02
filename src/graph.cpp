@@ -248,6 +248,10 @@ void Graph::draw() {
 					curvedArrow.setStrokeWidth(lineThickness);
 					curvedArrow.draw();
 
+                    // draw weight
+                    float textPosY = (bubbles[i].pos - 4 * bubbles[i].radius_animated.val()).y;
+                    ofDrawBitmapStringHighlight(ofToString(weight), bubbles[i].pos.x, textPosY, ofColor::darkGreen);
+                    
 					// Calculate rotation angle
 					float angle = atan2(direction.y, direction.x);
 
