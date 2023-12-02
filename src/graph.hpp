@@ -34,7 +34,7 @@ class Graph {
         void update();
         void updateLayout_SpringForces();
 
-        void draw();
+        void draw(bool renderWeights);
         void drawAdjMatrix();
 
         void activateNext();

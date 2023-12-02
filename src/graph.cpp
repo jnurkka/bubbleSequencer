@@ -211,8 +211,7 @@ void Graph::updateLayout_SpringForces()
 	}
 }
 
-
-void Graph::draw() {
+void Graph::draw(bool renderWeights) {
 	for (int i = 0; i < adjMatrix.size(); i++) {
 		// Draw edges
 		ofPushMatrix();
@@ -253,12 +252,14 @@ void Graph::draw() {
 					ofDrawLine(bubbles[i].pos, bubbles[j].pos);
 				}
                 
-                // draw weight
-                ofVec2f textPos = (bubbles[i].pos + bubbles[j].pos) / 2;
-                if (isSelfLoop) {
-                    textPos = ofVec2f(bubbles[i].pos.x, (bubbles[i].pos - 4 * bubbles[i].radius_animated.val()).y);
+                if (renderWeights == true) {
+                    // draw weight
+                    ofVec2f textPos = (bubbles[i].pos + bubbles[j].pos) / 2;
+                    if (isSelfLoop) {
+                        textPos = ofVec2f(bubbles[i].pos.x, (bubbles[i].pos - 4 * bubbles[i].radius_animated.val()).y);
+                    }
+                    ofDrawBitmapStringHighlight(ofToString(weight), textPos.x, textPos.y, ofColor::darkGreen);
                 }
-                ofDrawBitmapStringHighlight(ofToString(weight), textPos.x, textPos.y, ofColor::darkGreen);
                 
                 // Draw arrow
                 float angle = atan2(direction.y, direction.x);

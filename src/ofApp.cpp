@@ -82,7 +82,7 @@ void ofApp::draw(){
 	}
 	
 	// Draw graph
-    graph.draw();
+    graph.draw(!hide_adj_matrix);
 
 	
 	// Draw GUI
