@@ -29,7 +29,7 @@ void ofApp::setup(){
     graph.initLayout();
 
 	// Mouse control
-	isDragging = false;
+	isLeftMouseDown = false;
 	dragID = 0;
 
 	// BPM
@@ -81,9 +81,9 @@ void ofApp::draw(){
 		graph.drawAdjMatrix();
 	}
 	
-
 	// Draw graph
     graph.draw();
+
 	
 	// Draw GUI
 	gui.draw();
@@ -125,32 +125,39 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
-	for (int i = 0; i < graph.bubbles.size(); i++) {
-		if (ofDist(x, y, graph.bubbles[i].pos.x, graph.bubbles[i].pos.y) < graph.bubbles[i].radius_animated.val()) {
-			isDragging = true;
-			dragID = i;
+	if (button == OF_MOUSE_BUTTON_LEFT) {
+		for (int i = 0; i < graph.bubbles.size(); i++) {
+			if (ofDist(x, y, graph.bubbles[i].pos.x, graph.bubbles[i].pos.y) < graph.bubbles[i].radius_animated.val()) {
+				isLeftMouseDown = true;
+				dragID = i;
 
-			// update GUI
-			bubbleId = ofToString(graph.bubbles[i].bubbleID);
-			bubbleFile =  graph.bubbles[i].file;
-			bubbleNote = graph.bubbles[i].midi_note;
+				// update GUI
+				bubbleId = ofToString(graph.bubbles[i].bubbleID);
+				bubbleFile = graph.bubbles[i].file;
+				bubbleNote = graph.bubbles[i].midi_note;
+			}
 		}
 	}
+
 }
 
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
-	if (isDragging) {
+	if (isLeftMouseDown) {
 		graph.bubbles[dragID].pos.set(x, y);
 	}
 }
 
 
+
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {
-	isDragging = false;
+	if (button == OF_MOUSE_BUTTON_LEFT) {
+		isLeftMouseDown = false;
+	}
 }
+
 
 
 //--------------------------------------------------------------

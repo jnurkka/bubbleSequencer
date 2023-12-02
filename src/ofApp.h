@@ -21,8 +21,10 @@ class ofApp : public ofBaseApp{
 		void mousePressed(int x, int y, int button);
 		void mouseDragged(int x, int y, int button);
 		void mouseReleased(int x, int y, int button);
-		bool isDragging;
+		bool isLeftMouseDown;
 		int dragID;
+
+
 
 		// BPM 
 		ofxBpm bpm;
