@@ -266,7 +266,9 @@ void Graph::draw() {
 					ofFill();
                     ofSetLineWidth(lineThickness);
 					ofDrawLine(bubbles[i].pos, bubbles[j].pos);
-
+                    ofVec2f textPos = (bubbles[i].pos + bubbles[j].pos) / 2;
+                    ofDrawBitmapStringHighlight(ofToString(weight), textPos.x, textPos.y, ofColor::darkGreen);
+                    
 					// Calculate direction vector
 					ofVec2f direction = (bubbles[j].pos - bubbles[i].pos).getNormalized();
 					// Calculate arrowhead points
