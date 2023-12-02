@@ -12,8 +12,6 @@ Bubble::Bubble() {
 	pos = ofVec2f(100, 100);
 	vel = ofVec2f(0, 0);
 
-	
-
 	bubbleID = 0;
 	active = false;
 	probability = 0;
@@ -30,10 +28,12 @@ Bubble::~Bubble() {
 }
 
 
-void Bubble::init(float x, float y, int id) {
+void Bubble::init(float x, float y, int id, ofTrueTypeFont font) {
 	pos = ofVec2f(x, y);
-
+	
 	bubbleID = id;
+
+	myFont = font;
 
 	using FilenameProbabilityPair = std::tuple<std::string, float>;
 	std::vector<FilenameProbabilityPair> filenameProbabilities;
@@ -131,17 +131,29 @@ void Bubble::update()
 }
 
 
-void Bubble::draw()
+void Bubble::draw(bool selected)
 {
 	// Set color and draw bubble
 	color_animated.applyCurrentColor();
 	ofDrawCircle(pos.x, pos.y, radius_animated.val());
+	
+	// Draw outline if selected by GUI
+	if (selected)
+	{
+		ofPushMatrix();
+		// Draw an outlined circle around it
+		ofSetColor(255);  
+		ofNoFill();  // Switch to drawing an outline
+		ofDrawEllipse(pos, radius_animated.val() * 2, radius_animated.val() * 2);
+		ofFill();  // Switch back to filling shapes
+		ofPopMatrix();
+	}
 
 	// Plot bubble ID. Estimate bounding box based on character count
 	ofSetHexColor(0xF3ECDB);
 	std::string idString = std::to_string(bubbleID);
 	ofRectangle boundingBox = ofRectangle(0, 0, idString.length() * 8, 12); 
 	ofPoint textPosition(pos.x - boundingBox.width / 2, pos.y + boundingBox.height / 2);
-	ofDrawBitmapString(idString, textPosition.x, textPosition.y);
+	myFont.drawString(idString, textPosition.x, textPosition.y);
 
 }

@@ -34,10 +34,13 @@ void Graph::removeEdge(const int source, const int sink) {
 	adjMatrix[source][sink] = 0.0f;
 }
 
-void Graph::initLayout() {
+void Graph::initLayout(ofTrueTypeFont font) {
+	// load font
+	myFont = font;
+	 
 	// init all bubbles randomly
 	for (int i = 0; i < bubbles.size(); i += 1) {
-		bubbles[i].init(ofRandom(ofGetWidth()), ofRandom(ofGetHeight()), i);
+		bubbles[i].init(ofRandom(ofGetWidth()), ofRandom(ofGetHeight()), i, myFont);
 	}
 
 	// Only for directed graphs. Ignoring self-loops
@@ -84,9 +87,7 @@ void Graph::initLayout() {
 					bubbles[i].pos.y = temp_y + width_counter * nodeSpacing;
 					width_counter++;
 				}
-		}
-
-		
+		}	
 	}
 }
 
@@ -100,6 +101,7 @@ vector<tuple<int, float>> Graph::findNextStepOptions() {
     }
     return options;
 }
+
 
 int selectNodeFromOptions(vector<tuple<int, float>> options) {
     // Seed the random number generator with the current time
@@ -126,6 +128,7 @@ int selectNodeFromOptions(vector<tuple<int, float>> options) {
     // if no next node option exists, return -1
     return -1;
 }
+
 
 int Graph::calculateNextStep() {
     int const activeIndex = activeStep;
@@ -154,6 +157,7 @@ void Graph::activateNext() {
     activeStep = nextStep;
     bubbles[nextStep].activate();
 }
+
 
 void Graph::update()
 {
@@ -221,7 +225,8 @@ void Graph::updateLayout_SpringForces()
 	}
 }
 
-void Graph::draw(bool renderWeights) {
+
+void Graph::draw(int selectedBubble, bool renderWeights) {
 	for (int i = 0; i < adjMatrix.size(); i++) {
 		// Draw edges
 		ofPushMatrix();
@@ -268,7 +273,7 @@ void Graph::draw(bool renderWeights) {
                     if (isSelfLoop) {
                         textPos = ofVec2f(bubbles[i].pos.x, (bubbles[i].pos - 4 * bubbles[i].radius_animated.val()).y);
                     }
-                    ofDrawBitmapStringHighlight(ofToString(weight), textPos.x, textPos.y, ofColor::darkGreen);
+					myFont.drawString(ofToString(weight), textPos.x, textPos.y);
                 }
                 
                 // Draw arrow
@@ -284,9 +289,17 @@ void Graph::draw(bool renderWeights) {
 
 		// Draw nodes
 		ofFill();
-		bubbles[i].draw();
+		if (i == selectedBubble)
+		{
+			bubbles[i].draw(true); // GUI has current bubble selected
+		}
+		else {
+			bubbles[i].draw(); // Other bubbles
+		}
+		
 	}
 }
+
 
 void Graph::drawAdjMatrix() {
     // set the initial position for drawing the matrix
@@ -306,22 +319,22 @@ void Graph::drawAdjMatrix() {
 
 	// set the color for the text
 	ofSetColor(0);
-	ofDrawBitmapString("Adjacency matrix:", 10, 20);
+	myFont.drawString("Adjacency matrix:", 10, 20); 
 
 	for (int i = 0; i < adjMatrix.size(); i++) {
 		for (int j = 0; j < adjMatrix[i].size(); j++) {
-
-			
-            
+        
 			// Convert float to string with a specified precision
 			std::string valueStr = ofToString(adjMatrix[i][j], 1);
 
 			// Highlight the currently active source 
 			if (bubbles[i].active) {
-				ofDrawBitmapStringHighlight(valueStr, startX + j * spacing, startY + i * spacing);
+				ofSetColor(0);
+				myFont.drawString(valueStr, startX + j * spacing, startY + i * spacing);
 			}
 			else {
-				ofDrawBitmapString(valueStr, startX + j * spacing, startY + i * spacing);
+				ofSetColor(150);
+				myFont.drawString(valueStr, startX + j * spacing, startY + i * spacing);
 			}			
 		}
 	}

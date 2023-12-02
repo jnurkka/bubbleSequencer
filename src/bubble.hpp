@@ -9,6 +9,7 @@
 #include "ofMain.h"
 #include "ofxAnimatableFloat.h"
 #include "ofxAnimatableOfColor.h"
+#include "ofTrueTypeFont.h"
 
 
 //#define TIME_SAMPLE
@@ -21,7 +22,7 @@ class Bubble {
         Bubble();
         ~Bubble();
 
-        void init(float x, float y, int id);
+        void init(float x, float y, int id, ofTrueTypeFont font);
         void setPos(float x, float y);
 
         ofVec2f pos;
@@ -38,7 +39,7 @@ class Bubble {
         
         void activate();
         void deactivate();
-        void draw();
+        void draw(bool selected=false);
         void update();
 
         string file;
@@ -52,5 +53,8 @@ class Bubble {
 private: 
     float const default_radius = 30.0f;
     float const active_radius = 40.0f;
+
+    // Font
+    ofTrueTypeFont myFont;
 
 };

@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxBpm.h"
 #include "ofxGui.h"
+#include "ofTrueTypeFont.h"
 
 
 class ofApp : public ofBaseApp{
@@ -13,6 +14,10 @@ class ofApp : public ofBaseApp{
 		void update() override;
 		void draw() override;
 		void exit() override;
+
+
+
+		// Used for scaling the window size
 		void windowResized(int w, int h);
 		float old_w;
 		float old_h;
@@ -26,8 +31,6 @@ class ofApp : public ofBaseApp{
 		void mouseReleased(int x, int y, int button);
 		bool isLeftMouseDown;
 		int dragID;
-
-
 
 		// BPM 
 		ofxBpm bpm;
@@ -46,5 +49,11 @@ class ofApp : public ofBaseApp{
 		ofxLabel bubbleFile;
 		ofxIntSlider bubbleNote;
 		void bubbleNoteChanged(int& midiNote);
+
+
+	private:
+		// Font
+		ofTrueTypeFont myFont;
+		int fontSize;
 
 };

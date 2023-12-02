@@ -8,6 +8,10 @@ Ambience ambience("ambience-river.mp3");
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+
+	// Load font
+	fontSize = 12;
+	myFont.load("Lavigne.ttf", fontSize);
 	
 	ofBackgroundHex(0x3E503C);
 	// Graph   TODO: 1) manually define nodes. 2) make it based on CSV file and real data :)
@@ -27,13 +31,15 @@ void ofApp::setup(){
 	graph.addEdge(6, 8, 1.0f);
 	
 	// Calc positions
-    graph.initLayout();
+    graph.initLayout(myFont);
 	old_w = ofGetWidth();
 	old_h = ofGetHeight();
 
 	// Mouse control
 	isLeftMouseDown = false;
 	dragID = 0;
+
+
 
 	// BPM
 	int constexpr tempo = 20;
@@ -85,7 +91,7 @@ void ofApp::draw(){
 	}
 	
 	// Draw graph
-    graph.draw(!hide_adj_matrix);
+    graph.draw(stoi(bubbleId), !hide_adj_matrix);
 
 	
 	// Draw GUI
