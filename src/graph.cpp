@@ -223,6 +223,7 @@ void Graph::draw() {
 			if (adjMatrix[i][j]) {
                 float weight = adjMatrix[i][j];
                 float lineThickness = weight * 2;
+                float arrowSize = weight * 10;
 				ofSetHexColor(0xF3ECDB);
 				// Draw self-loops
 				if (i == j) {
@@ -232,7 +233,6 @@ void Graph::draw() {
 					// Calculate direction vector
 					ofVec2f direction(bubbles[i].radius_animated.val(), 0);
 					// Calculate arrowhead points
-					float arrowSize = weight * 10;
 					direction.normalize();
 					ofVec2f arrowhead1 = bubbles[i].pos - direction * bubbles[i].radius_animated.val();
 
@@ -270,7 +270,6 @@ void Graph::draw() {
 					// Calculate direction vector
 					ofVec2f direction = (bubbles[j].pos - bubbles[i].pos).getNormalized();
 					// Calculate arrowhead points
-					float arrowSize = weight * 10;
 					ofVec2f arrowhead1 = bubbles[j].pos - direction * bubbles[j].radius_animated.val();
 
 					// Calculate rotation angle
