@@ -278,11 +278,15 @@ void Graph::draw(bool renderWeights) {
 	}
 }
 
-
-
 void Graph::drawAdjMatrix() {
+    // set the initial position for drawing the matrix
+    float constexpr textCellWidth = 7.5;
+    int constexpr startX = textCellWidth * 2;
+    int constexpr spacing = 40;
+    int constexpr startY = spacing;
+    
 	// rect size
-	int const rectSize = 240;
+	int const rectSize = startX + (spacing + adjMatrix.size()) * textCellWidth;
 
 	// translate to the top left corner of the rectangle
 	ofPushMatrix();
@@ -297,13 +301,10 @@ void Graph::drawAdjMatrix() {
 	for (int i = 0; i < adjMatrix.size(); i++) {
 		for (int j = 0; j < adjMatrix[i].size(); j++) {
 
-			// set the initial position for drawing the matrix
-			float constexpr startX = 40;
-			float constexpr startY = 40;
-			float constexpr spacing = 20;
-
+			
+            
 			// Convert float to string with a specified precision
-			std::string valueStr = ofToString(int(adjMatrix[i][j]), 2);
+			std::string valueStr = ofToString(adjMatrix[i][j], 1);
 
 			// Highlight the currently active source 
 			if (bubbles[i].active) {
