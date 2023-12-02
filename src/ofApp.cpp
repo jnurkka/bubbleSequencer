@@ -49,7 +49,9 @@ void ofApp::setup(){
 	// GUI bubbles
 	gui.add(bubbleId.setup("Bubble ID", ofToString(graph.bubbles[0].bubbleID)));
 	gui.add(bubbleFile.setup("Sample", graph.bubbles[0].file));
-	gui.add(bubbleNote.setup("Note", graph.bubbles[0].midi_note));
+
+	bubbleNote.addListener(this, &ofApp::bubble_note_changed);
+	gui.add(bubbleNote.setup("Midi note", graph.bubbles[0].midi_note, 0, 127));
 }
 
 
@@ -160,4 +162,10 @@ void ofApp::button_gui_pressed(){
 	{
 		bpm.start();
 	}
+}
+
+
+//--------------------------------------------------------------
+void ofApp::bubble_note_changed(int& midiNote) {
+	graph.bubbles[stoi(bubbleId)].midi_note = midiNote;
 }

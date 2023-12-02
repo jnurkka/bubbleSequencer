@@ -46,6 +46,6 @@ class Bubble {
         ofxAnimatableOfColor color_animated;
 
 		// MIDI
-        string midi_note;
+        int midi_note;
 
 };

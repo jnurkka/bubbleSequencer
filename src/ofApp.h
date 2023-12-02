@@ -38,5 +38,7 @@ class ofApp : public ofBaseApp{
 		// Gui for Bubble control
 		ofxLabel bubbleId;
 		ofxLabel bubbleFile;
-		ofxInputField<string> bubbleNote;
+		ofxIntSlider bubbleNote;
+		void bubble_note_changed(int& midiNote);
+
 };
