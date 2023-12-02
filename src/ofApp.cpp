@@ -1,9 +1,10 @@
 #include "ofApp.h"
 #include "graph.hpp"
-
+#include "ambience.hpp"
 
 int constexpr NR_BUBBLES = 9;
 Graph graph(NR_BUBBLES);
+Ambience ambience("ambience-river.mp3");
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -104,8 +105,10 @@ void ofApp::keyPressed(int key){
 		case ' ':
 			if (bpm.isPlaying()){
 				bpm.stop();
+                ambience.pause();
 			} else {
 				bpm.start();
+                ambience.play();
 			}
 			break;
 
@@ -171,10 +174,12 @@ void ofApp::buttonGuiPressed(){
 	if (bpm.isPlaying())
 	{
 		bpm.stop();
+        ambience.pause();
 	}
 	else
 	{
 		bpm.start();
+        ambience.play();
 	}
 }
 
