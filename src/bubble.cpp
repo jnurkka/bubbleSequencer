@@ -6,6 +6,11 @@
 //
 
 #include "bubble.hpp"
+#include <filesystem>
+
+
+namespace fs = std::filesystem;
+
 
 Bubble::Bubble() {
 	;
@@ -14,7 +19,7 @@ Bubble::Bubble() {
 
 	bubbleID = 0;
 	active = false;
-	probability = 0;
+
 
 	color_active_bubble = ofColor::azure;
 	color_inactive_bubble = ofColor::white;
@@ -29,41 +34,30 @@ Bubble::~Bubble() {
 
 
 void Bubble::init(float x, float y, int id, ofTrueTypeFont font) {
-	pos = ofVec2f(x, y);
 	
+	// meta data
+	pos = ofVec2f(x, y);
 	bubbleID = id;
-
 	myFont = font;
 
-	using FilenameProbabilityPair = std::tuple<std::string, float>;
-	std::vector<FilenameProbabilityPair> filenameProbabilities;
+	// choose random sample
+	string path = "bells" ;
+	ofDirectory dir(path);
+	dir.allowExt("mp3");
+	dir.listDir();
 
-	bool use_airport_samples = true;
-
-	if (use_airport_samples)
-	{
-		// Copyright from music for airports
-		filenameProbabilities.emplace_back(std::make_tuple("Eno-Piano-01.wav", 0.125f));
-		filenameProbabilities.emplace_back(std::make_tuple("Eno-Piano-02.wav", 0.125f));
-		filenameProbabilities.emplace_back(std::make_tuple("Eno-Piano-03.wav", 0.125f));
-		filenameProbabilities.emplace_back(std::make_tuple("Eno-Piano-04.wav", 0.125f));
-		filenameProbabilities.emplace_back(std::make_tuple("Eno-Piano-05.wav", 0.125f));
-		filenameProbabilities.emplace_back(std::make_tuple("Eno-Piano-06.wav", 0.125f));
-		filenameProbabilities.emplace_back(std::make_tuple("Eno-Piano-07.wav", 0.125f));
-		filenameProbabilities.emplace_back(std::make_tuple("Eno-Piano-08.wav", 0.125f));
-	}
-	else {
-		// Random shit samples
-		filenameProbabilities.emplace_back(std::make_tuple("f.wav", 0.2f));
-		filenameProbabilities.emplace_back(std::make_tuple("g.wav", 0.2f));
-		filenameProbabilities.emplace_back(std::make_tuple("a.wav", 0.2f));
-		filenameProbabilities.emplace_back(std::make_tuple("c.wav", 0.2f));
-		filenameProbabilities.emplace_back(std::make_tuple("d.wav", 0.2f));
+	// Check if there are any files in the directory
+	if (dir.size() == 0) {
+		ofLogError("ofApp::setup") << "No files found in the folder" << endl;
+		return;
 	}
 
-	file = get<0>(filenameProbabilities[ofRandom(7)]); 
-    probability = get<1>(filenameProbabilities[ofRandom(7)]);
-    sample.load(file);
+	// Get the path of the randomly chosen file
+	int randomIndex = ofRandom(0, dir.size());
+	string randomFile = dir.getPath(randomIndex);
+
+	// init sample player
+    sample.load(randomFile);
     sample.setVolume(0.5);
     sample.setMultiPlay(true);
 
@@ -71,7 +65,7 @@ void Bubble::init(float x, float y, int id, ofTrueTypeFont font) {
 	// radius
 	radius_animated.reset(default_radius);
 	// color
-	color_active_bubble.setHex(0xFF6F3D);  // TODO: use this color for edges between nodes 0xF3ECDB
+	color_active_bubble.setHex(0xFF6F3D);
 	color_inactive_bubble.setHex(0x7F886A );
 	color_animated.setColor(color_inactive_bubble);
 

@@ -32,7 +32,6 @@ class Bubble {
         int bubbleID;
 
         bool active;
-        float probability;
 
         ofColor color_active_bubble;
         ofColor color_inactive_bubble;
