@@ -250,19 +250,21 @@ void Graph::draw() {
 					curvedArrow.setFilled(false);
 					curvedArrow.setStrokeWidth(lineThickness);
 					curvedArrow.draw();
-
-                    // draw weight
-                    float textPosY = (bubbles[i].pos - 4 * bubbles[i].radius_animated.val()).y;
-                    ofDrawBitmapStringHighlight(ofToString(weight), bubbles[i].pos.x, textPosY, ofColor::darkGreen);
 				}
 				else {
 					// Draw edges
 					ofFill();
                     ofSetLineWidth(lineThickness);
 					ofDrawLine(bubbles[i].pos, bubbles[j].pos);
-                    ofVec2f textPos = (bubbles[i].pos + bubbles[j].pos) / 2;
-                    ofDrawBitmapStringHighlight(ofToString(weight), textPos.x, textPos.y, ofColor::darkGreen);
 				}
+                
+                // draw weight
+                ofVec2f textPos = (bubbles[i].pos + bubbles[j].pos) / 2;
+                if (isSelfLoop) {
+                    textPos = ofVec2f(bubbles[i].pos.x, (bubbles[i].pos - 4 * bubbles[i].radius_animated.val()).y);
+                }
+                ofDrawBitmapStringHighlight(ofToString(weight), textPos.x, textPos.y, ofColor::darkGreen);
+                
                 // Draw arrow
                 ofPushMatrix();
                 ofTranslate(arrowheadPos.x, arrowheadPos.y);
