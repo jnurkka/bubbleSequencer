@@ -53,7 +53,6 @@ void Graph::initLayout() {
 				else {
 					levels[j] = std::max(levels[j], levels[i] + 1);
 				}
-				
 			}
 		}
 	}

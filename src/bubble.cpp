@@ -7,16 +7,19 @@
 
 #include "bubble.hpp"
 
-Bubble::Bubble() {;
+Bubble::Bubble() {
+	;
 	pos = ofVec2f(100, 100);
 	vel = ofVec2f(0, 0);
 
 	bubbleID = 0;
-    active = false;
-    probability = 0;
+	active = false;
+	probability = 0;
 
 	color_active_bubble = ofColor::azure;
 	color_inactive_bubble = ofColor::white;
+
+	midi_note = rand() % 128;
 }
 
 
