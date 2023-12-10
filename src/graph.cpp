@@ -181,33 +181,35 @@ void Graph::updateLayout_SpringForces()
 
 
 void Graph::draw(int selectedBubble, bool renderWeights) {
+	
+	// Draw edges
 	for (int i = 0; i < adjMatrix.size(); i++) {
-		// Draw edges
 		ofPushMatrix();
 		for (int j = 0; j < adjMatrix[i].size(); j++) {
 			if (adjMatrix[i][j]) {
-                bool isSelfLoop = i == j;
-                float weight = adjMatrix[i][j];
-                float lineThickness = weight * 2;
-                float arrowSize = weight * 10;
+				bool isSelfLoop = i == j;
+				float weight = adjMatrix[i][j];
+				float lineThickness = weight * 2;
+				float arrowSize = weight * 10;
 				ofSetHexColor(0xF3ECDB);
-                
-                // Calculate direction vector
-                ofVec2f direction;
-                if (isSelfLoop) {
-                    direction = ofVec2f(bubbles[i].radius_animated.val(), 0).normalize();
-                } else {
-                    direction = (bubbles[j].pos - bubbles[i].pos).getNormalized();
-                }
-                ofVec2f arrowheadPos = bubbles[j].pos - direction * bubbles[j].radius_animated.val();
-                
+
+				// Calculate direction vector
+				ofVec2f direction;
+				if (isSelfLoop) {
+					direction = ofVec2f(bubbles[i].radius_animated.val(), 0).normalize();
+				}
+				else {
+					direction = (bubbles[j].pos - bubbles[i].pos).getNormalized();
+				}
+				ofVec2f arrowheadPos = bubbles[j].pos - direction * bubbles[j].radius_animated.val();
+
 				// Draw self-loops
 				if (isSelfLoop) {
 					ofPath curvedArrow;
 					curvedArrow.moveTo(bubbles[i].pos + direction * bubbles[i].radius_animated.val());
-					
-					ofVec2f cp1 = bubbles[i].pos + 3*direction * bubbles[i].radius_animated.val() + ofVec2f(0, -3 * bubbles[i].radius_animated.val());
-					ofVec2f cp2 = bubbles[i].pos - 4*direction * bubbles[i].radius_animated.val() + ofVec2f(0, -3 * bubbles[i].radius_animated.val());
+
+					ofVec2f cp1 = bubbles[i].pos + 3 * direction * bubbles[i].radius_animated.val() + ofVec2f(0, -3 * bubbles[i].radius_animated.val());
+					ofVec2f cp2 = bubbles[i].pos - 4 * direction * bubbles[i].radius_animated.val() + ofVec2f(0, -3 * bubbles[i].radius_animated.val());
 
 					curvedArrow.bezierTo(cp1, cp2, arrowheadPos + ofVec2f(-arrowSize, 0));
 					curvedArrow.setFilled(false);
@@ -217,40 +219,43 @@ void Graph::draw(int selectedBubble, bool renderWeights) {
 				else {
 					// Draw edges
 					ofFill();
-                    ofSetLineWidth(lineThickness);
+					ofSetLineWidth(lineThickness);
 					ofDrawLine(bubbles[i].pos, bubbles[j].pos);
 				}
-                
-                if (renderWeights == true) {
-                    // draw weight
-                    ofVec2f textPos = (bubbles[i].pos + bubbles[j].pos) / 2;
-                    if (isSelfLoop) {
-                        textPos = ofVec2f(bubbles[i].pos.x, (bubbles[i].pos - 4 * bubbles[i].radius_animated.val()).y);
-                    }
+
+				if (renderWeights == true) {
+					// draw weight
+					ofVec2f textPos = (bubbles[i].pos + bubbles[j].pos) / 2;
+					if (isSelfLoop) {
+						textPos = ofVec2f(bubbles[i].pos.x, (bubbles[i].pos - 4 * bubbles[i].radius_animated.val()).y);
+					}
 					myFont.drawString(ofToString(weight), textPos.x, textPos.y);
-                }
-                
-                // Draw arrow
-                float angle = atan2(direction.y, direction.x);
-                ofPushMatrix();
-                ofTranslate(arrowheadPos.x, arrowheadPos.y);
-                ofRotate(ofRadToDeg(angle));
-                ofDrawTriangle(0, 0, -arrowSize, -arrowSize * 0.5, -arrowSize, arrowSize * 0.5);
-                ofPopMatrix();
+				}
+
+				// Draw arrow
+				float angle = atan2(direction.y, direction.x);
+				ofPushMatrix();
+				ofTranslate(arrowheadPos.x, arrowheadPos.y);
+				ofRotate(ofRadToDeg(angle));
+				ofDrawTriangle(0, 0, -arrowSize, -arrowSize * 0.5, -arrowSize, arrowSize * 0.5);
+				ofPopMatrix();
 			}
 		}
 		ofPopMatrix();
+	}
 
-		// Draw nodes
-		ofFill();
-		if (i == selectedBubble)
-		{
-			bubbles[i].draw(true); // GUI has current bubble selected
+	// Draw nodes
+	for (int i = 0; i < adjMatrix.size(); i++) {
+		for (int j = 0; j < adjMatrix[i].size(); j++) {
+			ofFill();
+			if (i == selectedBubble)
+			{
+				bubbles[i].draw(true); // GUI has current bubble selected
+			}
+			else {
+				bubbles[i].draw(); // Other bubbles
+			}
 		}
-		else {
-			bubbles[i].draw(); // Other bubbles
-		}
-		
 	}
 }
 
