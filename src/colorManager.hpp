@@ -16,6 +16,9 @@ public:
     ofColor getColorBackground() { return background; }
     void setColorBackground(const ofColor& c) { background = c; }
 
+    ofColor getColorBackground2() { return background2; }
+    void setColorBackground2(const ofColor& c) { background2 = c; }
+
     ofColor getColorEdges() { return edges; }
     void setColorEdges(const ofColor& c) { edges = c; }
 
@@ -65,6 +68,7 @@ private:
     ColorManager(); // Private constructor for singleton pattern
 
     ofColor background;
+    ofColor background2;
     ofColor edges;
     ofColor inactive;
 

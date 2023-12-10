@@ -19,7 +19,6 @@ void ofApp::setup(){
 	fontSize = 12;
 	myFont.load("Lavigne.ttf", fontSize);
 	
-	ofBackground(ColorManager::getInstance().getColorBackground());
 	// Graph   TODO: 1) manually define nodes. 2) make it based on CSV file and real data :)
 	// Set edges
 	/*
@@ -104,6 +103,9 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+
+	// Background
+	ofBackgroundGradient(ColorManager::getInstance().getColorBackground2(), ColorManager::getInstance().getColorBackground(), OF_GRADIENT_CIRCULAR);
 
 	// Draw adj matrix
 	if (!hide_adj_matrix) {
