@@ -7,6 +7,7 @@
 
 #include "graph.hpp"
 #include "bubble.hpp"
+#include "ColorManager.hpp"
 
 
 
@@ -191,7 +192,7 @@ void Graph::draw(int selectedBubble, bool renderWeights) {
 				float weight = adjMatrix[i][j];
 				float lineThickness = weight * 2;
 				float arrowSize = weight * 10;
-				ofSetHexColor(0xF3ECDB);
+				ofSetColor(ColorManager::getInstance().getColorEdges());  // Edge Colour
 
 				// Calculate direction vector
 				ofVec2f direction;
@@ -273,11 +274,11 @@ void Graph::drawAdjMatrix() {
 	// translate to the top left corner of the rectangle
 	ofPushMatrix();
 	ofTranslate(ofGetWidth() - rectSize, 0);
-	ofSetHexColor(0xF3ECDB);
+	ofSetHexColor(0xF3ECDB); // background of adjacency
 	ofDrawRectangle(0, 0, rectSize, rectSize);
 
 	// set the color for the text
-	ofSetColor(0);
+	ofSetColor(0); // title color
 	myFont.drawString("Adjacency matrix:", 10, 20); 
 
 	for (int i = 0; i < adjMatrix.size(); i++) {
@@ -288,11 +289,11 @@ void Graph::drawAdjMatrix() {
 
 			// Highlight the currently active source 
 			if (bubbles[i].active) {
-				ofSetColor(0);
+				ofSetColor(0); // active row
 				myFont.drawString(valueStr, startX + j * spacing, startY + i * spacing);
 			}
 			else {
-				ofSetColor(150);
+				ofSetColor(150); //inactive row
 				myFont.drawString(valueStr, startX + j * spacing, startY + i * spacing);
 			}			
 		}
