@@ -3,8 +3,8 @@
 #include "ambience.hpp"
 #include "ColorManager.hpp"
 
-int constexpr NR_BUBBLES = 20;
-int constexpr MAX_CONNECTIONS = 4;
+int constexpr NR_BUBBLES = 18;
+int constexpr MAX_CONNECTIONS = 3;
 
 Graph graph(NR_BUBBLES);
 Ambience ambience("ambience-river.mp3");
@@ -19,33 +19,28 @@ void ofApp::setup(){
 	fontSize = 12;
 	myFont.load("Lavigne.ttf", fontSize);
 	
-	// Graph   TODO: 1) manually define nodes. 2) make it based on CSV file and real data :)
-	// Set edges
-	/*
-	graph.addEdge(0, 1, 0.5f);
-	graph.addEdge(0, 2, 0.5f);
-	graph.addEdge(1, 2, 1.0f);
-	graph.addEdge(2, 3, 0.5f);
-	graph.addEdge(2, 4, 1.0f);
-	graph.addEdge(3, 5, 1.0f);
-	graph.addEdge(3, 6, 1.0f);
-	graph.addEdge(3, 8, 1.0f);
-	graph.addEdge(4, 6, 1.0f);
-	graph.addEdge(5, 5, 1.0f);
-	graph.addEdge(5, 7, 1.0f);
-	graph.addEdge(6, 7, 1.0f);
-	graph.addEdge(6, 8, 1.0f);*/
-
+	// Graph
 	for (int i = 0; i < NR_BUBBLES; i++)
 	{
-        // ensure each node has one edge to another node
-        int randomTarget = std::rand() % NR_BUBBLES;
-        while (randomTarget == i) {
-            randomTarget = std::rand() % NR_BUBBLES;
+        // ensure each node has at least one edge to another node
+        int randomTarget = std::rand() % (NR_BUBBLES);
+       while (randomTarget <= i) {
+            randomTarget = std::rand() % (NR_BUBBLES);
+			if (i == (NR_BUBBLES - 1)) {
+				break;
+			}
         }
-        graph.addEdge(i, randomTarget, ofRandom(0.1f, 1.0f));
-        
-		for (int j = 0; j < std::rand() % (MAX_CONNECTIONS - 1); j++) graph.addEdge(i, std::rand() % NR_BUBBLES, ofRandom(0.0f, 1.0f));
+        graph.addEdge(i, randomTarget, ofRandom(0.5f, 1.0f));
+        // add more edges (up to max con -1)
+
+		if (i == (NR_BUBBLES - 1)) {
+			graph.addEdge(i, 0, 1.0f);
+		}
+		else {
+			for (int j = 0; j < std::rand() % (MAX_CONNECTIONS - 1); j++) {
+				graph.addEdge(i, i + std::rand() % (NR_BUBBLES - i), ofRandom(0.5f, 1.0f));
+			}
+		}
 	}
 	
  

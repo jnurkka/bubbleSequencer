@@ -81,11 +81,11 @@ void Bubble::activate() {
 	radius_animated.reset(default_radius);
 	radius_animated.setCurve(EASE_OUT_BACK);
 	radius_animated.setRepeatType(PLAY_ONCE);
-	radius_animated.setDuration(1);
+	radius_animated.setDuration(0.5f);
 	radius_animated.animateTo(active_radius);
 
 	color_animated.setColor(color_inactive_bubble);
-	color_animated.setDuration(0.5);
+	color_animated.setDuration(0.2);
 	color_animated.setRepeatType(PLAY_ONCE);
 	color_animated.setCurve(LINEAR);
 	color_animated.animateTo(color_active_bubble);
@@ -99,11 +99,11 @@ void Bubble::deactivate() {
 	radius_animated.reset(active_radius);
 	radius_animated.setCurve(EASE_OUT_BACK);
 	radius_animated.setRepeatType(PLAY_ONCE);
-	radius_animated.setDuration(1);
+	radius_animated.setDuration(1.0);
 	radius_animated.animateTo(default_radius);
 
 	color_animated.setColor(color_active_bubble);
-	color_animated.setDuration(0.5);
+	color_animated.setDuration(1.0);
 	color_animated.setRepeatType(PLAY_ONCE);
 	color_animated.setCurve(LINEAR);
 	color_animated.animateTo(color_inactive_bubble);
