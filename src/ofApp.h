@@ -4,6 +4,7 @@
 #include "ofxBpm.h"
 #include "ofxGui.h"
 #include "ofTrueTypeFont.h"
+#include "eventlogImporter.hpp"
 
 
 class ofApp : public ofBaseApp{
@@ -50,6 +51,8 @@ class ofApp : public ofBaseApp{
 		ofxIntSlider bubbleNote;
 		void bubbleNoteChanged(int& midiNote);
 
+		// Eventlog Importer
+		EventlogImporter eventLogImporter;
 
 	private:
 		// Font

@@ -2,7 +2,7 @@
 //  circle.hpp
 //  creativeCoding_001
 //
-//  Created by Jaakko Nurkka on 01.11.23.
+//  Created by Timothy Smith and Jaakko Nurkka on 02.12.23.
 //
 #pragma once
 

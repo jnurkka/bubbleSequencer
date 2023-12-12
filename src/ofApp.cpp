@@ -3,8 +3,8 @@
 #include "ambience.hpp"
 #include "ColorManager.hpp"
 
-int constexpr NR_BUBBLES = 18;
-int constexpr MAX_CONNECTIONS = 3;
+int constexpr NR_BUBBLES = 14;
+int constexpr MAX_CONNECTIONS = 4;
 
 Graph graph(NR_BUBBLES);
 Ambience ambience("ambience-river.mp3");
@@ -18,6 +18,10 @@ void ofApp::setup(){
 	// Load font
 	fontSize = 12;
 	myFont.load("Lavigne.ttf", fontSize);
+
+	// Import CSV
+	eventLogImporter.loadCSV("reece.csv");
+	//eventLogImporter.printEventLog();  // debug and plot csv. 10000 cases so takes a while...
 	
 	// Graph
 	for (int i = 0; i < NR_BUBBLES; i++)
