@@ -20,8 +20,11 @@ void ofApp::setup(){
 	myFont.load("Lavigne.ttf", fontSize);
 
 	// Import CSV
-	eventLogImporter.loadCSV("reece.csv");
+	eventlogImporter.loadCSV("reece.csv");
 	//eventLogImporter.printEventLog();  // debug and plot csv. 10000 cases so takes a while...
+	vector<EventlogImporter::Event> matchingEvents = eventlogImporter.getEventsForCaseID("1");
+	eventlogImporter.printCaseEvents(matchingEvents);
+
 	
 	// Graph
 	for (int i = 0; i < NR_BUBBLES; i++)

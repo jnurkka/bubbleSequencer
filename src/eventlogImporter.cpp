@@ -17,7 +17,6 @@ void EventlogImporter::loadCSV(const string& filePath) {
     while (!buffer.isLastLine()) {
         string line = buffer.getNextLine();
         stringstream ss(line);
-        string item;
 
         Event event;
 
@@ -37,5 +36,28 @@ void EventlogImporter::printEventLog() {
         cout << "Case ID: " << event.caseID << ", ";
         cout << "Activity: " << event.activity << ", ";
         cout << "Timestamp: " << event.timestampStr << endl;
+    }
+}
+
+
+vector<EventlogImporter::Event> EventlogImporter::getEventsForCaseID(const string& targetCaseID) {
+    vector<Event> matchingEvents;
+
+    for (const auto& event : events) {
+        if (event.caseID == targetCaseID) {
+            matchingEvents.push_back(event);
+        }
+    }
+
+    return matchingEvents;
+}
+
+
+void EventlogImporter::printCaseEvents (vector<EventlogImporter::Event> caseEvents){
+    cout << "Events for Case ID:" << endl;
+    for (const auto& matchingEvent : caseEvents) {
+        cout << "Case ID: " << matchingEvent.caseID << ", ";
+        cout << "Activity: " << matchingEvent.activity << ", ";
+        cout << "Timestamp: " << matchingEvent.timestampStr << endl;
     }
 }

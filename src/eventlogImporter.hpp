@@ -24,4 +24,7 @@ class EventlogImporter {
         void loadCSV(const string& filePath);
         void printEventLog();
 
+        vector<Event> getEventsForCaseID(const string& targetCaseID);
+        void printCaseEvents(vector<EventlogImporter::Event> caseEvents);
+
 };

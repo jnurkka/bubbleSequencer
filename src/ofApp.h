@@ -52,7 +52,7 @@ class ofApp : public ofBaseApp{
 		void bubbleNoteChanged(int& midiNote);
 
 		// Eventlog Importer
-		EventlogImporter eventLogImporter;
+		EventlogImporter eventlogImporter;
 
 	private:
 		// Font
