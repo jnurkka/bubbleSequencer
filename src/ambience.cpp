@@ -22,3 +22,7 @@ void Ambience::play() {
 void Ambience::pause() {
     sample.setPaused(true);
 }
+
+void Ambience::update_volume(float _volume) {
+    sample.setVolume(_volume);
+}

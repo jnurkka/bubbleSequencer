@@ -15,6 +15,7 @@ void ofApp::setup(){
 	// Open in fullscreen
 	ofSetFullscreen(false);
 
+
 	// Load font
 	fontSize = 12;
 	myFont.load("Lavigne.ttf", fontSize);
@@ -53,8 +54,6 @@ void ofApp::setup(){
 	isLeftMouseDown = false;
 	dragID = 0;
 
-
-
 	// BPM
 	int constexpr tempo = 20;
 	bpm.setBeatPerBar(4);
@@ -66,6 +65,7 @@ void ofApp::setup(){
 	gui.setup();
 	button.addListener(this, &ofApp::buttonGuiPressed);
 	gui.add(int_slider.setup("BPM Slider", tempo, ofxBpm::OFX_BPM_MIN, ofxBpm::OFX_BPM_MAX));
+	gui.add(f_slider_vol_ambi.setup("Ambience volume", 0.4, 0.0, 1.0));
 	gui.add(button.setup("Start/stop"));
 	gui.add(toggle_spring.setup("Spring Layout", true));
 	gui.add(hide_adj_matrix.setup("Hide Adj Matrix", true));
@@ -83,6 +83,9 @@ void ofApp::setup(){
 void ofApp::update(){
 	// Update BPM based on GUI Slider
 	bpm.setBpm(int_slider);
+
+	// Update volume of ambience
+	ambience.update_volume(f_slider_vol_ambi);
 
 	// Update graph layout
 	if (toggle_spring)
@@ -144,6 +147,9 @@ void ofApp::keyPressed(int key){
 		case OF_KEY_RIGHT:
 			int_slider = int_slider + 5;
 			break;
+
+		case 'f':
+			ofToggleFullscreen();
 
 		default:
 			break;

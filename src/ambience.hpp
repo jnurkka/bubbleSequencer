@@ -15,4 +15,5 @@ class Ambience {
         Ambience(string file);
         void play();
         void pause();
+        void update_volume(float _volume);
 };

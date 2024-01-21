@@ -39,6 +39,7 @@ class ofApp : public ofBaseApp{
 		// GUI
 		ofxPanel gui;
 		ofxIntSlider int_slider;
+		ofxFloatSlider f_slider_vol_ambi;
 		ofxButton button;
 		ofxToggle toggle_spring;
 		ofxToggle hide_adj_matrix;

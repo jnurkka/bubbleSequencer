@@ -32,7 +32,7 @@ ColorManager::ColorManager() {
 
 ofColor ColorManager::getRandomColor() {
     // Create an array of colors to choose from
-    std::vector<ofColor> colors = { color1, color2, color3, color4, color5, color6, color7, color8, color9 }; // Add more colors as needed
+    std::vector<ofColor> colors = { color1, color2, color3, color4, color5, color6, color7, color8, color9 };
 
     // Randomly choose a color from the array
     int randomIndex = ofRandom(0, colors.size());
