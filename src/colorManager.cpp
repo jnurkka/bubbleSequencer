@@ -18,6 +18,7 @@ ColorManager::ColorManager() {
     setColorEdges(ofColor::fromHex(0xFFFFFF));  // white
     setColorInactive(ofColor::fromHex(0x666666));  // grey
 
+    // Bubble colours
     setColor1(ofColor::fromHex(0x1274FA)); // blue
     setColor2(ofColor::fromHex(0x00FEF9)); // cyan
     setColor3(ofColor::fromHex(0x0AFD70)); // Green

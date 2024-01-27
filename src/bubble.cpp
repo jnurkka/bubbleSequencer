@@ -2,7 +2,6 @@
 //  bubble.cpp
 //  bubbleSequencer
 //
-//  Created by Jaakko Nurkka on 01.11.23.
 //
 
 #include "bubble.hpp"
@@ -36,13 +35,28 @@ Bubble::~Bubble() {
 
 void Bubble::init(float x, float y, int id, ofTrueTypeFont font) {
 	
-	// meta data
+	// Meta data
 	pos = ofVec2f(x, y);
 	bubbleID = id;
 	myFont = font;
 
+	// Sounds
+	init_sound();
+
+
+	//// Animations
+	// radius
+	radius_animated.reset(default_radius);
+	// color
+	color_active_bubble.set(ColorManager::getInstance().getRandomColor());
+	color_inactive_bubble.set(ColorManager::getInstance().getColorInactive());
+	color_animated.setColor(color_inactive_bubble);
+}
+
+
+void Bubble::init_sound() {
 	// choose random sample
-	string path = "bells" ;
+	string path = "bells";
 	ofDirectory dir(path);
 	dir.allowExt("mp3");
 	dir.listDir();
@@ -58,18 +72,9 @@ void Bubble::init(float x, float y, int id, ofTrueTypeFont font) {
 	string randomFile = dir.getPath(randomIndex);
 
 	// init sample player
-    sample.load(randomFile);
-    sample.setVolume(0.5);
-    sample.setMultiPlay(true);
-
-	//// Animations
-	// radius
-	radius_animated.reset(default_radius);
-	// color
-	color_active_bubble.set(ColorManager::getInstance().getRandomColor());
-	color_inactive_bubble.set(ColorManager::getInstance().getColorInactive());
-	color_animated.setColor(color_inactive_bubble);
-
+	sample.load(randomFile);
+	sample.setVolume(0.5);
+	sample.setMultiPlay(true);
 }
 
 

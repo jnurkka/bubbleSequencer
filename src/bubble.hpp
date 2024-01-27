@@ -2,7 +2,6 @@
 //  circle.hpp
 //  creativeCoding_001
 //
-//  Created by Jaakko Nurkka on 01.11.23.
 //
 #pragma once
 
@@ -23,6 +22,7 @@ class Bubble {
         ~Bubble();
 
         void init(float x, float y, int id, ofTrueTypeFont font);
+        void init_sound();
         void setPos(float x, float y);
 
         ofVec2f pos;

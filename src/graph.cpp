@@ -2,7 +2,6 @@
 //  graph.cpp
 //  bubbleSequencer
 //
-//  Created by Jaakko Nurkka on 01.11.23.
 //
 
 #include "graph.hpp"
@@ -122,8 +121,7 @@ void Graph::update()
 }
 
 
-void Graph::updateLayout_SpringForces()
-{
+void Graph::updateLayout_SpringForces() {
 	float damping = 0.07f; // Damping factor to prevent oscillations
 	float k = 0.3f; // Spring constant
 	float repulsion = 200000; // Node repulsion strength

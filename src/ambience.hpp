@@ -2,7 +2,6 @@
 //  ambience.hpp
 //  bubbleSequencer
 //
-//  Created by Jaakko Nurkka on 02.12.23.
 //
 
 #pragma once

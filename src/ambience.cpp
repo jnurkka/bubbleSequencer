@@ -2,7 +2,6 @@
 //  ambience.cpp
 //  bubbleSequencer
 //
-//  Created by Jaakko Nurkka on 02.12.23.
 //
 
 #include "ambience.hpp"
