@@ -9,9 +9,15 @@
 #include "ColorManager.hpp"
 
 
+Graph::Graph(int size) {
 
-Graph::Graph(int size) : adjMatrix(size, std::vector<float>(size, 0.0f)), bubbles(size) {
 
+	for (int i = 0; i < size; i++) {
+		bubbles.push_back(Bubble());
+		adjMatrix.push_back(vector<float>(size, 0.0f));
+	}
+
+	initRandom(size);
 }
 
 
@@ -19,6 +25,41 @@ Graph::~Graph() {
 
 }
 
+void Graph::initRandom(int size) {
+	// Init random graph
+	int constexpr MAX_CONNECTIONS = 3;
+
+
+	// Reset adj matrix
+	for (int i = 0; i < size; i++) {
+		for (int j = 0; j < size; j++) {
+			adjMatrix[i][j] = 0.0f;
+		}
+	}
+
+	for (int i = 0; i < size; i++)
+	{
+		// ensure each node has at least one edge to another node
+		int randomTarget = std::rand() % (size);
+		while (randomTarget <= i) {
+			randomTarget = std::rand() % (size);
+			if (i == (size - 1)) {
+				break;
+			}
+		}
+		addEdge(i, randomTarget, ofRandom(0.5f, 1.0f));
+		// add more edges (up to max con -1)
+
+		if (i == (size - 1)) {
+			addEdge(i, 0, 1.0f);
+		}
+		else {
+			for (int j = 0; j < std::rand() % (MAX_CONNECTIONS - 1); j++) {
+				addEdge(i, i + std::rand() % (size - i), ofRandom(0.5f, 1.0f));
+			}
+		}
+	}
+}
 
 int Graph::size() {
 	return bubbles.size();

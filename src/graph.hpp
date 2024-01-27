@@ -2,7 +2,6 @@
 //  graph.hpp
 //  bubbleSequencer
 //
-//  Created by Jaakko Nurkka on 01.11.23.
 //
 #pragma once
 
@@ -19,6 +18,8 @@ class Graph {
         ~Graph();
 
         int size();
+
+        void initRandom(int size);
 
         void addEdge(int source, int sink, float weight);
         void removeEdge(int source, int sink);
@@ -37,7 +38,7 @@ class Graph {
 
 
     private:
-        std::vector<std::vector<float>> adjMatrix; // [row][column]
+        std::vector<std::vector<float>> adjMatrix;
         std::vector<int> levels;
 
         int activeStep = -1;

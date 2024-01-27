@@ -6,7 +6,7 @@
 int constexpr NR_BUBBLES = 18;
 int constexpr MAX_CONNECTIONS = 3;
 
-Graph graph(NR_BUBBLES);
+Graph graph = Graph(NR_BUBBLES);
 Ambience ambience("ambience-river.mp3");
 
 //--------------------------------------------------------------
@@ -15,36 +15,12 @@ void ofApp::setup(){
 	// Open in fullscreen
 	ofSetFullscreen(false);
 
-
 	// Load font
 	fontSize = 12;
 	myFont.load("Lavigne.ttf", fontSize);
 	
-	// Graph
-	for (int i = 0; i < NR_BUBBLES; i++)
-	{
-        // ensure each node has at least one edge to another node
-        int randomTarget = std::rand() % (NR_BUBBLES);
-       while (randomTarget <= i) {
-            randomTarget = std::rand() % (NR_BUBBLES);
-			if (i == (NR_BUBBLES - 1)) {
-				break;
-			}
-        }
-        graph.addEdge(i, randomTarget, ofRandom(0.5f, 1.0f));
-        // add more edges (up to max con -1)
+	// Graph	
 
-		if (i == (NR_BUBBLES - 1)) {
-			graph.addEdge(i, 0, 1.0f);
-		}
-		else {
-			for (int j = 0; j < std::rand() % (MAX_CONNECTIONS - 1); j++) {
-				graph.addEdge(i, i + std::rand() % (NR_BUBBLES - i), ofRandom(0.5f, 1.0f));
-			}
-		}
-	}
-	
- 
 	// Calc positions
     graph.initLayout(myFont);
 	old_w = ofGetWidth();
@@ -55,7 +31,7 @@ void ofApp::setup(){
 	dragID = 0;
 
 	// BPM
-	int constexpr tempo = 20;
+	int constexpr tempo = 120;
 	bpm.setBeatPerBar(4);
 	bpm.setBpm(tempo);
 	ofAddListener(bpm.beatEvent, this, &ofApp::triggerBeat);
@@ -150,6 +126,10 @@ void ofApp::keyPressed(int key){
 
 		case 'f':
 			ofToggleFullscreen();
+
+		case 'r':
+			graph.initRandom(NR_BUBBLES);
+
 
 		default:
 			break;

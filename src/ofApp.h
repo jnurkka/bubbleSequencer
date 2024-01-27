@@ -16,7 +16,6 @@ class ofApp : public ofBaseApp{
 		void exit() override;
 
 
-
 		// Used for scaling the window size
 		void windowResized(int w, int h);
 		float old_w;
