@@ -6,7 +6,7 @@
 int constexpr NR_BUBBLES = 18;
 int constexpr MAX_CONNECTIONS = 3;
 
-Graph graph = Graph(NR_BUBBLES);
+// asdfGraph graph = Graph(NR_BUBBLES);
 Ambience ambience("ambience-river.mp3");
 
 //--------------------------------------------------------------
@@ -19,7 +19,8 @@ void ofApp::setup(){
 	fontSize = 12;
 	myFont.load("Lavigne.ttf", fontSize);
 	
-	// Graph	
+	// Graph
+	graph = Graph(NR_BUBBLES);	
 
 	// Calc positions
     graph.initLayout(myFont);
@@ -45,6 +46,13 @@ void ofApp::setup(){
 	gui.add(button.setup("Start/stop"));
 	gui.add(toggle_spring.setup("Spring Layout", true));
 	gui.add(hide_adj_matrix.setup("Hide Adj Matrix", true));
+
+	// GUI keys
+	gui.add(label_space.setup("Space", "Start / stop"));
+	gui.add(label_arrows.setup("Arrows", "Adjust tempo"));
+	gui.add(label_reset.setup("r", "Reset graph"));
+	gui.add(label_full.setup("f", "Fullscreen"));
+
 
 	// GUI bubbles
 	gui.add(bubbleId.setup("Bubble ID", ofToString(graph.bubbles[0].bubbleID)));
@@ -126,10 +134,18 @@ void ofApp::keyPressed(int key){
 
 		case 'f':
 			ofToggleFullscreen();
+			break;
 
 		case 'r':
-			graph.initRandom(NR_BUBBLES);
+			graph = Graph((std::rand() % 20) + 5);
+			graph.initLayout(myFont);
 
+			// update GUI
+			dragID = 0;
+			bubbleId = ofToString(graph.bubbles[0].bubbleID);
+			bubbleFile = graph.bubbles[0].file;
+			bubbleNote = graph.bubbles[0].midi_note;
+			break;
 
 		default:
 			break;

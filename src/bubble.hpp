@@ -50,8 +50,8 @@ class Bubble {
         int midi_note;
 
 private: 
-    float const default_radius = 30.0f;
-    float const active_radius = 40.0f;
+    float default_radius = 30.0f;
+    float active_radius = 40.0f;
 
     // Font
     ofTrueTypeFont myFont;

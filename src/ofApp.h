@@ -5,6 +5,8 @@
 #include "ofxGui.h"
 #include "ofTrueTypeFont.h"
 
+#include "graph.hpp"
+
 
 class ofApp : public ofBaseApp{
 
@@ -14,12 +16,12 @@ class ofApp : public ofBaseApp{
 		void update() override;
 		void draw() override;
 		void exit() override;
-
-
-		// Used for scaling the window size
 		void windowResized(int w, int h);
 		float old_w;
 		float old_h;
+
+		// Graph
+		Graph graph;
 
 		// Keyboard control
 		void keyPressed(int key) override;
@@ -43,6 +45,10 @@ class ofApp : public ofBaseApp{
 		ofxToggle toggle_spring;
 		ofxToggle hide_adj_matrix;
 		void buttonGuiPressed();
+		ofxLabel label_space;
+		ofxLabel label_arrows;
+		ofxLabel label_reset;
+		ofxLabel label_full;
 
 		// Gui for Bubble control
 		ofxLabel bubbleId;

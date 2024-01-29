@@ -14,6 +14,7 @@
 
 class Graph {
     public:
+        Graph();
         Graph(int size);
         ~Graph();
 

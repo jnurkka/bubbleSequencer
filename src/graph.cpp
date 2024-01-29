@@ -9,6 +9,9 @@
 #include "ColorManager.hpp"
 
 
+Graph::Graph() {
+}
+
 Graph::Graph(int size) {
 
 
@@ -22,7 +25,12 @@ Graph::Graph(int size) {
 
 
 Graph::~Graph() {
-
+	// Avoid clipping
+	for (int i = 0; i < bubbles.size(); i++) {
+		bubbles[i].sample.setVolume(0.0f);
+		bubbles[i].sample.stop();
+	}
+	bubbles.clear();
 }
 
 void Graph::initRandom(int size) {
