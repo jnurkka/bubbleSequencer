@@ -9,10 +9,24 @@
 #include "ColorManager.hpp"
 
 
+bool const USE_MIDI = false; // TODO
+
+
 Graph::Graph() {
 }
 
 Graph::Graph(int size) {
+
+	if (USE_MIDI) {
+		// print the available output ports to the console
+		midiOut.listOutPorts();
+
+		// connect
+		midiOut.openPort(0); // by number
+		//midiOut.openPort("IAC Driver Pure Data In"); // by name
+		//midiOut.openVirtualPort("ofxMidiOut"); // open a virtual port
+	}
+
 
 
 	for (int i = 0; i < size; i++) {
@@ -31,6 +45,11 @@ Graph::~Graph() {
 		bubbles[i].sample.stop();
 	}
 	bubbles.clear();
+
+	if (USE_MIDI) {
+		// Close midi port
+		midiOut.closePort();
+	}
 }
 
 void Graph::initRandom(int size) {
@@ -157,8 +176,14 @@ int Graph::calculateNextStep() {
 
 void Graph::activateNext() {
     int const nextStep = calculateNextStep();
-    activeStep = nextStep;
     bubbles[nextStep].activate();
+
+	if (USE_MIDI) {
+		midiOut.sendNoteOn(127, bubbles[nextStep].midi_note, 127);
+		//midiOut.sendNoteOff(1, bubbles[activeStep].midi_note, 64);
+	}
+
+	activeStep = nextStep;
 }
 
 
@@ -237,7 +262,7 @@ void Graph::draw(int selectedBubble, bool renderWeights) {
 			if (adjMatrix[i][j]) {
 				bool isSelfLoop = i == j;
 				float weight = adjMatrix[i][j];
-				float lineThickness = weight * 2;
+				float lineThickness = weight * 3;
 				float arrowSize = weight * 10;
 				ofSetColor(ColorManager::getInstance().getColorEdges());  // Edge Colour
 

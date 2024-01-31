@@ -9,6 +9,7 @@
 #include "bubble.hpp"
 #include <vector>
 #include "ofTrueTypeFont.h"
+#include "ofxMidi.h"
 
 
 
@@ -36,6 +37,9 @@ class Graph {
         void activateNext();
 
         std::vector<Bubble> bubbles;
+
+        // MIDI
+        ofxMidiOut midiOut;
 
 
     private:
