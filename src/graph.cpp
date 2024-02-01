@@ -9,32 +9,19 @@
 #include "ColorManager.hpp"
 
 
-bool const USE_MIDI = false; // TODO
-
 
 Graph::Graph() {
 }
 
 Graph::Graph(int size) {
 
-	if (USE_MIDI) {
-		// print the available output ports to the console
-		midiOut.listOutPorts();
-
-		// connect
-		midiOut.openPort(0); // by number
-		//midiOut.openPort("IAC Driver Pure Data In"); // by name
-		//midiOut.openVirtualPort("ofxMidiOut"); // open a virtual port
-	}
-
-
-
+	// Init steps
 	for (int i = 0; i < size; i++) {
 		bubbles.push_back(Bubble());
 		adjMatrix.push_back(vector<float>(size, 0.0f));
 	}
 
-	initRandom(size);
+	initRandomGraph(size);
 }
 
 
@@ -45,17 +32,11 @@ Graph::~Graph() {
 		bubbles[i].sample.stop();
 	}
 	bubbles.clear();
-
-	if (USE_MIDI) {
-		// Close midi port
-		midiOut.closePort();
-	}
 }
 
-void Graph::initRandom(int size) {
+void Graph::initRandomGraph(int size) {
 	// Init random graph
 	int constexpr MAX_CONNECTIONS = 3;
-
 
 	// Reset adj matrix
 	for (int i = 0; i < size; i++) {
@@ -153,19 +134,18 @@ int selectNodeFromOptions(vector<tuple<int, float>> options) {
 
 
 int Graph::calculateNextStep() {
-    int const activeIndex = activeStep;
 
     // if any of steps active, deactivate it
-    if (activeIndex >= 0)
+    if (activeStep >= 0)
     {
-        bubbles[activeIndex].deactivate();
+        bubbles[activeStep].deactivate();
     }
 
-    if (activeIndex == -1) {
+    if (activeStep == -1) {
         // if no step active, activate first step
         return 0;
     }
-    // othewise fetch next step options
+    // otherwise fetch next step options
     vector<tuple<int, float>> options = findNextStepOptions();
     
     int const nextIndex = selectNodeFromOptions(options);
@@ -175,15 +155,9 @@ int Graph::calculateNextStep() {
 
 
 void Graph::activateNext() {
-    int const nextStep = calculateNextStep();
-    bubbles[nextStep].activate();
-
-	if (USE_MIDI) {
-		midiOut.sendNoteOn(127, bubbles[nextStep].midi_note, 127);
-		//midiOut.sendNoteOff(1, bubbles[activeStep].midi_note, 64);
-	}
-
-	activeStep = nextStep;
+	previousStep = activeStep;
+	activeStep = calculateNextStep();
+    bubbles[activeStep].activate();
 }
 
 
@@ -371,4 +345,14 @@ void Graph::drawAdjMatrix() {
 		}
 	}
 	ofPopMatrix();
+}
+
+
+int Graph::getActiveStep() {
+	return activeStep;
+}
+
+
+int Graph::getPreviousStep() {
+	return previousStep;
 }

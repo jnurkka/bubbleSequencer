@@ -4,7 +4,7 @@
 #include "ofxBpm.h"
 #include "ofxGui.h"
 #include "ofTrueTypeFont.h"
-
+#include "ofxMidi.h"
 #include "graph.hpp"
 
 
@@ -50,11 +50,14 @@ class ofApp : public ofBaseApp{
 		ofxLabel label_reset;
 		ofxLabel label_full;
 
-		// Gui for Bubble control
+		// GUI for Bubble control
 		ofxLabel bubbleId;
 		ofxLabel bubbleFile;
 		ofxIntSlider bubbleNote;
 		void bubbleNoteChanged(int& midiNote);
+
+		// MIDI
+		ofxMidiOut midiOut;
 
 
 	private:

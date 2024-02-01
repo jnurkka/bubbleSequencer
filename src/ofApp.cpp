@@ -6,6 +6,8 @@
 int constexpr NR_BUBBLES = 18;
 int constexpr MAX_CONNECTIONS = 3;
 
+bool const USE_MIDI = true; // TODO
+
 // asdfGraph graph = Graph(NR_BUBBLES);
 Ambience ambience("ambience-river.mp3");
 
@@ -60,6 +62,21 @@ void ofApp::setup(){
 
 	bubbleNote.addListener(this, &ofApp::bubbleNoteChanged);
 	gui.add(bubbleNote.setup("Midi note", graph.bubbles[0].midi_note, 0, 127));
+
+
+	// Init Midi
+	if (USE_MIDI) {
+		// Debug
+		ofSetLogLevel(OF_LOG_VERBOSE);
+		
+		// print the available output ports to the console
+		midiOut.listOutPorts();
+
+		// connect
+		midiOut.openPort(0); // by number
+		//midiOut.openPort("IAC Driver Pure Data In"); // by name
+		//midiOut.openVirtualPort("ofxMidiOut"); // open a virtual port
+	}
 }
 
 
@@ -107,6 +124,11 @@ void ofApp::draw(){
 void ofApp::exit(){
 	// Kill BPM thread
 	bpm.stop();
+
+	// Close midi port
+	if (USE_MIDI) {
+		midiOut.closePort();
+	}
 }
 
 
@@ -193,6 +215,20 @@ void ofApp::mouseReleased(int x, int y, int button) {
 //--------------------------------------------------------------
 void ofApp::triggerBeat(){
     graph.activateNext();
+
+	// MIDI
+	if (USE_MIDI) {
+		int const activeStep = graph.getActiveStep();
+		int const previousStep = graph.getPreviousStep();
+
+		midiOut.sendNoteOn(127, graph.bubbles[activeStep].midi_note, 127);
+		if (previousStep != -1) {
+			midiOut.sendNoteOff(1, graph.bubbles[previousStep].midi_note, 64);
+		}
+		// print out both the midi note and the frequency
+		ofLogNotice() << "note: " << graph.bubbles[activeStep].midi_note
+			<< " freq: " << ofxMidi::mtof(graph.bubbles[activeStep].midi_note) << " Hz";
+	}
 }
 
 
