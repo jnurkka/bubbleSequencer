@@ -9,26 +9,34 @@
 #include "ColorManager.hpp"
 
 
+
+Graph::Graph() {
+}
+
 Graph::Graph(int size) {
 
-
+	// Init steps
 	for (int i = 0; i < size; i++) {
 		bubbles.push_back(Bubble());
 		adjMatrix.push_back(vector<float>(size, 0.0f));
 	}
 
-	initRandom(size);
+	initRandomGraph(size);
 }
 
 
 Graph::~Graph() {
-
+	// Avoid clipping
+	for (int i = 0; i < bubbles.size(); i++) {
+		bubbles[i].sample.setVolume(0.0f);
+		bubbles[i].sample.stop();
+	}
+	bubbles.clear();
 }
 
-void Graph::initRandom(int size) {
+void Graph::initRandomGraph(int size) {
 	// Init random graph
 	int constexpr MAX_CONNECTIONS = 3;
-
 
 	// Reset adj matrix
 	for (int i = 0; i < size; i++) {
@@ -126,19 +134,18 @@ int selectNodeFromOptions(vector<tuple<int, float>> options) {
 
 
 int Graph::calculateNextStep() {
-    int const activeIndex = activeStep;
 
     // if any of steps active, deactivate it
-    if (activeIndex >= 0)
+    if (activeStep >= 0)
     {
-        bubbles[activeIndex].deactivate();
+        bubbles[activeStep].deactivate();
     }
 
-    if (activeIndex == -1) {
+    if (activeStep == -1) {
         // if no step active, activate first step
         return 0;
     }
-    // othewise fetch next step options
+    // otherwise fetch next step options
     vector<tuple<int, float>> options = findNextStepOptions();
     
     int const nextIndex = selectNodeFromOptions(options);
@@ -148,9 +155,9 @@ int Graph::calculateNextStep() {
 
 
 void Graph::activateNext() {
-    int const nextStep = calculateNextStep();
-    activeStep = nextStep;
-    bubbles[nextStep].activate();
+	previousStep = activeStep;
+	activeStep = calculateNextStep();
+    bubbles[activeStep].activate();
 }
 
 
@@ -229,7 +236,7 @@ void Graph::draw(int selectedBubble, bool renderWeights) {
 			if (adjMatrix[i][j]) {
 				bool isSelfLoop = i == j;
 				float weight = adjMatrix[i][j];
-				float lineThickness = weight * 2;
+				float lineThickness = weight * 3;
 				float arrowSize = weight * 10;
 				ofSetColor(ColorManager::getInstance().getColorEdges());  // Edge Colour
 
@@ -338,4 +345,14 @@ void Graph::drawAdjMatrix() {
 		}
 	}
 	ofPopMatrix();
+}
+
+
+int Graph::getActiveStep() {
+	return activeStep;
+}
+
+
+int Graph::getPreviousStep() {
+	return previousStep;
 }
