@@ -33,7 +33,7 @@ void ofApp::setup(){
 	isLeftMouseDown = false;
 	dragID = 0;
 
-	// BPM
+	// BPM init
 	int constexpr tempo = 120;
 	bpm.setBeatPerBar(4);
 	bpm.setBpm(tempo);
@@ -66,9 +66,6 @@ void ofApp::setup(){
 
 	// Init Midi
 	if (USE_MIDI) {
-		// Debug
-		ofSetLogLevel(OF_LOG_VERBOSE);
-		
 		// print the available output ports to the console
 		midiOut.listOutPorts();
 
@@ -77,6 +74,13 @@ void ofApp::setup(){
 		//midiOut.openPort("IAC Driver Pure Data In"); // by name
 		//midiOut.openVirtualPort("ofxMidiOut"); // open a virtual port
 
+		// GUI debug
+		gui.add(label_midi_port.setup("Midi Port", to_string(midiOut.getPort())));
+		gui.add(label_midi_name.setup("Midi Name", midiOut.getName()));
+		gui.add(label_midi_virtual.setup("Midi isVirtual", to_string(midiOut.isVirtual())));
+	}
+	else {
+		gui.add(label_midi_port.setup("Midi Port", "No Midi. Using internal sound."));
 	}
 }
 
@@ -118,16 +122,6 @@ void ofApp::draw(){
 	
 	// Draw GUI
 	gui.draw();
-
-	// Debug Midi
-	if (USE_MIDI) {
-		// Check it is connected
-		stringstream text;
-		text << "connected to port " << midiOut.getPort()
-			<< " \"" << midiOut.getName() << "\"" << endl
-			<< "is virtual?: " << midiOut.isVirtual() << endl << endl;
-		ofDrawBitmapString(text.str(), 20, 20);
-	}
 }
 
 
@@ -157,28 +151,7 @@ void ofApp::keyPressed(int key){
 
 	switch (key) {
 		case ' ':
-			if (bpm.isPlaying()){
-				bpm.stop();
-                ambience.pause();
-			} else {
-				bpm.start();
-                ambience.play();
-			}
-
-			// Decative Graph
-			graph.deactivateGraph();
-
-			// Send midi off
-			if (USE_MIDI) {
-				int const activeStep = graph.getActiveStep();
-				if (activeStep != -1) {
-					midiOut.sendNoteOff(1, graph.bubbles[graph.getActiveStep()].midi_note, 64);
-				}
-				int const previousStep = graph.getPreviousStep();
-				if (previousStep != -1) {
-					midiOut.sendNoteOff(1, graph.bubbles[previousStep].midi_note, 64);
-				}
-			}
+			toggleStartStop();
 			break;
 
 		case OF_KEY_LEFT:
@@ -272,18 +245,36 @@ void ofApp::triggerBeat(){
 }
 
 
+void ofApp::toggleStartStop() {
+	if (bpm.isPlaying()) {
+		bpm.stop();
+		ambience.pause();
+	}
+	else {
+		bpm.start();
+		ambience.play();
+	}
+
+	// Decative Graph
+	graph.deactivateGraph();
+
+	// Send midi off
+	if (USE_MIDI) {
+		int const activeStep = graph.getActiveStep();
+		if (activeStep != -1) {
+			midiOut.sendNoteOff(1, graph.bubbles[graph.getActiveStep()].midi_note, 64);
+		}
+		int const previousStep = graph.getPreviousStep();
+		if (previousStep != -1) {
+			midiOut.sendNoteOff(1, graph.bubbles[previousStep].midi_note, 64);
+		}
+	}
+}
+
+
 //--------------------------------------------------------------
 void ofApp::buttonGuiPressed(){
-	if (bpm.isPlaying())
-	{
-		bpm.stop();
-        ambience.pause();
-	}
-	else
-	{
-		bpm.start();
-        ambience.play();
-	}
+	toggleStartStop();
 }
 
 

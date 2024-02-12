@@ -36,6 +36,7 @@ class ofApp : public ofBaseApp{
 		// BPM 
 		ofxBpm bpm;
 		void triggerBeat();
+		void toggleStartStop();
 
 		// GUI
 		ofxPanel gui;
@@ -58,6 +59,9 @@ class ofApp : public ofBaseApp{
 
 		// MIDI
 		ofxMidiOut midiOut;
+		ofxLabel label_midi_port;
+		ofxLabel label_midi_name;
+		ofxLabel label_midi_virtual;
 
 
 	private:
