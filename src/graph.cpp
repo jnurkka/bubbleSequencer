@@ -16,6 +16,8 @@ Graph::Graph() {
 Graph::Graph(int size) {
 
 	// Init steps
+	activeStep = -1;
+	previousStep = -1;
 	for (int i = 0; i < size; i++) {
 		bubbles.push_back(Bubble());
 		adjMatrix.push_back(vector<float>(size, 0.0f));
@@ -135,11 +137,7 @@ int selectNodeFromOptions(vector<tuple<int, float>> options) {
 
 int Graph::calculateNextStep() {
 
-    // if any of steps active, deactivate it
-    if (activeStep >= 0)
-    {
-        bubbles[activeStep].deactivate();
-    }
+	deactivateGraph();
 
     if (activeStep == -1) {
         // if no step active, activate first step
@@ -157,7 +155,24 @@ int Graph::calculateNextStep() {
 void Graph::activateNext() {
 	previousStep = activeStep;
 	activeStep = calculateNextStep();
-    bubbles[activeStep].activate();
+}
+
+
+void Graph::playNext(bool usingMidi) {
+	if (!usingMidi) {
+		bubbles[activeStep].activate_sound();
+	}
+	bubbles[activeStep].activate_ui();
+}
+
+
+void Graph::deactivateGraph() {
+	// if any of steps active, deactivate it
+	if (activeStep >= 0)
+	{
+		bubbles[activeStep].deactivate_sound();
+		bubbles[activeStep].deactivate_ui();
+	}
 }
 
 

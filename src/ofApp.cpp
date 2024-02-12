@@ -72,7 +72,7 @@ void ofApp::setup(){
 		// print the available output ports to the console
 		midiOut.listOutPorts();
 
-		// connect
+		// connect  TODO: make it possible to select this from GUI dropdown
 		midiOut.openPort(1); // by number
 		//midiOut.openPort("IAC Driver Pure Data In"); // by name
 		//midiOut.openVirtualPort("ofxMidiOut"); // open a virtual port
@@ -138,8 +138,15 @@ void ofApp::exit(){
 
 	// Close midi port
 	if (USE_MIDI) {
-		midiOut.sendNoteOff(1, graph.bubbles[graph.getActiveStep()].midi_note, 64);
-		midiOut.sendNoteOff(1, graph.bubbles[graph.getPreviousStep()].midi_note, 64);
+		int const activeStep = graph.getActiveStep();
+		if (activeStep != -1) {
+			midiOut.sendNoteOff(1, graph.bubbles[graph.getActiveStep()].midi_note, 64);
+		}
+		int const previousStep = graph.getPreviousStep();
+		if (previousStep != -1) {
+			midiOut.sendNoteOff(1, graph.bubbles[previousStep].midi_note, 64);
+		}
+
 		midiOut.closePort();
 	}
 }
@@ -156,6 +163,21 @@ void ofApp::keyPressed(int key){
 			} else {
 				bpm.start();
                 ambience.play();
+			}
+
+			// Decative Graph
+			graph.deactivateGraph();
+
+			// Send midi off
+			if (USE_MIDI) {
+				int const activeStep = graph.getActiveStep();
+				if (activeStep != -1) {
+					midiOut.sendNoteOff(1, graph.bubbles[graph.getActiveStep()].midi_note, 64);
+				}
+				int const previousStep = graph.getPreviousStep();
+				if (previousStep != -1) {
+					midiOut.sendNoteOff(1, graph.bubbles[previousStep].midi_note, 64);
+				}
 			}
 			break;
 
@@ -228,6 +250,7 @@ void ofApp::mouseReleased(int x, int y, int button) {
 //--------------------------------------------------------------
 void ofApp::triggerBeat(){
     graph.activateNext();
+ 	graph.playNext(USE_MIDI); // when MIDI, dont play internal sound
 
 	// MIDI
 	if (USE_MIDI) {
@@ -245,6 +268,7 @@ void ofApp::triggerBeat(){
 		ofLogNotice() << "note: " << graph.bubbles[activeStep].midi_note
 			<< " freq: " << ofxMidi::mtof(graph.bubbles[activeStep].midi_note) << " Hz";
 	}
+
 }
 
 

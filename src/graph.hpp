@@ -34,6 +34,8 @@ class Graph {
         void drawAdjMatrix();
 
         void activateNext();
+        void playNext(bool usingMidi);
+        void deactivateGraph();
 
         std::vector<Bubble> bubbles;
 

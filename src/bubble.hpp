@@ -36,8 +36,11 @@ class Bubble {
         ofColor color_active_bubble;
         ofColor color_inactive_bubble;
         
-        void activate();
-        void deactivate();
+        void activate_sound();
+        void activate_ui();
+        void deactivate_sound();
+        void deactivate_ui();
+
         void draw(bool selected=false);
         void update();
 

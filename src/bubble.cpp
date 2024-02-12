@@ -78,10 +78,13 @@ void Bubble::init_sound() {
 }
 
 
-void Bubble::activate() {
-    active = true;
+void Bubble::activate_sound() {
+	active = true;
 	sample.play();
+}
 
+
+void Bubble::activate_ui() {
 	// Animations
 	radius_animated.reset(default_radius);
 	radius_animated.setCurve(EASE_OUT_BACK);
@@ -97,9 +100,12 @@ void Bubble::activate() {
 }
 
 
-void Bubble::deactivate() {
-    active = false;
+void Bubble::deactivate_sound() {
+	active = false;
+}
 
+
+void Bubble::deactivate_ui() {
 	// Animations
 	radius_animated.reset(active_radius);
 	radius_animated.setCurve(EASE_OUT_BACK);
