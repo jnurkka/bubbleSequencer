@@ -73,9 +73,10 @@ void ofApp::setup(){
 		midiOut.listOutPorts();
 
 		// connect
-		midiOut.openPort(0); // by number
+		midiOut.openPort(1); // by number
 		//midiOut.openPort("IAC Driver Pure Data In"); // by name
 		//midiOut.openVirtualPort("ofxMidiOut"); // open a virtual port
+
 	}
 }
 
@@ -117,6 +118,16 @@ void ofApp::draw(){
 	
 	// Draw GUI
 	gui.draw();
+
+	// Debug Midi
+	if (USE_MIDI) {
+		// Check it is connected
+		stringstream text;
+		text << "connected to port " << midiOut.getPort()
+			<< " \"" << midiOut.getName() << "\"" << endl
+			<< "is virtual?: " << midiOut.isVirtual() << endl << endl;
+		ofDrawBitmapString(text.str(), 20, 20);
+	}
 }
 
 
@@ -127,7 +138,7 @@ void ofApp::exit(){
 
 	// Close midi port
 	if (USE_MIDI) {
-		midiOut.closePort();
+		midiOut.closePort(); // TODO: send final midi óff
 	}
 }
 
@@ -221,9 +232,9 @@ void ofApp::triggerBeat(){
 		int const activeStep = graph.getActiveStep();
 		int const previousStep = graph.getPreviousStep();
 
-		midiOut.sendNoteOn(127, graph.bubbles[activeStep].midi_note, 127);
+		midiOut.sendNoteOn(1, graph.bubbles[activeStep].midi_note, 127);
 		if (previousStep != -1) {
-			midiOut.sendNoteOff(1, graph.bubbles[previousStep].midi_note, 64);
+			midiOut.sendNoteOff(1, graph.bubbles[previousStep].midi_note, 64); // TODO also send off for looping notes
 		}
 		// print out both the midi note and the frequency
 		ofLogNotice() << "note: " << graph.bubbles[activeStep].midi_note
