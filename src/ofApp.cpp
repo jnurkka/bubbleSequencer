@@ -6,7 +6,7 @@
 int constexpr NR_BUBBLES = 18;
 int constexpr MAX_CONNECTIONS = 3;
 
-bool const USE_MIDI = true; // TODO
+bool const USE_MIDI = true; // TODO make this accessible from GUI and link it to triggering the sound. 
 
 // asdfGraph graph = Graph(NR_BUBBLES);
 Ambience ambience("ambience-river.mp3");
@@ -138,7 +138,9 @@ void ofApp::exit(){
 
 	// Close midi port
 	if (USE_MIDI) {
-		midiOut.closePort(); // TODO: send final midi óff
+		midiOut.sendNoteOff(1, graph.bubbles[graph.getActiveStep()].midi_note, 64);
+		midiOut.sendNoteOff(1, graph.bubbles[graph.getPreviousStep()].midi_note, 64);
+		midiOut.closePort();
 	}
 }
 
@@ -232,11 +234,14 @@ void ofApp::triggerBeat(){
 		int const activeStep = graph.getActiveStep();
 		int const previousStep = graph.getPreviousStep();
 
-		midiOut.sendNoteOn(1, graph.bubbles[activeStep].midi_note, 127);
+		// Send off notes
 		if (previousStep != -1) {
-			midiOut.sendNoteOff(1, graph.bubbles[previousStep].midi_note, 64); // TODO also send off for looping notes
+			midiOut.sendNoteOff(1, graph.bubbles[previousStep].midi_note, 64);
 		}
-		// print out both the midi note and the frequency
+		// Send on notes
+		midiOut.sendNoteOn(1, graph.bubbles[activeStep].midi_note, 127);
+
+		// DEBUG print out both the midi note and the frequency
 		ofLogNotice() << "note: " << graph.bubbles[activeStep].midi_note
 			<< " freq: " << ofxMidi::mtof(graph.bubbles[activeStep].midi_note) << " Hz";
 	}
