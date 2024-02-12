@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxBpm.h"
+#include "ofxAbletonLink.h"
 #include "ofxGui.h"
 #include "ofTrueTypeFont.h"
 #include "ofxMidi.h"
@@ -33,8 +33,17 @@ class ofApp : public ofBaseApp{
 		bool isLeftMouseDown;
 		int dragID;
 
-		// BPM 
-		ofxBpm bpm;
+		// TODO Get rid 
+		//ofxBpm bpm;
+		// Ablton Link
+		ofxAbletonLink abletonLink;
+		void bpmChanged(double& bpm);
+		void numPeersChanged(std::size_t& peers);
+		void playStateChanged(bool& state);
+		double lastBeat;
+		double currentBeat;
+		bool isPlaying;
+
 		void triggerBeat();
 		void toggleStartStop();
 

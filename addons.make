@@ -1,3 +1,4 @@
+ofxAbletonLink
 ofxAnimatable
 ofxGui
 ofxMidi

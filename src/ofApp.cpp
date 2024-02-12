@@ -16,6 +16,7 @@ void ofApp::setup(){
 
 	// Open in fullscreen
 	ofSetFullscreen(false);
+	ofSetFrameRate(120);
 
 	// Load font
 	fontSize = 12;
@@ -33,17 +34,19 @@ void ofApp::setup(){
 	isLeftMouseDown = false;
 	dragID = 0;
 
-	// BPM init
-	int constexpr tempo = 120;
-	bpm.setBeatPerBar(4);
-	bpm.setBpm(tempo);
-	ofAddListener(bpm.beatEvent, this, &ofApp::triggerBeat);
-	bpm.stop();
-
+	// Ableton Link
+	abletonLink.setup();
+	ofAddListener(abletonLink.bpmChanged, this, &ofApp::bpmChanged);
+	ofAddListener(abletonLink.numPeersChanged, this, &ofApp::numPeersChanged);
+	ofAddListener(abletonLink.playStateChanged, this, &ofApp::playStateChanged);
+	lastBeat = -1.0;
+	currentBeat = abletonLink.getBeat();
+	isPlaying = abletonLink.isPlaying();
+	
 	// GUI
 	gui.setup();
 	button.addListener(this, &ofApp::buttonGuiPressed);
-	gui.add(int_slider.setup("BPM Slider", tempo, ofxBpm::OFX_BPM_MIN, ofxBpm::OFX_BPM_MAX));
+	gui.add(int_slider.setup("Tempo Slider", abletonLink.getBPM(), 32, 420));
 	gui.add(f_slider_vol_ambi.setup("Ambience volume", 0.4, 0.0, 1.0));
 	gui.add(button.setup("Start/stop"));
 	gui.add(toggle_spring.setup("Spring Layout", true));
@@ -87,8 +90,19 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+	// Ableton Link beat change
+	currentBeat = abletonLink.getBeat();
+
+	if (fabs(currentBeat - lastBeat) > 1.0 && abletonLink.isPlaying()) {
+		ofLogNotice() << fabs(currentBeat - lastBeat);
+		triggerBeat();
+		lastBeat = currentBeat;
+		
+	}
+
 	// Update BPM based on GUI Slider
-	bpm.setBpm(int_slider);
+	abletonLink.setBPM(int_slider);
+
 
 	// Update volume of ambience
 	ambience.update_volume(f_slider_vol_ambi);
@@ -98,10 +112,11 @@ void ofApp::update(){
 	{
 		graph.updateLayout_SpringForces();
 	}
-	
 
 	// Update bubbles
 	graph.update();
+
+
 }
 
 
@@ -122,13 +137,23 @@ void ofApp::draw(){
 	
 	// Draw GUI
 	gui.draw();
+
+	// Debug Ableton
+	std::stringstream ss("");
+	ss
+		<< "bpm:   " << abletonLink.getBPM() << std::endl
+		<< "beat:  " << abletonLink.getBeat() << std::endl
+		<< "phase: " << abletonLink.getPhase() << std::endl
+		<< "peers: " << abletonLink.getNumPeers() << std::endl
+		<< "play?: " << (abletonLink.isPlaying() ? "play" : "stop");
+
+	ofSetColor(255);
+	ofDrawBitmapString(ss.str(), 20, 20);
 }
 
 
 //--------------------------------------------------------------
 void ofApp::exit(){
-	// Kill BPM thread
-	bpm.stop();
 
 	// Close midi port
 	if (USE_MIDI) {
@@ -241,13 +266,17 @@ void ofApp::triggerBeat(){
 
 
 void ofApp::toggleStartStop() {
-	if (bpm.isPlaying()) {
-		bpm.stop();
+	if (isPlaying) {
+		//bpm.stop();
 		ambience.pause();
+		abletonLink.stop();
+		isPlaying = false;
 	}
 	else {
-		bpm.start();
+		//bpm.start();
 		ambience.play();
+		abletonLink.play();
+		isPlaying = true;
 	}
 
 	// Decative Graph
@@ -300,4 +329,17 @@ void ofApp::sendMidiOff() {
 			midiOut.sendNoteOff(1, graph.bubbles[previousStep].midi_note, 64);
 		}
 	}
+}
+
+
+void ofApp::bpmChanged(double& bpm) {
+	ofLogNotice("bpmChanged") << bpm;
+}
+
+void ofApp::numPeersChanged(std::size_t& peers) {
+	ofLogNotice("numPeersChanged") << peers;
+}
+
+void ofApp::playStateChanged(bool& state) {
+	ofLogNotice("playStateChanged") << (state ? "play" : "stop");
 }
