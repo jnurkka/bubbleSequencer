@@ -160,9 +160,7 @@ void ofApp::keyPressed(int key){
 
 		case 'r':
 			// MIDI - avoid stuck notes
-			if (USE_MIDI) {
-				sendMidiOff();
-			}
+			sendMidiOff();
 
 			graph = Graph((std::rand() % 20) + 5);
 			graph.initLayout(myFont);
@@ -256,9 +254,7 @@ void ofApp::toggleStartStop() {
 	graph.deactivateGraph();
 
 	// Send midi off
-	if (USE_MIDI) {
-		sendMidiOff();
-	}
+	sendMidiOff();
 }
 
 
@@ -271,9 +267,7 @@ void ofApp::buttonGuiPressed(){
 //--------------------------------------------------------------
 void ofApp::bubbleNoteChanged(int& midiNote) {
 	// Send midi off
-	if (USE_MIDI) {
-		sendMidiOff();
-	}
+	sendMidiOff();
 	graph.bubbles[stoi(bubbleId)].midi_note = midiNote;
 }
 
@@ -296,12 +290,14 @@ void ofApp::windowResized(int w, int h) {
 
 
 void ofApp::sendMidiOff() {
-	int const activeStep = graph.getActiveStep();
-	if (activeStep != -1) {
-		midiOut.sendNoteOff(1, graph.bubbles[graph.getActiveStep()].midi_note, 64);
-	}
-	int const previousStep = graph.getPreviousStep();
-	if (previousStep != -1) {
-		midiOut.sendNoteOff(1, graph.bubbles[previousStep].midi_note, 64);
+	if (USE_MIDI) {
+		int const activeStep = graph.getActiveStep();
+		if (activeStep != -1) {
+			midiOut.sendNoteOff(1, graph.bubbles[graph.getActiveStep()].midi_note, 64);
+		}
+		int const previousStep = graph.getPreviousStep();
+		if (previousStep != -1) {
+			midiOut.sendNoteOff(1, graph.bubbles[previousStep].midi_note, 64);
+		}
 	}
 }
