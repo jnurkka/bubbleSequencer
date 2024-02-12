@@ -24,7 +24,8 @@ Bubble::Bubble() {
 	color_active_bubble = ofColor::azure;
 	color_inactive_bubble = ofColor::white;
 
-	midi_note = rand() % 128;
+	midi_note = ofRandom(40, 121);
+
 }
 
 

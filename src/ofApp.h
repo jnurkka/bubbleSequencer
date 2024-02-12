@@ -59,6 +59,7 @@ class ofApp : public ofBaseApp{
 
 		// MIDI
 		ofxMidiOut midiOut;
+		void sendMidiOff();
 		ofxLabel label_midi_port;
 		ofxLabel label_midi_name;
 		ofxLabel label_midi_virtual;
