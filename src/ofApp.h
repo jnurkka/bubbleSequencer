@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxAbletonLink.h"
+#include "abletonLinkThreaded.h"
 #include "ofxGui.h"
 #include "ofTrueTypeFont.h"
 #include "ofxMidi.h"
@@ -36,7 +37,7 @@ class ofApp : public ofBaseApp{
 		// TODO Get rid 
 		//ofxBpm bpm;
 		// Ablton Link
-		ofxAbletonLink abletonLink;
+		abletonLinkThreaded abletonLinkThread;
 		void bpmChanged(double& bpm);
 		void numPeersChanged(std::size_t& peers);
 		void playStateChanged(bool& state);
@@ -44,8 +45,9 @@ class ofApp : public ofBaseApp{
 		double currentBeat;
 		bool isPlaying;
 
-		void triggerBeat();
+		void triggerBeat(int& i);
 		void toggleStartStop();
+		bool metronomeCircle;
 
 		// GUI
 		ofxPanel gui;

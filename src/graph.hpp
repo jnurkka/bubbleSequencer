@@ -30,7 +30,7 @@ class Graph {
         void update();
         void updateLayout_SpringForces();
 
-        void draw(int selectedBubble, bool renderWeights);
+        void draw(int selectedBubble);
         void drawAdjMatrix();
 
         void activateNext();

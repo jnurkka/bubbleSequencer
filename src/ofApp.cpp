@@ -6,7 +6,7 @@
 int constexpr NR_BUBBLES = 18;
 int constexpr MAX_CONNECTIONS = 3;
 
-bool const USE_MIDI = true; // TODO make this accessible from GUI and link it to triggering the sound. 
+bool const USE_MIDI = false; // TODO make this accessible from GUI and link it to triggering the sound. 
 
 // asdfGraph graph = Graph(NR_BUBBLES);
 Ambience ambience("ambience-river.mp3");
@@ -35,18 +35,21 @@ void ofApp::setup(){
 	dragID = 0;
 
 	// Ableton Link
-	abletonLink.setup();
-	ofAddListener(abletonLink.bpmChanged, this, &ofApp::bpmChanged);
-	ofAddListener(abletonLink.numPeersChanged, this, &ofApp::numPeersChanged);
-	ofAddListener(abletonLink.playStateChanged, this, &ofApp::playStateChanged);
-	lastBeat = -1.0;
-	currentBeat = abletonLink.getBeat();
-	isPlaying = abletonLink.isPlaying();
+	abletonLinkThread.setup();
+	ofAddListener(abletonLinkThread.newBeatEvent, this, &ofApp::triggerBeat);
+	metronomeCircle = false;
+
+	ofAddListener(abletonLinkThread.abletonLink.bpmChanged, this, &ofApp::bpmChanged);
+	ofAddListener(abletonLinkThread.abletonLink.numPeersChanged, this, &ofApp::numPeersChanged);
+	ofAddListener(abletonLinkThread.abletonLink.playStateChanged, this, &ofApp::playStateChanged);
+	//lastBeat = -1.0;
+	//currentBeat = abletonLinkThread.abletonLink.getBeat();
+	//isPlaying = abletonLinkThread.abletonLink.isPlaying();
 	
 	// GUI
 	gui.setup();
 	button.addListener(this, &ofApp::buttonGuiPressed);
-	gui.add(int_slider.setup("Tempo Slider", abletonLink.getBPM(), 32, 420));
+	gui.add(int_slider.setup("Tempo Slider", abletonLinkThread.abletonLink.getBPM(), 32, 420));
 	gui.add(f_slider_vol_ambi.setup("Ambience volume", 0.4, 0.0, 1.0));
 	gui.add(button.setup("Start/stop"));
 	gui.add(toggle_spring.setup("Spring Layout", true));
@@ -90,18 +93,8 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	// Ableton Link beat change
-	currentBeat = abletonLink.getBeat();
-
-	if (fabs(currentBeat - lastBeat) > 1.0 && abletonLink.isPlaying()) {
-		ofLogNotice() << fabs(currentBeat - lastBeat);
-		triggerBeat();
-		lastBeat = currentBeat;
-		
-	}
-
 	// Update BPM based on GUI Slider
-	abletonLink.setBPM(int_slider);
+	abletonLinkThread.abletonLink.setBPM(int_slider);
 
 
 	// Update volume of ambience
@@ -123,16 +116,24 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 
+
 	// Background
 	ofBackgroundGradient(ColorManager::getInstance().getColorBackground2(), ColorManager::getInstance().getColorBackground(), OF_GRADIENT_CIRCULAR);
 
+	if(metronomeCircle) {
+		ofCircle(30, ofGetHeight() - 30, 6);
+	}
+	else {
+		ofCircle(50, ofGetHeight() - 30, 6);
+	}
+	
 	// Draw adj matrix
 	if (!hide_adj_matrix) {
 		graph.drawAdjMatrix();
 	}
 	
 	// Draw graph
-    graph.draw(stoi(bubbleId), !hide_adj_matrix);
+    graph.draw(stoi(bubbleId));
 
 	
 	// Draw GUI
@@ -141,14 +142,14 @@ void ofApp::draw(){
 	// Debug Ableton
 	std::stringstream ss("");
 	ss
-		<< "bpm:   " << abletonLink.getBPM() << std::endl
-		<< "beat:  " << abletonLink.getBeat() << std::endl
-		<< "phase: " << abletonLink.getPhase() << std::endl
-		<< "peers: " << abletonLink.getNumPeers() << std::endl
-		<< "play?: " << (abletonLink.isPlaying() ? "play" : "stop");
+		<< "bpm:   " << abletonLinkThread.abletonLink.getBPM() << std::endl
+		<< "beat:  " << abletonLinkThread.abletonLink.getBeat() << std::endl
+		<< "phase: " << abletonLinkThread.abletonLink.getPhase() << std::endl
+		<< "peers: " << abletonLinkThread.abletonLink.getNumPeers() << std::endl
+		<< "play?: " << (abletonLinkThread.abletonLink.isPlaying() ? "play" : "stop");
 
 	ofSetColor(255);
-	ofDrawBitmapString(ss.str(), 20, 20);
+	ofDrawBitmapString(ss.str(), 20, ofGetHeight() - 110);
 }
 
 
@@ -241,11 +242,18 @@ void ofApp::mouseReleased(int x, int y, int button) {
 
 
 //--------------------------------------------------------------
-void ofApp::triggerBeat(){
+void ofApp::triggerBeat(int& i){
+	ofLogNotice("Tme since last trigger") << ofGetElapsedTimeMillis();
+	ofResetElapsedTimeCounter();
+	//ofLogNotice("beat triggered") << i;
+
+	metronomeCircle = !metronomeCircle;
+
+
     graph.activateNext();
  	graph.playNext(USE_MIDI); // when MIDI, dont play internal sound
 
-	// MIDI
+	// MIDI notes on and off
 	if (USE_MIDI) {
 		int const activeStep = graph.getActiveStep();
 		int const previousStep = graph.getPreviousStep();
@@ -258,7 +266,7 @@ void ofApp::triggerBeat(){
 		midiOut.sendNoteOn(1, graph.bubbles[activeStep].midi_note, 127);
 
 		// DEBUG print out both the midi note and the frequency
-		ofLogNotice() << "note: " << graph.bubbles[activeStep].midi_note
+		ofLogNotice("Midi note: ") << "note: " << graph.bubbles[activeStep].midi_note
 			<< " freq: " << ofxMidi::mtof(graph.bubbles[activeStep].midi_note) << " Hz";
 	}
 
@@ -269,13 +277,13 @@ void ofApp::toggleStartStop() {
 	if (isPlaying) {
 		//bpm.stop();
 		ambience.pause();
-		abletonLink.stop();
+		abletonLinkThread.stop_playing();
 		isPlaying = false;
 	}
 	else {
 		//bpm.start();
 		ambience.play();
-		abletonLink.play();
+		abletonLinkThread.start_playing();
 		isPlaying = true;
 	}
 

@@ -46,9 +46,10 @@ void Graph::initRandomGraph(int size) {
 			adjMatrix[i][j] = 0.0f;
 		}
 	}
-
+	// Init nodes
 	for (int i = 0; i < size; i++)
 	{
+
 		// ensure each node has at least one edge to another node
 		int randomTarget = std::rand() % (size);
 		while (randomTarget <= i) {
@@ -69,6 +70,28 @@ void Graph::initRandomGraph(int size) {
 			}
 		}
 	}
+	/*
+	// Core chain
+	for (int i = 0; i < size-1; i++)
+	{
+		addEdge(i, i + 1, 1.0f);
+
+	}
+	addEdge(size-1, 0, 1.0f);
+
+	// add random chains
+	for (int i = 0; i < std::rand() % (6); i++)
+	{
+		int startNode = std::rand() % (size);
+		while (startNode < size)
+		{
+
+			int nextNode = (int)ofRandom(0, size);
+			addEdge(startNode, nextNode, 1.0f);
+			startNode = nextNode;
+		}
+	}*/
+	
 }
 
 int Graph::size() {
@@ -104,14 +127,13 @@ vector<tuple<int, float>> Graph::findNextStepOptions() {
             options.push_back(std::make_tuple(i, nodes[i]));
         }
     }
+
+	ofLogNotice("How many follow nodes?") << options.size();
     return options;
 }
 
 
 int selectNodeFromOptions(vector<tuple<int, float>> options) {
-    // Seed the random number generator with the current time
-    ofSeedRandom();
-
     // Calculate the sum of all probabilities
     float sum = 0.0f;
     for (const auto& option : options) {
@@ -242,7 +264,7 @@ void Graph::updateLayout_SpringForces() {
 }
 
 
-void Graph::draw(int selectedBubble, bool renderWeights) {
+void Graph::draw(int selectedBubble) {
 	
 	// Draw edges
 	for (int i = 0; i < adjMatrix.size(); i++) {
@@ -283,15 +305,6 @@ void Graph::draw(int selectedBubble, bool renderWeights) {
 					ofFill();
 					ofSetLineWidth(lineThickness);
 					ofDrawLine(bubbles[i].pos, bubbles[j].pos);
-				}
-
-				if (renderWeights == true) {
-					// draw weight
-					ofVec2f textPos = (bubbles[i].pos + bubbles[j].pos) / 2;
-					if (isSelfLoop) {
-						textPos = ofVec2f(bubbles[i].pos.x, (bubbles[i].pos - 4 * bubbles[i].radius_animated.val()).y);
-					}
-					myFont.drawString(ofToString(weight), textPos.x, textPos.y);
 				}
 
 				// Draw arrow
@@ -341,9 +354,13 @@ void Graph::drawAdjMatrix() {
 	// set the color for the text
 	ofSetColor(0); // title color
 	myFont.drawString("Adjacency matrix:", 10, 20); 
+	ofPopMatrix();
 
 	for (int i = 0; i < adjMatrix.size(); i++) {
 		for (int j = 0; j < adjMatrix[i].size(); j++) {
+			// translate to the top left corner of the rectangle
+			ofPushMatrix();
+			ofTranslate(ofGetWidth() - rectSize, 0);
         
 			// Convert float to string with a specified precision
 			std::string valueStr = ofToString(adjMatrix[i][j], 1);
@@ -356,10 +373,20 @@ void Graph::drawAdjMatrix() {
 			else {
 				ofSetColor(150); //inactive row
 				myFont.drawString(valueStr, startX + j * spacing, startY + i * spacing);
-			}			
+			}		
+			ofPopMatrix();
+
+			// draw weight
+			if (adjMatrix[i][j]) {
+				ofVec2f textPos = (bubbles[i].pos + bubbles[j].pos) / 2;
+				//self loop)
+				if (i == j) {
+					textPos = ofVec2f(bubbles[i].pos.x, (bubbles[i].pos - 4 * bubbles[i].radius_animated.val()).y);
+				}
+				myFont.drawString(ofToString(valueStr), textPos.x, textPos.y);
+			}
 		}
 	}
-	ofPopMatrix();
 }
 
 
