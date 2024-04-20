@@ -41,8 +41,11 @@ class Bubble {
         void deactivate_sound();
         void deactivate_ui();
 
-        void draw(bool selected=false);
+        void draw(bool selected_bubble = false);
         void update();
+
+        // sound
+        //ofSoundStream soundStream;
 
         string file;
         ofSoundPlayer sample;

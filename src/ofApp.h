@@ -21,6 +21,7 @@ class ofApp : public ofBaseApp{
 		float old_w;
 		float old_h;
 
+
 		// Graph
 		Graph graph;
 
@@ -63,7 +64,7 @@ class ofApp : public ofBaseApp{
 		ofxLabel label_full;
 
 		// GUI for Bubble control
-		ofxLabel bubbleId;
+		ofxLabel selected_bubble_id;
 		ofxLabel bubbleFile;
 		ofxIntSlider bubbleNote;
 		void bubbleNoteChanged(int& midiNote);
@@ -76,9 +77,15 @@ class ofApp : public ofBaseApp{
 		ofxLabel label_midi_virtual;
 
 
+		// debug
+		long lastUpdateTime_update;
+		long lastUpdateTime_draw;
+
+
 	private:
 		// Font
 		ofTrueTypeFont myFont;
+		ofTrueTypeFont myFont_adj;
 		int fontSize;
 
 };

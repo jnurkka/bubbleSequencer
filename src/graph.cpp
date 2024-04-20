@@ -94,7 +94,7 @@ void Graph::initRandomGraph(int size) {
 	
 }
 
-int Graph::size() {
+int const Graph::size() {
 	return bubbles.size();
 }
 
@@ -109,9 +109,10 @@ void Graph::removeEdge(const int source, const int sink) {
 }
 
 
-void Graph::initLayout(ofTrueTypeFont font) {
+void Graph::initLayout(ofTrueTypeFont font, ofTrueTypeFont font_adj) {
 	// load font
 	myFont = font;
+	myFont_adj = font_adj;
 	 
 	// init all bubbles randomly
 	for (int i = 0; i < bubbles.size(); i += 1) {
@@ -174,7 +175,7 @@ int Graph::calculateNextStep() {
 }
 
 
-void Graph::activateNext() {
+void Graph::activateNext() {	
 	previousStep = activeStep;
 	activeStep = calculateNextStep();
 }
@@ -187,9 +188,8 @@ void Graph::playNext(bool usingMidi) {
 	bubbles[activeStep].activate_ui();
 }
 
-
+/// if any of steps active, deactivate it
 void Graph::deactivateGraph() {
-	// if any of steps active, deactivate it
 	if (activeStep >= 0)
 	{
 		bubbles[activeStep].deactivate_sound();
@@ -197,7 +197,7 @@ void Graph::deactivateGraph() {
 	}
 }
 
-
+/// update radius and colour animations
 void Graph::update()
 {
 	for (int i = 0; i < bubbles.size(); i += 1) {
@@ -339,21 +339,21 @@ void Graph::drawAdjMatrix() {
     // set the initial position for drawing the matrix
     float constexpr textCellWidth = 7.5;
     int constexpr startX = textCellWidth * 2;
-    int constexpr spacing = 40;
+    int constexpr spacing = 20;
     int constexpr startY = spacing;
     
 	// rect size
-	int const rectSize = startX + (spacing + adjMatrix.size()) * textCellWidth;
+	int const rectSize = startX + (spacing * adjMatrix.size());// *textCellWidth;
 
 	// translate to the top left corner of the rectangle
 	ofPushMatrix();
 	ofTranslate(ofGetWidth() - rectSize, 0);
 	ofSetHexColor(0xF3ECDB); // background of adjacency
-	ofDrawRectangle(0, 0, rectSize, rectSize);
+	ofDrawRectangle(0, 0, rectSize, rectSize + spacing);
 
 	// set the color for the text
 	ofSetColor(0); // title color
-	myFont.drawString("Adjacency matrix:", 10, 20); 
+	myFont_adj.drawString("Adjacency matrix:", 10, 20);
 	ofPopMatrix();
 
 	for (int i = 0; i < adjMatrix.size(); i++) {
@@ -368,11 +368,11 @@ void Graph::drawAdjMatrix() {
 			// Highlight the currently active source 
 			if (bubbles[i].active) {
 				ofSetColor(0); // active row
-				myFont.drawString(valueStr, startX + j * spacing, startY + i * spacing);
+				myFont_adj.drawString(valueStr, startX + j * spacing, startY + (i + 1) * spacing);
 			}
 			else {
 				ofSetColor(150); //inactive row
-				myFont.drawString(valueStr, startX + j * spacing, startY + i * spacing);
+				myFont_adj.drawString(valueStr, startX + j * spacing, startY + (i +1) * spacing);
 			}		
 			ofPopMatrix();
 
@@ -390,11 +390,11 @@ void Graph::drawAdjMatrix() {
 }
 
 
-int Graph::getActiveStep() {
+int const Graph::getActiveStep() {
 	return activeStep;
 }
 
 
-int Graph::getPreviousStep() {
+int const Graph::getPreviousStep() {
 	return previousStep;
 }

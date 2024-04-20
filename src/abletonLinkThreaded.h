@@ -31,6 +31,7 @@ public:
 
 	ofEvent<int> newBeatEvent;
 
+	bool is_running;
 private:
 	void threadedFunction();
 };

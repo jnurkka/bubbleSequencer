@@ -56,6 +56,16 @@ void Bubble::init(float x, float y, int id, ofTrueTypeFont font) {
 
 
 void Bubble::init_sound() {
+	/*/ Init sound
+	ofSoundStreamSettings settings;
+	settings.setOutListener(this);
+	settings.numOutputChannels = 2;
+	settings.numInputChannels = 0;
+	settings.sampleRate = 44100;
+	settings.bufferSize = 32;
+
+	soundStream.setup(settings); */
+	
 	// choose random sample
 	string path = "bells";
 	ofDirectory dir(path);
@@ -76,6 +86,10 @@ void Bubble::init_sound() {
 	sample.load(randomFile);
 	sample.setVolume(0.5);
 	sample.setMultiPlay(true);
+
+	// pre-load sound for less delay 
+	sample.play();
+	sample.stop();
 }
 
 
@@ -131,21 +145,21 @@ void Bubble::setPos(const float x, const float y) {
 void Bubble::update()
 {
 	//app timebase, to send to all Animatable objects
-	float constexpr dt = 1.0f / 60.0f;
+	float dt = 1.0f / ofGetFrameRate();
 
     radius_animated.update(dt);
 	color_animated.update(dt);
 }
 
 
-void Bubble::draw(bool selected)
+void Bubble::draw(bool selected_bubble)
 {
 	// Set color and draw bubble
 	color_animated.applyCurrentColor();
 	ofDrawCircle(pos.x, pos.y, radius_animated.val());
 	
 	// Draw outline if selected by GUI
-	if (selected)
+	if (selected_bubble)
 	{
 		ofPushMatrix();
 		// Draw an outlined circle around it
