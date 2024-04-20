@@ -1,7 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxBpm.h"
+#include "ofxAbletonLink.h"
+#include "abletonLinkThreaded.h"
 #include "ofxGui.h"
 #include "ofTrueTypeFont.h"
 #include "ofxMidi.h"
@@ -20,6 +21,7 @@ class ofApp : public ofBaseApp{
 		float old_w;
 		float old_h;
 
+
 		// Graph
 		Graph graph;
 
@@ -33,26 +35,35 @@ class ofApp : public ofBaseApp{
 		bool isLeftMouseDown;
 		int dragID;
 
-		// BPM 
-		ofxBpm bpm;
-		void triggerBeat();
+		// TODO Get rid 
+		//ofxBpm bpm;
+		// Ablton Link
+		abletonLinkThreaded abletonLinkThread;
+		void bpmChanged(double& bpm);
+		void numPeersChanged(std::size_t& peers);
+		void playStateChanged(bool& state);
+		double lastBeat;
+		double currentBeat;
+		bool isPlaying;
+
+		void triggerBeat(int& i);
 		void toggleStartStop();
+		bool metronomeCircle;
 
 		// GUI
 		ofxPanel gui;
 		ofxIntSlider int_slider;
 		ofxFloatSlider f_slider_vol_ambi;
-		ofxButton button;
+		ofxButton start_stop_button;
 		ofxToggle toggle_spring;
-		ofxToggle hide_adj_matrix;
-		void buttonGuiPressed();
+		ofxToggle show_adj_matrix;
 		ofxLabel label_space;
 		ofxLabel label_arrows;
 		ofxLabel label_reset;
 		ofxLabel label_full;
 
 		// GUI for Bubble control
-		ofxLabel bubbleId;
+		ofxLabel selected_bubble_id;
 		ofxLabel bubbleFile;
 		ofxIntSlider bubbleNote;
 		void bubbleNoteChanged(int& midiNote);
@@ -65,9 +76,15 @@ class ofApp : public ofBaseApp{
 		ofxLabel label_midi_virtual;
 
 
+		// debug
+		long lastUpdateTime_update;
+		long lastUpdateTime_draw;
+
+
 	private:
 		// Font
 		ofTrueTypeFont myFont;
+		ofTrueTypeFont myFont_adj;
 		int fontSize;
 
 };

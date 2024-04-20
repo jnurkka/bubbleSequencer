@@ -56,6 +56,16 @@ void Bubble::init(float x, float y, int id, ofTrueTypeFont font) {
 
 
 void Bubble::init_sound() {
+	/*/ Init sound
+	ofSoundStreamSettings settings;
+	settings.setOutListener(this);
+	settings.numOutputChannels = 2;
+	settings.numInputChannels = 0;
+	settings.sampleRate = 44100;
+	settings.bufferSize = 32;
+
+	soundStream.setup(settings); */
+	
 	// choose random sample
 	string path = "bells";
 	ofDirectory dir(path);
@@ -76,6 +86,10 @@ void Bubble::init_sound() {
 	sample.load(randomFile);
 	sample.setVolume(0.5);
 	sample.setMultiPlay(true);
+
+	// pre-load sound for less delay 
+	sample.play();
+	sample.stop();
 }
 
 
@@ -85,14 +99,15 @@ void Bubble::activate_sound() {
 }
 
 
-void Bubble::activate_ui() {
-	// Animations
+void Bubble::set_active_animations() {
+	// Radius animations
 	radius_animated.reset(default_radius);
 	radius_animated.setCurve(EASE_OUT_BACK);
 	radius_animated.setRepeatType(PLAY_ONCE);
 	radius_animated.setDuration(0.5f);
 	radius_animated.animateTo(active_radius);
 
+	// Colour animations
 	color_animated.setColor(color_inactive_bubble);
 	color_animated.setDuration(0.2);
 	color_animated.setRepeatType(PLAY_ONCE);
@@ -106,7 +121,7 @@ void Bubble::deactivate_sound() {
 }
 
 
-void Bubble::deactivate_ui() {
+void Bubble::set_inactive_animations() {
 	// Animations
 	radius_animated.reset(active_radius);
 	radius_animated.setCurve(EASE_OUT_BACK);
@@ -131,21 +146,21 @@ void Bubble::setPos(const float x, const float y) {
 void Bubble::update()
 {
 	//app timebase, to send to all Animatable objects
-	float constexpr dt = 1.0f / 60.0f;
+	float dt = 1.0f / ofGetFrameRate();
 
     radius_animated.update(dt);
 	color_animated.update(dt);
 }
 
 
-void Bubble::draw(bool selected)
+void Bubble::draw(bool selected_bubble)
 {
 	// Set color and draw bubble
 	color_animated.applyCurrentColor();
 	ofDrawCircle(pos.x, pos.y, radius_animated.val());
 	
 	// Draw outline if selected by GUI
-	if (selected)
+	if (selected_bubble)
 	{
 		ofPushMatrix();
 		// Draw an outlined circle around it

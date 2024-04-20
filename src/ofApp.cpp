@@ -6,7 +6,7 @@
 int constexpr NR_BUBBLES = 18;
 int constexpr MAX_CONNECTIONS = 3;
 
-bool const USE_MIDI = true; // TODO make this accessible from GUI and link it to triggering the sound. 
+bool const USE_MIDI = false; // TODO make this accessible from GUI and link it to triggering the sound. 
 
 // asdfGraph graph = Graph(NR_BUBBLES);
 Ambience ambience("ambience-river.mp3");
@@ -16,16 +16,18 @@ void ofApp::setup(){
 
 	// Open in fullscreen
 	ofSetFullscreen(false);
+	ofSetFrameRate(60);
 
 	// Load font
 	fontSize = 12;
 	myFont.load("Lavigne.ttf", fontSize);
+	myFont_adj.load("Lavigne.ttf", 8);
 	
 	// Graph
 	graph = Graph(NR_BUBBLES);	
 
 	// Calc positions
-    graph.initLayout(myFont);
+	graph.initLayout(myFont, myFont_adj);
 	old_w = ofGetWidth();
 	old_h = ofGetHeight();
 
@@ -33,21 +35,22 @@ void ofApp::setup(){
 	isLeftMouseDown = false;
 	dragID = 0;
 
-	// BPM init
-	int constexpr tempo = 120;
-	bpm.setBeatPerBar(4);
-	bpm.setBpm(tempo);
-	ofAddListener(bpm.beatEvent, this, &ofApp::triggerBeat);
-	bpm.stop();
-
+	// Ableton Link
+	abletonLinkThread.setup();
+	metronomeCircle = false;
+	ofAddListener(abletonLinkThread.newBeatEvent, this, &ofApp::triggerBeat);
+	ofAddListener(abletonLinkThread.abletonLink.bpmChanged, this, &ofApp::bpmChanged);
+	ofAddListener(abletonLinkThread.abletonLink.numPeersChanged, this, &ofApp::numPeersChanged);
+	ofAddListener(abletonLinkThread.abletonLink.playStateChanged, this, &ofApp::playStateChanged);
+	
 	// GUI
 	gui.setup();
-	button.addListener(this, &ofApp::buttonGuiPressed);
-	gui.add(int_slider.setup("BPM Slider", tempo, ofxBpm::OFX_BPM_MIN, ofxBpm::OFX_BPM_MAX));
+	start_stop_button.addListener(this, &ofApp::toggleStartStop);
+	gui.add(int_slider.setup("Tempo Slider", abletonLinkThread.abletonLink.getBPM(), 32, 420));
 	gui.add(f_slider_vol_ambi.setup("Ambience volume", 0.4, 0.0, 1.0));
-	gui.add(button.setup("Start/stop"));
+	gui.add(start_stop_button.setup("Start/stop"));
 	gui.add(toggle_spring.setup("Spring Layout", true));
-	gui.add(hide_adj_matrix.setup("Hide Adj Matrix", true));
+	gui.add(show_adj_matrix.setup("Show Adj Matrix", false));
 
 	// GUI keys
 	gui.add(label_space.setup("Space", "Start / stop"));
@@ -57,7 +60,7 @@ void ofApp::setup(){
 
 
 	// GUI bubbles
-	gui.add(bubbleId.setup("Bubble ID", ofToString(graph.bubbles[0].bubbleID)));
+	gui.add(selected_bubble_id.setup("Bubble ID", ofToString(graph.bubbles[0].bubbleID)));
 	gui.add(bubbleFile.setup("Sample", graph.bubbles[0].file));
 
 	bubbleNote.addListener(this, &ofApp::bubbleNoteChanged);
@@ -82,53 +85,92 @@ void ofApp::setup(){
 	else {
 		gui.add(label_midi_port.setup("Midi Port", "No Midi. Using internal sound."));
 	}
+
+	// Debug
+	lastUpdateTime_update = ofGetElapsedTimeMillis();
+	lastUpdateTime_draw = ofGetElapsedTimeMillis();
+
 }
 
 
 //--------------------------------------------------------------
 void ofApp::update(){
+	//// Debug time
+	//long currentTime = ofGetElapsedTimeMillis();
+	//long elapsedTime = currentTime - lastUpdateTime_update;
+	//lastUpdateTime_update = currentTime;
+	//ofLogNotice("time for update") << elapsedTime;
+
+
 	// Update BPM based on GUI Slider
-	bpm.setBpm(int_slider);
+	abletonLinkThread.abletonLink.setBPM(int_slider);
 
 	// Update volume of ambience
 	ambience.update_volume(f_slider_vol_ambi);
 
 	// Update graph layout
-	if (toggle_spring)
-	{
-		graph.updateLayout_SpringForces();
-	}
-	
+	if (toggle_spring) {graph.updateLayout_SpringForces();}
 
-	// Update bubbles
+	// Update bubbles radius and colour animation
 	graph.update();
+
 }
 
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+	//// Debug time
+	//long currentTime = ofGetElapsedTimeMillis();
+	//long elapsedTime = currentTime - lastUpdateTime_draw;
+	//lastUpdateTime_draw = currentTime;
+	//ofLogNotice("time for draw") << elapsedTime;
 
 	// Background
 	ofBackgroundGradient(ColorManager::getInstance().getColorBackground2(), ColorManager::getInstance().getColorBackground(), OF_GRADIENT_CIRCULAR);
 
-	// Draw adj matrix
-	if (!hide_adj_matrix) {
-		graph.drawAdjMatrix();
-	}
-	
-	// Draw graph
-    graph.draw(stoi(bubbleId), !hide_adj_matrix);
+	// Draw graph. Plot all bubbles and highlight the selected bubble
+	graph.draw(stoi(selected_bubble_id));
 
+	// Draw metronome circles
+	ofSetColor(255);
+	if(metronomeCircle) {
+		ofDrawCircle(30, ofGetHeight() - 30, 6);
+	}
+	else {
+		ofDrawCircle(50, ofGetHeight() - 30, 6);
+	}
 	
 	// Draw GUI
 	gui.draw();
+
+	// Debug Ableton
+	std::stringstream ss("");
+	ss << "fps:   " << ofGetFrameRate() << std::endl
+	   << "bpm:   " << abletonLinkThread.abletonLink.getBPM() << std::endl
+	   << "beat:  " << abletonLinkThread.abletonLink.getBeat() << std::endl
+	   << "phase: " << abletonLinkThread.abletonLink.getPhase() << std::endl
+	   << "peers: " << abletonLinkThread.abletonLink.getNumPeers() << std::endl
+	   << "play?: " << (abletonLinkThread.abletonLink.isPlaying() ? "play" : "stop");
+	ofSetColor(255);
+	ofDrawBitmapString(ss.str(), 20, ofGetHeight() - 130);
+
+	// Optional: Draw adj matrix
+	if (show_adj_matrix) { graph.drawAdjMatrix();}
+
 }
 
 
 //--------------------------------------------------------------
 void ofApp::exit(){
-	// Kill BPM thread
-	bpm.stop();
+
+	// Remove listeners
+	ofRemoveListener(abletonLinkThread.newBeatEvent, this, &ofApp::triggerBeat);
+	ofRemoveListener(abletonLinkThread.abletonLink.bpmChanged, this, &ofApp::bpmChanged);
+	ofRemoveListener(abletonLinkThread.abletonLink.numPeersChanged, this, &ofApp::numPeersChanged);
+	ofRemoveListener(abletonLinkThread.abletonLink.playStateChanged, this, &ofApp::playStateChanged);
+
+	// Kill thread
+	abletonLinkThread.stopThread();
 
 	// Close midi port
 	if (USE_MIDI) {
@@ -140,6 +182,8 @@ void ofApp::exit(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+
+	int beatCounter = -1;
 
 	switch (key) {
 		case ' ':
@@ -163,14 +207,26 @@ void ofApp::keyPressed(int key){
 			sendMidiOff();
 
 			graph = Graph((std::rand() % 20) + 5);
-			graph.initLayout(myFont);
+			graph.initLayout(myFont, myFont_adj);
 
 			// update GUI
 			dragID = 0;
-			bubbleId = ofToString(graph.bubbles[0].bubbleID);
+			selected_bubble_id = ofToString(graph.bubbles[0].bubbleID);
 			bubbleFile = graph.bubbles[0].file;
 			bubbleNote = graph.bubbles[0].midi_note;
 			break;
+
+		case 'd':
+			// debug beat trigger
+			ofLogNotice("debug sound") << "now";
+			ofNotifyEvent(abletonLinkThread.newBeatEvent, beatCounter, this);
+			break;
+
+		case 't':
+			// debug direct trigger
+			graph.bubbles[0].activate_sound();
+			break;
+
 
 		default:
 			break;
@@ -180,6 +236,7 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
+	// Select a bubble and update the GUI
 	if (button == OF_MOUSE_BUTTON_LEFT) {
 		for (int i = 0; i < graph.bubbles.size(); i++) {
 			if (ofDist(x, y, graph.bubbles[i].pos.x, graph.bubbles[i].pos.y) < graph.bubbles[i].radius_animated.val()) {
@@ -187,7 +244,7 @@ void ofApp::mousePressed(int x, int y, int button) {
 				dragID = i;
 
 				// update GUI
-				bubbleId = ofToString(graph.bubbles[i].bubbleID);
+				selected_bubble_id = ofToString(graph.bubbles[i].bubbleID);
 				bubbleFile = graph.bubbles[i].file;
 				bubbleNote = graph.bubbles[i].midi_note;
 			}
@@ -199,28 +256,38 @@ void ofApp::mousePressed(int x, int y, int button) {
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
-	if (isLeftMouseDown) {
-		graph.bubbles[dragID].pos.set(x, y);
-	}
+	// Drag a bubble
+	if (isLeftMouseDown) {graph.bubbles[dragID].pos.set(x, y);}
 }
 
 
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {
-	if (button == OF_MOUSE_BUTTON_LEFT) {
-		isLeftMouseDown = false;
-	}
+	// Stop dragging a bubble
+	if (button == OF_MOUSE_BUTTON_LEFT) {isLeftMouseDown = false;}
 }
 
 
 
 //--------------------------------------------------------------
-void ofApp::triggerBeat(){
+/// This function is triggered by the Ableton Link thread. 
+/// Whenever a new beat is triggered an event is published that triggers this function. 
+void ofApp::triggerBeat(int& i){
+
+	/// Help me : https://forum.openframeworks.cc/t/step-sequencer-problem-with-ableton-link-and-soundplayer/43424
+
+	// Start measuring time
+	int startTime = ofGetElapsedTimeMicros();
+
+	// Flip metronome
+	metronomeCircle = !metronomeCircle;
+
+	// Calculate the next bubble. Will set the next active bubble. 
     graph.activateNext();
  	graph.playNext(USE_MIDI); // when MIDI, dont play internal sound
 
-	// MIDI
+	// MIDI notes on and off
 	if (USE_MIDI) {
 		int const activeStep = graph.getActiveStep();
 		int const previousStep = graph.getPreviousStep();
@@ -233,24 +300,38 @@ void ofApp::triggerBeat(){
 		midiOut.sendNoteOn(1, graph.bubbles[activeStep].midi_note, 127);
 
 		// DEBUG print out both the midi note and the frequency
-		ofLogNotice() << "note: " << graph.bubbles[activeStep].midi_note
+		ofLogNotice("Midi note: ") << "note: " << graph.bubbles[activeStep].midi_note
 			<< " freq: " << ofxMidi::mtof(graph.bubbles[activeStep].midi_note) << " Hz";
 	}
 
+
+
+	// End measuring time
+	int endTime = ofGetElapsedTimeMicros();
+	// Calculate the elapsed time
+	int elapsedTime = endTime - startTime;
+	// Output the elapsed time
+	ofLogNotice("Elapsed time: ") << elapsedTime << " microseconds";
 }
 
 
+
+//--------------------------------------------------------------
 void ofApp::toggleStartStop() {
-	if (bpm.isPlaying()) {
-		bpm.stop();
+	if (isPlaying) {
+		//bpm.stop();
 		ambience.pause();
+		abletonLinkThread.stop_playing();
+		isPlaying = false;
 	}
 	else {
-		bpm.start();
+		//bpm.start();
 		ambience.play();
+		abletonLinkThread.start_playing();
+		isPlaying = true;
 	}
 
-	// Decative Graph
+	// Deactive Graph
 	graph.deactivateGraph();
 
 	// Send midi off
@@ -258,21 +339,16 @@ void ofApp::toggleStartStop() {
 }
 
 
-//--------------------------------------------------------------
-void ofApp::buttonGuiPressed(){
-	toggleStartStop();
-}
-
 
 //--------------------------------------------------------------
 void ofApp::bubbleNoteChanged(int& midiNote) {
 	// Send midi off
 	sendMidiOff();
-	graph.bubbles[stoi(bubbleId)].midi_note = midiNote;
+	graph.bubbles[stoi(selected_bubble_id)].midi_note = midiNote;
 }
 
 
-//--------------------------------------------------------------
+//-----------------------------------------------f---------------
 void ofApp::windowResized(int w, int h) {
 	// Calculate scaling factors based on the new window size
 	float scaleX = (float)w / old_w;
@@ -289,6 +365,7 @@ void ofApp::windowResized(int w, int h) {
 }
 
 
+//--------------------------------------------------------------
 void ofApp::sendMidiOff() {
 	if (USE_MIDI) {
 		int const activeStep = graph.getActiveStep();
@@ -300,4 +377,18 @@ void ofApp::sendMidiOff() {
 			midiOut.sendNoteOff(1, graph.bubbles[previousStep].midi_note, 64);
 		}
 	}
+}
+
+
+//--------------------------------------------------------------
+void ofApp::bpmChanged(double& bpm) {
+	ofLogNotice("bpmChanged") << bpm;
+}
+
+void ofApp::numPeersChanged(std::size_t& peers) {
+	ofLogNotice("numPeersChanged") << peers;
+}
+
+void ofApp::playStateChanged(bool& state) {
+	ofLogNotice("playStateChanged") << (state ? "play" : "stop");
 }

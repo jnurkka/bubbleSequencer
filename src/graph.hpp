@@ -18,19 +18,19 @@ class Graph {
         Graph(int size);
         ~Graph();
 
-        int size();
+        int const size();
 
         void initRandomGraph(int size);
 
         void addEdge(int source, int sink, float weight);
         void removeEdge(int source, int sink);
 
-        void initLayout(ofTrueTypeFont font);
+        void initLayout(ofTrueTypeFont font, ofTrueTypeFont font_adj);
 
         void update();
         void updateLayout_SpringForces();
 
-        void draw(int selectedBubble, bool renderWeights);
+        void draw(int selectedBubble);
         void drawAdjMatrix();
 
         void activateNext();
@@ -39,8 +39,8 @@ class Graph {
 
         std::vector<Bubble> bubbles;
 
-        int getActiveStep();
-        int getPreviousStep();
+        int const getActiveStep();
+        int const getPreviousStep();
 
 
     private:
@@ -54,4 +54,5 @@ class Graph {
 
         // Font
         ofTrueTypeFont myFont;
+        ofTrueTypeFont myFont_adj;
 };

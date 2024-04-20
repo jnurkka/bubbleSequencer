@@ -46,9 +46,10 @@ void Graph::initRandomGraph(int size) {
 			adjMatrix[i][j] = 0.0f;
 		}
 	}
-
+	// Init nodes
 	for (int i = 0; i < size; i++)
 	{
+
 		// ensure each node has at least one edge to another node
 		int randomTarget = std::rand() % (size);
 		while (randomTarget <= i) {
@@ -69,9 +70,31 @@ void Graph::initRandomGraph(int size) {
 			}
 		}
 	}
+	/*
+	// Core chain
+	for (int i = 0; i < size-1; i++)
+	{
+		addEdge(i, i + 1, 1.0f);
+
+	}
+	addEdge(size-1, 0, 1.0f);
+
+	// add random chains
+	for (int i = 0; i < std::rand() % (6); i++)
+	{
+		int startNode = std::rand() % (size);
+		while (startNode < size)
+		{
+
+			int nextNode = (int)ofRandom(0, size);
+			addEdge(startNode, nextNode, 1.0f);
+			startNode = nextNode;
+		}
+	}*/
+	
 }
 
-int Graph::size() {
+int const Graph::size() {
 	return bubbles.size();
 }
 
@@ -86,9 +109,10 @@ void Graph::removeEdge(const int source, const int sink) {
 }
 
 
-void Graph::initLayout(ofTrueTypeFont font) {
+void Graph::initLayout(ofTrueTypeFont font, ofTrueTypeFont font_adj) {
 	// load font
 	myFont = font;
+	myFont_adj = font_adj;
 	 
 	// init all bubbles randomly
 	for (int i = 0; i < bubbles.size(); i += 1) {
@@ -104,14 +128,12 @@ vector<tuple<int, float>> Graph::findNextStepOptions() {
             options.push_back(std::make_tuple(i, nodes[i]));
         }
     }
+	//ofLogNotice("How many follow nodes?") << options.size();
     return options;
 }
 
 
 int selectNodeFromOptions(vector<tuple<int, float>> options) {
-    // Seed the random number generator with the current time
-    ofSeedRandom();
-
     // Calculate the sum of all probabilities
     float sum = 0.0f;
     for (const auto& option : options) {
@@ -139,20 +161,19 @@ int Graph::calculateNextStep() {
 
 	deactivateGraph();
 
-    if (activeStep == -1) {
-        // if no step active, activate first step
-        return 0;
-    }
+	// if no step active, activate first step
+    if (activeStep == -1) { return 0;}
+
     // otherwise fetch next step options
     vector<tuple<int, float>> options = findNextStepOptions();
     
     int const nextIndex = selectNodeFromOptions(options);
-    if (nextIndex == -1) return 0;
+	if (nextIndex == -1) { return 0; }
     return nextIndex;
 }
 
-
-void Graph::activateNext() {
+/// This will calculate the next active bubble.
+void Graph::activateNext() {	
 	previousStep = activeStep;
 	activeStep = calculateNextStep();
 }
@@ -162,20 +183,19 @@ void Graph::playNext(bool usingMidi) {
 	if (!usingMidi) {
 		bubbles[activeStep].activate_sound();
 	}
-	bubbles[activeStep].activate_ui();
+	bubbles[activeStep].set_active_animations();
 }
 
-
+/// if any of steps active, deactivate it
 void Graph::deactivateGraph() {
-	// if any of steps active, deactivate it
 	if (activeStep >= 0)
 	{
 		bubbles[activeStep].deactivate_sound();
-		bubbles[activeStep].deactivate_ui();
+		bubbles[activeStep].set_inactive_animations();
 	}
 }
 
-
+/// update radius and colour animations
 void Graph::update()
 {
 	for (int i = 0; i < bubbles.size(); i += 1) {
@@ -242,7 +262,7 @@ void Graph::updateLayout_SpringForces() {
 }
 
 
-void Graph::draw(int selectedBubble, bool renderWeights) {
+void Graph::draw(int selectedBubble) {
 	
 	// Draw edges
 	for (int i = 0; i < adjMatrix.size(); i++) {
@@ -285,15 +305,6 @@ void Graph::draw(int selectedBubble, bool renderWeights) {
 					ofDrawLine(bubbles[i].pos, bubbles[j].pos);
 				}
 
-				if (renderWeights == true) {
-					// draw weight
-					ofVec2f textPos = (bubbles[i].pos + bubbles[j].pos) / 2;
-					if (isSelfLoop) {
-						textPos = ofVec2f(bubbles[i].pos.x, (bubbles[i].pos - 4 * bubbles[i].radius_animated.val()).y);
-					}
-					myFont.drawString(ofToString(weight), textPos.x, textPos.y);
-				}
-
 				// Draw arrow
 				float angle = atan2(direction.y, direction.x);
 				ofPushMatrix();
@@ -326,24 +337,28 @@ void Graph::drawAdjMatrix() {
     // set the initial position for drawing the matrix
     float constexpr textCellWidth = 7.5;
     int constexpr startX = textCellWidth * 2;
-    int constexpr spacing = 40;
+    int constexpr spacing = 20;
     int constexpr startY = spacing;
     
 	// rect size
-	int const rectSize = startX + (spacing + adjMatrix.size()) * textCellWidth;
+	int const rectSize = startX + (spacing * adjMatrix.size());// *textCellWidth;
 
 	// translate to the top left corner of the rectangle
 	ofPushMatrix();
 	ofTranslate(ofGetWidth() - rectSize, 0);
 	ofSetHexColor(0xF3ECDB); // background of adjacency
-	ofDrawRectangle(0, 0, rectSize, rectSize);
+	ofDrawRectangle(0, 0, rectSize, rectSize + spacing);
 
 	// set the color for the text
 	ofSetColor(0); // title color
-	myFont.drawString("Adjacency matrix:", 10, 20); 
+	myFont_adj.drawString("Adjacency matrix:", 10, 20);
+	ofPopMatrix();
 
 	for (int i = 0; i < adjMatrix.size(); i++) {
 		for (int j = 0; j < adjMatrix[i].size(); j++) {
+			// translate to the top left corner of the rectangle
+			ofPushMatrix();
+			ofTranslate(ofGetWidth() - rectSize, 0);
         
 			// Convert float to string with a specified precision
 			std::string valueStr = ofToString(adjMatrix[i][j], 1);
@@ -351,23 +366,33 @@ void Graph::drawAdjMatrix() {
 			// Highlight the currently active source 
 			if (bubbles[i].active) {
 				ofSetColor(0); // active row
-				myFont.drawString(valueStr, startX + j * spacing, startY + i * spacing);
+				myFont_adj.drawString(valueStr, startX + j * spacing, startY + (i + 1) * spacing);
 			}
 			else {
 				ofSetColor(150); //inactive row
-				myFont.drawString(valueStr, startX + j * spacing, startY + i * spacing);
-			}			
+				myFont_adj.drawString(valueStr, startX + j * spacing, startY + (i +1) * spacing);
+			}		
+			ofPopMatrix();
+
+			// draw weight
+			if (adjMatrix[i][j]) {
+				ofVec2f textPos = (bubbles[i].pos + bubbles[j].pos) / 2;
+				//self loop)
+				if (i == j) {
+					textPos = ofVec2f(bubbles[i].pos.x, (bubbles[i].pos - 4 * bubbles[i].radius_animated.val()).y);
+				}
+				myFont.drawString(ofToString(valueStr), textPos.x, textPos.y);
+			}
 		}
 	}
-	ofPopMatrix();
 }
 
 
-int Graph::getActiveStep() {
+int const Graph::getActiveStep() {
 	return activeStep;
 }
 
 
-int Graph::getPreviousStep() {
+int const Graph::getPreviousStep() {
 	return previousStep;
 }
