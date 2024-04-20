@@ -37,22 +37,18 @@ void ofApp::setup(){
 
 	// Ableton Link
 	abletonLinkThread.setup();
-	ofAddListener(abletonLinkThread.newBeatEvent, this, &ofApp::triggerBeat);
 	metronomeCircle = false;
-
+	ofAddListener(abletonLinkThread.newBeatEvent, this, &ofApp::triggerBeat);
 	ofAddListener(abletonLinkThread.abletonLink.bpmChanged, this, &ofApp::bpmChanged);
 	ofAddListener(abletonLinkThread.abletonLink.numPeersChanged, this, &ofApp::numPeersChanged);
 	ofAddListener(abletonLinkThread.abletonLink.playStateChanged, this, &ofApp::playStateChanged);
-	//lastBeat = -1.0;
-	//currentBeat = abletonLinkThread.abletonLink.getBeat();
-	//isPlaying = abletonLinkThread.abletonLink.isPlaying();
 	
 	// GUI
 	gui.setup();
-	button.addListener(this, &ofApp::buttonGuiPressed);
+	start_stop_button.addListener(this, &ofApp::toggleStartStop);
 	gui.add(int_slider.setup("Tempo Slider", abletonLinkThread.abletonLink.getBPM(), 32, 420));
 	gui.add(f_slider_vol_ambi.setup("Ambience volume", 0.4, 0.0, 1.0));
-	gui.add(button.setup("Start/stop"));
+	gui.add(start_stop_button.setup("Start/stop"));
 	gui.add(toggle_spring.setup("Spring Layout", true));
 	gui.add(show_adj_matrix.setup("Show Adj Matrix", false));
 
@@ -91,8 +87,8 @@ void ofApp::setup(){
 	}
 
 	// Debug
-	lastUpdateTime_update = ofGetElapsedTimeMillis() ;
-	lastUpdateTime_draw = ofGetElapsedTimeMillis();;
+	lastUpdateTime_update = ofGetElapsedTimeMillis();
+	lastUpdateTime_draw = ofGetElapsedTimeMillis();
 
 }
 
@@ -105,6 +101,7 @@ void ofApp::update(){
 	//lastUpdateTime_update = currentTime;
 	//ofLogNotice("time for update") << elapsedTime;
 
+
 	// Update BPM based on GUI Slider
 	abletonLinkThread.abletonLink.setBPM(int_slider);
 
@@ -116,6 +113,7 @@ void ofApp::update(){
 
 	// Update bubbles radius and colour animation
 	graph.update();
+
 }
 
 
@@ -158,6 +156,7 @@ void ofApp::draw(){
 
 	// Optional: Draw adj matrix
 	if (show_adj_matrix) { graph.drawAdjMatrix();}
+
 }
 
 
@@ -272,8 +271,14 @@ void ofApp::mouseReleased(int x, int y, int button) {
 
 
 //--------------------------------------------------------------
-/// This function is triggered by the Ableton Link thread. Whenever a new beat is triggered an event is published that triggers this function. 
+/// This function is triggered by the Ableton Link thread. 
+/// Whenever a new beat is triggered an event is published that triggers this function. 
 void ofApp::triggerBeat(int& i){
+
+	/// Help me : https://forum.openframeworks.cc/t/step-sequencer-problem-with-ableton-link-and-soundplayer/43424
+
+	// Start measuring time
+	int startTime = ofGetElapsedTimeMicros();
 
 	// Flip metronome
 	metronomeCircle = !metronomeCircle;
@@ -299,9 +304,19 @@ void ofApp::triggerBeat(int& i){
 			<< " freq: " << ofxMidi::mtof(graph.bubbles[activeStep].midi_note) << " Hz";
 	}
 
+
+
+	// End measuring time
+	int endTime = ofGetElapsedTimeMicros();
+	// Calculate the elapsed time
+	int elapsedTime = endTime - startTime;
+	// Output the elapsed time
+	ofLogNotice("Elapsed time: ") << elapsedTime << " microseconds";
 }
 
 
+
+//--------------------------------------------------------------
 void ofApp::toggleStartStop() {
 	if (isPlaying) {
 		//bpm.stop();
@@ -316,18 +331,13 @@ void ofApp::toggleStartStop() {
 		isPlaying = true;
 	}
 
-	// Decative Graph
+	// Deactive Graph
 	graph.deactivateGraph();
 
 	// Send midi off
 	sendMidiOff();
 }
 
-
-//--------------------------------------------------------------
-void ofApp::buttonGuiPressed(){
-	toggleStartStop();
-}
 
 
 //--------------------------------------------------------------
@@ -355,6 +365,7 @@ void ofApp::windowResized(int w, int h) {
 }
 
 
+//--------------------------------------------------------------
 void ofApp::sendMidiOff() {
 	if (USE_MIDI) {
 		int const activeStep = graph.getActiveStep();
@@ -369,6 +380,7 @@ void ofApp::sendMidiOff() {
 }
 
 
+//--------------------------------------------------------------
 void ofApp::bpmChanged(double& bpm) {
 	ofLogNotice("bpmChanged") << bpm;
 }

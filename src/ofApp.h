@@ -54,10 +54,9 @@ class ofApp : public ofBaseApp{
 		ofxPanel gui;
 		ofxIntSlider int_slider;
 		ofxFloatSlider f_slider_vol_ambi;
-		ofxButton button;
+		ofxButton start_stop_button;
 		ofxToggle toggle_spring;
 		ofxToggle show_adj_matrix;
-		void buttonGuiPressed();
 		ofxLabel label_space;
 		ofxLabel label_arrows;
 		ofxLabel label_reset;

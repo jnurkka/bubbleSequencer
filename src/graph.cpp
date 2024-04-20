@@ -128,8 +128,7 @@ vector<tuple<int, float>> Graph::findNextStepOptions() {
             options.push_back(std::make_tuple(i, nodes[i]));
         }
     }
-
-	ofLogNotice("How many follow nodes?") << options.size();
+	//ofLogNotice("How many follow nodes?") << options.size();
     return options;
 }
 
@@ -162,15 +161,14 @@ int Graph::calculateNextStep() {
 
 	deactivateGraph();
 
-    if (activeStep == -1) {
-        // if no step active, activate first step
-        return 0;
-    }
+	// if no step active, activate first step
+    if (activeStep == -1) { return 0;}
+
     // otherwise fetch next step options
     vector<tuple<int, float>> options = findNextStepOptions();
     
     int const nextIndex = selectNodeFromOptions(options);
-    if (nextIndex == -1) return 0;
+	if (nextIndex == -1) { return 0; }
     return nextIndex;
 }
 
