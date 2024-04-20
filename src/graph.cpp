@@ -174,7 +174,7 @@ int Graph::calculateNextStep() {
     return nextIndex;
 }
 
-
+/// This will calculate the next active bubble.
 void Graph::activateNext() {	
 	previousStep = activeStep;
 	activeStep = calculateNextStep();
@@ -185,7 +185,7 @@ void Graph::playNext(bool usingMidi) {
 	if (!usingMidi) {
 		bubbles[activeStep].activate_sound();
 	}
-	bubbles[activeStep].activate_ui();
+	bubbles[activeStep].set_active_animations();
 }
 
 /// if any of steps active, deactivate it
@@ -193,7 +193,7 @@ void Graph::deactivateGraph() {
 	if (activeStep >= 0)
 	{
 		bubbles[activeStep].deactivate_sound();
-		bubbles[activeStep].deactivate_ui();
+		bubbles[activeStep].set_inactive_animations();
 	}
 }
 

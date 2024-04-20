@@ -54,7 +54,7 @@ void ofApp::setup(){
 	gui.add(f_slider_vol_ambi.setup("Ambience volume", 0.4, 0.0, 1.0));
 	gui.add(button.setup("Start/stop"));
 	gui.add(toggle_spring.setup("Spring Layout", true));
-	gui.add(hide_adj_matrix.setup("Hide Adj Matrix", true));
+	gui.add(show_adj_matrix.setup("Show Adj Matrix", false));
 
 	// GUI keys
 	gui.add(label_space.setup("Space", "Start / stop"));
@@ -112,9 +112,9 @@ void ofApp::update(){
 	ambience.update_volume(f_slider_vol_ambi);
 
 	// Update graph layout
-	if (toggle_spring) 	{graph.updateLayout_SpringForces();}
+	if (toggle_spring) {graph.updateLayout_SpringForces();}
 
-	// Update bubbles (update radius and colour animations)
+	// Update bubbles radius and colour animation
 	graph.update();
 }
 
@@ -130,7 +130,7 @@ void ofApp::draw(){
 	// Background
 	ofBackgroundGradient(ColorManager::getInstance().getColorBackground2(), ColorManager::getInstance().getColorBackground(), OF_GRADIENT_CIRCULAR);
 
-	// Draw graph
+	// Draw graph. Plot all bubbles and highlight the selected bubble
 	graph.draw(stoi(selected_bubble_id));
 
 	// Draw metronome circles
@@ -156,10 +156,8 @@ void ofApp::draw(){
 	ofSetColor(255);
 	ofDrawBitmapString(ss.str(), 20, ofGetHeight() - 130);
 
-	// Draw adj matrix
-	if (!hide_adj_matrix) {
-		graph.drawAdjMatrix();
-	}
+	// Optional: Draw adj matrix
+	if (show_adj_matrix) { graph.drawAdjMatrix();}
 }
 
 
@@ -239,6 +237,7 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
+	// Select a bubble and update the GUI
 	if (button == OF_MOUSE_BUTTON_LEFT) {
 		for (int i = 0; i < graph.bubbles.size(); i++) {
 			if (ofDist(x, y, graph.bubbles[i].pos.x, graph.bubbles[i].pos.y) < graph.bubbles[i].radius_animated.val()) {
@@ -258,31 +257,28 @@ void ofApp::mousePressed(int x, int y, int button) {
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
-	if (isLeftMouseDown) {
-		graph.bubbles[dragID].pos.set(x, y);
-	}
+	// Drag a bubble
+	if (isLeftMouseDown) {graph.bubbles[dragID].pos.set(x, y);}
 }
 
 
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {
-	if (button == OF_MOUSE_BUTTON_LEFT) {
-		isLeftMouseDown = false;
-	}
+	// Stop dragging a bubble
+	if (button == OF_MOUSE_BUTTON_LEFT) {isLeftMouseDown = false;}
 }
 
 
 
 //--------------------------------------------------------------
+/// This function is triggered by the Ableton Link thread. Whenever a new beat is triggered an event is published that triggers this function. 
 void ofApp::triggerBeat(int& i){
-	//ofLogNotice("Time since last trigger") << ofGetElapsedTimeMillis();
-	//ofResetElapsedTimeCounter();
-	//ofLogNotice("beat triggered") << i;
 
+	// Flip metronome
 	metronomeCircle = !metronomeCircle;
 
-
+	// Calculate the next bubble. Will set the next active bubble. 
     graph.activateNext();
  	graph.playNext(USE_MIDI); // when MIDI, dont play internal sound
 

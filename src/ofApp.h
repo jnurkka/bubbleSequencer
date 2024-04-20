@@ -56,7 +56,7 @@ class ofApp : public ofBaseApp{
 		ofxFloatSlider f_slider_vol_ambi;
 		ofxButton button;
 		ofxToggle toggle_spring;
-		ofxToggle hide_adj_matrix;
+		ofxToggle show_adj_matrix;
 		void buttonGuiPressed();
 		ofxLabel label_space;
 		ofxLabel label_arrows;

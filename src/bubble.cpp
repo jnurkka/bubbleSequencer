@@ -99,14 +99,15 @@ void Bubble::activate_sound() {
 }
 
 
-void Bubble::activate_ui() {
-	// Animations
+void Bubble::set_active_animations() {
+	// Radius animations
 	radius_animated.reset(default_radius);
 	radius_animated.setCurve(EASE_OUT_BACK);
 	radius_animated.setRepeatType(PLAY_ONCE);
 	radius_animated.setDuration(0.5f);
 	radius_animated.animateTo(active_radius);
 
+	// Colour animations
 	color_animated.setColor(color_inactive_bubble);
 	color_animated.setDuration(0.2);
 	color_animated.setRepeatType(PLAY_ONCE);
@@ -120,7 +121,7 @@ void Bubble::deactivate_sound() {
 }
 
 
-void Bubble::deactivate_ui() {
+void Bubble::set_inactive_animations() {
 	// Animations
 	radius_animated.reset(active_radius);
 	radius_animated.setCurve(EASE_OUT_BACK);
