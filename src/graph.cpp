@@ -37,8 +37,6 @@ Graph::~Graph() {
 }
 
 void Graph::initRandomGraph(int size) {
-	// Init random graph
-	int constexpr MAX_CONNECTIONS = 3;
 
 	// Reset adj matrix
 	for (int i = 0; i < size; i++) {
@@ -46,7 +44,11 @@ void Graph::initRandomGraph(int size) {
 			adjMatrix[i][j] = 0.0f;
 		}
 	}
+	/*
 	// Init nodes
+	// Init random graph
+	int constexpr MAX_CONNECTIONS = 3;
+
 	for (int i = 0; i < size; i++)
 	{
 
@@ -69,7 +71,69 @@ void Graph::initRandomGraph(int size) {
 				addEdge(i, i + std::rand() % (size - i), ofRandom(0.5f, 1.0f));
 			}
 		}
+	}*/
+
+
+	int nr_cases = 100;
+
+	// happy path
+	for (int case_nr = 0; case_nr < (int)(nr_cases*0.8); case_nr++)
+	{
+		for (int process_step = 0; process_step < size-1; process_step++)
+		{
+			addEdge(process_step, process_step + 1, 1.0f / nr_cases);
+		}
 	}
+
+	//other paths
+	for (int case_nr = 0; case_nr < 5; case_nr++)
+	{
+		// Create a random device to seed the random number generator
+		std::random_device rd;
+
+		// Use the random device to seed the random number generator
+		std::mt19937 gen(rd());
+
+		// Create a normal (Gaussian) distribution with the specified mean and standard deviation
+		std::normal_distribution<> dist(0.0f, 6.0f);
+
+		// Generate and return a random number based on the distribution
+		int nr_process_steps = (int)std::abs(dist(gen));
+		int next_step = 1;
+
+		for (int process_step = 0; process_step < nr_process_steps; process_step = next_step)
+		{
+			next_step = process_step + 1 + std::rand() % (size - process_step);
+			if (next_step == size) { break; }
+			addEdge(process_step, next_step, 1.0f / 5);
+		}
+	}
+
+		/*
+	for (int case_nr = 0; case_nr < nr_cases; case_nr++)
+	{
+		// Create a random device to seed the random number generator
+		std::random_device rd;
+
+		// Use the random device to seed the random number generator
+		std::mt19937 gen(rd());
+
+		// Create a normal (Gaussian) distribution with the specified mean and standard deviation
+		std::normal_distribution<> dist(0.0f, 6);
+
+		// Generate and return a random number based on the distribution
+		int nr_process_steps = std::abs(dist(gen));
+		int next_step = 0;
+
+		for (int process_step = 0; process_step < nr_process_steps; process_step= next_step)
+		{
+			next_step = process_step + std::rand() % (size - process_step + 1);
+			if (next_step == size) { break; }
+			addEdge(process_step, next_step, 1.0f);
+		}
+	}*/
+
+
 	/*
 	// Core chain
 	for (int i = 0; i < size-1; i++)
@@ -100,7 +164,7 @@ int const Graph::size() {
 
 
 void Graph::addEdge(const int source, const int sink, const float weight) {
-	adjMatrix[source][sink] = weight;
+	adjMatrix[source][sink] += weight;
 }
 
 

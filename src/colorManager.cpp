@@ -13,8 +13,10 @@ ColorManager& ColorManager::getInstance() {
 
 ColorManager::ColorManager() {
 
-    setColorBackground(ofColor::fromHex(0x050E1F)); // darkblue
-    setColorBackground2(ofColor::fromHex(0x0B2349)); // little lighterdarkblue
+    // setColorBackground(ofColor::fromHex(0x050E1F)); // darkblue
+    // setColorBackground2(ofColor::fromHex(0x0B2349)); // little lighterdarkblue
+    setColorBackground(ofColor::fromHex(0x050505)); // darkblue
+    setColorBackground2(ofColor::fromHex(0x202020)); // little lighterdarkblue
     setColorEdges(ofColor::fromHex(0xFFFFFF));  // white
     setColorInactive(ofColor::fromHex(0x666666));  // grey
 
